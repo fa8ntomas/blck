@@ -1,0 +1,360 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D2E0399E-9483-4BC3-8171-3F5AAA825806}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BLEditor</RootNamespace>
+    <AssemblyName>BLEditor</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ScintillaNET, Version=3.6.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\jacobslusser.ScintillaNET.3.6.3\lib\net40\ScintillaNET.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="FormZoneCollisionData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormZoneCollisionData.Designer.cs">
+      <DependentUpon>FormZoneCollisionData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ZoneCollisionUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ZoneCollisionUserControl.Designer.cs">
+      <DependentUpon>ZoneCollisionUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserRect.cs" />
+    <Compile Include="FormCollision.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCollision.Designer.cs">
+      <DependentUpon>FormCollision.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormSettings.Designer.cs">
+      <DependentUpon>FormSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormRunMADS.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormRunMADS.Designer.cs">
+      <DependentUpon>FormRunMADS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\ProcessAsyncHelper.cs" />
+    <Compile Include="Helpers\GuidHelper.cs" />
+    <Compile Include="MADSLexer.cs" />
+    <Compile Include="CharTile.cs" />
+    <Compile Include="ASM.cs" />
+    <Compile Include="FormASMEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormASMEdit.Designer.cs">
+      <DependentUpon>FormASMEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormMapData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormMapData.Designer.cs">
+      <DependentUpon>FormMapData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Settings.cs" />
+    <Compile Include="XEX.cs" />
+    <Compile Include="ImageUtils.cs" />
+    <Compile Include="MenuButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="InputBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Helpers\PathHelper.cs" />
+    <Compile Include="FormBitmapToFnt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormBitmapToFnt.Designer.cs">
+      <DependentUpon>FormBitmapToFnt.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MapSet.cs" />
+    <Compile Include="FormBitmapToMap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormBitmapToMap.Designer.cs">
+      <DependentUpon>FormBitmapToMap.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="RbgPFColors.cs" />
+    <Compile Include="CharacterSet.cs" />
+    <Compile Include="CharSetUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CharSetUserControl.designer.cs">
+      <DependentUpon>CharSetUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AtariPFColors.cs" />
+    <Compile Include="Palette.cs" />
+    <Compile Include="DLI.cs" />
+    <Compile Include="ColorsPickerUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ColorsPickerUserControl.designer.cs">
+      <DependentUpon>ColorsPickerUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormMain.Designer.cs">
+      <DependentUpon>FormMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormAtariColorPicker.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAtariColorPicker.Designer.cs">
+      <DependentUpon>FormAtariColorPicker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormDLI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormDLI.Designer.cs">
+      <DependentUpon>FormDLI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormFntEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormFntEdit.designer.cs">
+      <DependentUpon>FormFntEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormFntToFnt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormFntToFnt.designer.cs">
+      <DependentUpon>FormFntToFnt.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GlyphEditUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GlyphEditUserControl.designer.cs">
+      <DependentUpon>GlyphEditUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Map.cs" />
+    <Compile Include="PictureGridUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PictureGridUserControl.designer.cs">
+      <DependentUpon>PictureGridUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tile.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DLIListUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DLIListUserControl.Designer.cs">
+      <DependentUpon>DLIListUserControl.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="CharSetUserControl.resx">
+      <DependentUpon>CharSetUserControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ColorsPickerUserControl.resx">
+      <DependentUpon>ColorsPickerUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormCollision.resx">
+      <DependentUpon>FormCollision.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormMapData.resx">
+      <DependentUpon>FormMapData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormASMEdit.resx">
+      <DependentUpon>FormASMEdit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormBitmapToFnt.resx">
+      <DependentUpon>FormBitmapToFnt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormMain.resx">
+      <DependentUpon>FormMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAtariColorPicker.resx">
+      <DependentUpon>FormAtariColorPicker.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormDLI.resx">
+      <DependentUpon>FormDLI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormBitmapToMap.resx">
+      <DependentUpon>FormBitmapToMap.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormFntEdit.resx">
+      <DependentUpon>FormFntEdit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormFntToFnt.resx">
+      <DependentUpon>FormFntToFnt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormRunMADS.resx">
+      <DependentUpon>FormRunMADS.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormSettings.resx">
+      <DependentUpon>FormSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormZoneCollisionData.resx">
+      <DependentUpon>FormZoneCollisionData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GlyphEditUserControl.resx">
+      <DependentUpon>GlyphEditUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InputBox.resx">
+      <DependentUpon>InputBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PictureGridUserControl.resx">
+      <DependentUpon>PictureGridUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DLIListUserControl.resx">
+      <DependentUpon>DLIListUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ZoneCollisionUserControl.resx">
+      <DependentUpon>ZoneCollisionUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Default.act" />
+    <None Include="Properties\font0.fnt" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\palette--arrow.png" />
+    <None Include="Properties\palette--plus.png" />
+    <None Include="Properties\palette--minus.png" />
+    <None Include="Properties\color-swatch.png" />
+    <None Include="Properties\color.png" />
+    <None Include="Properties\pencil.png" />
+    <None Include="Properties\application-tile-horizontal-right.png" />
+    <None Include="Properties\application-tile-horizontal-left.png" />
+    <None Include="Properties\ColorPickerToolCursor.cur" />
+    <None Include="Properties\magnifier-zoom-out.png" />
+    <None Include="Properties\magnifier-zoom-in.png" />
+    <None Include="Properties\magnifier-zoom-fit.png" />
+    <None Include="Properties\magnifier-zoom-actual.png" />
+    <None Include="Properties\grid.png" />
+    <None Include="Properties\application-tile-horizontal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\pipette.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\disk.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\disk--arrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\compile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\zone--minus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\zone--plus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\zone--pencil.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\stickman-run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\application-run.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 et x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
