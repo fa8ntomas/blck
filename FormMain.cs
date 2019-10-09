@@ -664,8 +664,15 @@ namespace BLEditor
                                 {
                                     map.Exit4MapID = mapId;
                                 }
+
                                 map.Exit4X = Convert.ToByte(form1.numericUpDownExit4X.Value);
                                 map.Exit4Y = Convert.ToByte(form1.numericUpDownExit4Y.Value);
+
+                                map.NinjaEnterCount1 = Convert.ToByte(form1.numericUpDownNinjaEnterCount1.Value);
+                                map.NinjaEnterCount2 = Convert.ToByte(form1.numericUpDownNinjaEnterCount2.Value);
+
+                                map.YamoEnterCount1 = Convert.ToByte(form1.numericUpDownYamoEnterCount1.Value);
+                                map.YamoEnterCount2 = Convert.ToByte(form1.numericUpDownYamoEnterCount2.Value);
 
                                 if (form1.radioButtonYamoFavorA.Checked)
                                 {

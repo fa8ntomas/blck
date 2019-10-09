@@ -78,8 +78,8 @@
             this.comboBoxColorDetection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxColorDetection.FormattingEnabled = true;
             this.comboBoxColorDetection.Items.AddRange(new object[] {
-            "Always",
             "Never",
+            "Always",
             "Inside selected zone(s)",
             "Outside selected zone(s)"});
             this.comboBoxColorDetection.Location = new System.Drawing.Point(103, 3);

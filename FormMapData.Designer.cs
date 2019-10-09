@@ -63,10 +63,10 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.label12 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown4 = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownYamoEnterCount2 = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownYamoEnterCount1 = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownNinjaEnterCount2 = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownNinjaEnterCount1 = new System.Windows.Forms.NumericUpDown();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
@@ -93,10 +93,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownExit1X)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownExit1Y)).BeginInit();
             this.groupBox3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownYamoEnterCount2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownYamoEnterCount1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownNinjaEnterCount2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownNinjaEnterCount1)).BeginInit();
             this.groupBox4.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.SuspendLayout();
@@ -104,42 +104,46 @@
             // MapExit1
             // 
             this.MapExit1.AutoSize = true;
-            this.MapExit1.Location = new System.Drawing.Point(6, 41);
+            this.MapExit1.Location = new System.Drawing.Point(9, 63);
+            this.MapExit1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.MapExit1.Name = "MapExit1";
-            this.MapExit1.Size = new System.Drawing.Size(51, 13);
+            this.MapExit1.Size = new System.Drawing.Size(76, 20);
             this.MapExit1.TabIndex = 0;
             this.MapExit1.Text = "A (Bruce)";
             // 
             // numericUpDownBruceStartX1
             // 
-            this.numericUpDownBruceStartX1.Location = new System.Drawing.Point(60, 39);
+            this.numericUpDownBruceStartX1.Location = new System.Drawing.Point(90, 60);
+            this.numericUpDownBruceStartX1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.numericUpDownBruceStartX1.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
             this.numericUpDownBruceStartX1.Name = "numericUpDownBruceStartX1";
-            this.numericUpDownBruceStartX1.Size = new System.Drawing.Size(53, 20);
+            this.numericUpDownBruceStartX1.Size = new System.Drawing.Size(80, 26);
             this.numericUpDownBruceStartX1.TabIndex = 1;
             // 
             // numericUpDownBruceStartY1
             // 
-            this.numericUpDownBruceStartY1.Location = new System.Drawing.Point(129, 39);
+            this.numericUpDownBruceStartY1.Location = new System.Drawing.Point(194, 60);
+            this.numericUpDownBruceStartY1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.numericUpDownBruceStartY1.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
             this.numericUpDownBruceStartY1.Name = "numericUpDownBruceStartY1";
-            this.numericUpDownBruceStartY1.Size = new System.Drawing.Size(45, 20);
+            this.numericUpDownBruceStartY1.Size = new System.Drawing.Size(68, 26);
             this.numericUpDownBruceStartY1.TabIndex = 3;
             // 
             // checkBoxFoe
             // 
             this.checkBoxFoe.AutoSize = true;
-            this.checkBoxFoe.Location = new System.Drawing.Point(17, 14);
+            this.checkBoxFoe.Location = new System.Drawing.Point(26, 22);
+            this.checkBoxFoe.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBoxFoe.Name = "checkBoxFoe";
-            this.checkBoxFoe.Size = new System.Drawing.Size(44, 17);
+            this.checkBoxFoe.Size = new System.Drawing.Size(56, 24);
             this.checkBoxFoe.TabIndex = 4;
             this.checkBoxFoe.Text = "Foe";
             this.checkBoxFoe.UseVisualStyleBackColor = true;
@@ -154,9 +158,11 @@
             this.groupBox1.Controls.Add(this.MapExit1);
             this.groupBox1.Controls.Add(this.numericUpDownBruceStartX1);
             this.groupBox1.Controls.Add(this.numericUpDownBruceStartY1);
-            this.groupBox1.Location = new System.Drawing.Point(12, 37);
+            this.groupBox1.Location = new System.Drawing.Point(18, 57);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(185, 100);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBox1.Size = new System.Drawing.Size(278, 154);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Spawn Locations";
@@ -164,60 +170,66 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(125, 19);
+            this.label13.Location = new System.Drawing.Point(188, 29);
+            this.label13.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(14, 13);
+            this.label13.Size = new System.Drawing.Size(20, 20);
             this.label13.TabIndex = 15;
             this.label13.Text = "Y";
             // 
             // numericUpDownBruceStartX2
             // 
-            this.numericUpDownBruceStartX2.Location = new System.Drawing.Point(60, 65);
+            this.numericUpDownBruceStartX2.Location = new System.Drawing.Point(90, 100);
+            this.numericUpDownBruceStartX2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.numericUpDownBruceStartX2.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
             this.numericUpDownBruceStartX2.Name = "numericUpDownBruceStartX2";
-            this.numericUpDownBruceStartX2.Size = new System.Drawing.Size(53, 20);
+            this.numericUpDownBruceStartX2.Size = new System.Drawing.Size(80, 26);
             this.numericUpDownBruceStartX2.TabIndex = 4;
             // 
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(65, 19);
+            this.label14.Location = new System.Drawing.Point(98, 29);
+            this.label14.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(14, 13);
+            this.label14.Size = new System.Drawing.Size(20, 20);
             this.label14.TabIndex = 14;
             this.label14.Text = "X";
             // 
             // numericUpDownBruceStartY2
             // 
-            this.numericUpDownBruceStartY2.Location = new System.Drawing.Point(129, 65);
+            this.numericUpDownBruceStartY2.Location = new System.Drawing.Point(194, 100);
+            this.numericUpDownBruceStartY2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.numericUpDownBruceStartY2.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
             this.numericUpDownBruceStartY2.Name = "numericUpDownBruceStartY2";
-            this.numericUpDownBruceStartY2.Size = new System.Drawing.Size(45, 20);
+            this.numericUpDownBruceStartY2.Size = new System.Drawing.Size(68, 26);
             this.numericUpDownBruceStartY2.TabIndex = 5;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 67);
+            this.label3.Location = new System.Drawing.Point(9, 103);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(14, 13);
+            this.label3.Size = new System.Drawing.Size(20, 20);
             this.label3.TabIndex = 1;
             this.label3.Text = "B";
             // 
             // button1
             // 
             this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button1.Location = new System.Drawing.Point(12, 312);
+            this.button1.Location = new System.Drawing.Point(18, 480);
+            this.button1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.Size = new System.Drawing.Size(112, 35);
             this.button1.TabIndex = 7;
             this.button1.Text = "OK";
             this.button1.UseVisualStyleBackColor = true;
@@ -244,9 +256,11 @@
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.numericUpDownExit1X);
             this.groupBox2.Controls.Add(this.numericUpDownExit1Y);
-            this.groupBox2.Location = new System.Drawing.Point(12, 146);
+            this.groupBox2.Location = new System.Drawing.Point(18, 225);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(332, 157);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBox2.Size = new System.Drawing.Size(498, 242);
             this.groupBox2.TabIndex = 8;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Exits";
@@ -255,219 +269,241 @@
             // 
             this.comboBoxExit4Map.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxExit4Map.FormattingEnabled = true;
-            this.comboBoxExit4Map.Location = new System.Drawing.Point(72, 124);
+            this.comboBoxExit4Map.Location = new System.Drawing.Point(108, 191);
+            this.comboBoxExit4Map.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.comboBoxExit4Map.Name = "comboBoxExit4Map";
-            this.comboBoxExit4Map.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxExit4Map.Size = new System.Drawing.Size(180, 28);
             this.comboBoxExit4Map.TabIndex = 26;
             // 
             // comboBoxExit3Map
             // 
             this.comboBoxExit3Map.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxExit3Map.FormattingEnabled = true;
-            this.comboBoxExit3Map.Location = new System.Drawing.Point(72, 98);
+            this.comboBoxExit3Map.Location = new System.Drawing.Point(108, 151);
+            this.comboBoxExit3Map.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.comboBoxExit3Map.Name = "comboBoxExit3Map";
-            this.comboBoxExit3Map.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxExit3Map.Size = new System.Drawing.Size(180, 28);
             this.comboBoxExit3Map.TabIndex = 25;
             // 
             // comboBoxExit2Map
             // 
             this.comboBoxExit2Map.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxExit2Map.FormattingEnabled = true;
-            this.comboBoxExit2Map.Location = new System.Drawing.Point(72, 73);
+            this.comboBoxExit2Map.Location = new System.Drawing.Point(108, 112);
+            this.comboBoxExit2Map.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.comboBoxExit2Map.Name = "comboBoxExit2Map";
-            this.comboBoxExit2Map.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxExit2Map.Size = new System.Drawing.Size(180, 28);
             this.comboBoxExit2Map.TabIndex = 24;
             // 
             // comboBoxExit1Map
             // 
             this.comboBoxExit1Map.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxExit1Map.FormattingEnabled = true;
-            this.comboBoxExit1Map.Location = new System.Drawing.Point(72, 48);
+            this.comboBoxExit1Map.Location = new System.Drawing.Point(108, 74);
+            this.comboBoxExit1Map.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.comboBoxExit1Map.Name = "comboBoxExit1Map";
-            this.comboBoxExit1Map.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxExit1Map.Size = new System.Drawing.Size(180, 28);
             this.comboBoxExit1Map.TabIndex = 9;
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(218, 16);
+            this.label8.Location = new System.Drawing.Point(327, 25);
+            this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(56, 13);
+            this.label8.Size = new System.Drawing.Size(84, 20);
             this.label8.TabIndex = 23;
             this.label8.Text = "At position";
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(11, 127);
+            this.label7.Location = new System.Drawing.Point(16, 195);
+            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(59, 13);
+            this.label7.Size = new System.Drawing.Size(86, 20);
             this.label7.TabIndex = 19;
             this.label7.Text = "By tile $85:";
             // 
             // numericUpDownExit4X
             // 
-            this.numericUpDownExit4X.Location = new System.Drawing.Point(202, 125);
+            this.numericUpDownExit4X.Location = new System.Drawing.Point(303, 192);
+            this.numericUpDownExit4X.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.numericUpDownExit4X.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
             this.numericUpDownExit4X.Name = "numericUpDownExit4X";
-            this.numericUpDownExit4X.Size = new System.Drawing.Size(50, 20);
+            this.numericUpDownExit4X.Size = new System.Drawing.Size(75, 26);
             this.numericUpDownExit4X.TabIndex = 20;
             // 
             // numericUpDownExit4Y
             // 
-            this.numericUpDownExit4Y.Location = new System.Drawing.Point(264, 125);
+            this.numericUpDownExit4Y.Location = new System.Drawing.Point(396, 192);
+            this.numericUpDownExit4Y.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.numericUpDownExit4Y.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
             this.numericUpDownExit4Y.Name = "numericUpDownExit4Y";
-            this.numericUpDownExit4Y.Size = new System.Drawing.Size(45, 20);
+            this.numericUpDownExit4Y.Size = new System.Drawing.Size(68, 26);
             this.numericUpDownExit4Y.TabIndex = 21;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 101);
+            this.label6.Location = new System.Drawing.Point(18, 155);
+            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(59, 13);
+            this.label6.Size = new System.Drawing.Size(86, 20);
             this.label6.TabIndex = 15;
             this.label6.Text = "By tile $84:";
             // 
             // numericUpDownExit3X
             // 
-            this.numericUpDownExit3X.Location = new System.Drawing.Point(203, 99);
+            this.numericUpDownExit3X.Location = new System.Drawing.Point(304, 152);
+            this.numericUpDownExit3X.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.numericUpDownExit3X.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
             this.numericUpDownExit3X.Name = "numericUpDownExit3X";
-            this.numericUpDownExit3X.Size = new System.Drawing.Size(50, 20);
+            this.numericUpDownExit3X.Size = new System.Drawing.Size(75, 26);
             this.numericUpDownExit3X.TabIndex = 16;
             // 
             // numericUpDownExit3Y
             // 
-            this.numericUpDownExit3Y.Location = new System.Drawing.Point(265, 99);
+            this.numericUpDownExit3Y.Location = new System.Drawing.Point(398, 152);
+            this.numericUpDownExit3Y.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.numericUpDownExit3Y.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
             this.numericUpDownExit3Y.Name = "numericUpDownExit3Y";
-            this.numericUpDownExit3Y.Size = new System.Drawing.Size(45, 20);
+            this.numericUpDownExit3Y.Size = new System.Drawing.Size(68, 26);
             this.numericUpDownExit3Y.TabIndex = 17;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 76);
+            this.label2.Location = new System.Drawing.Point(18, 117);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(59, 13);
+            this.label2.Size = new System.Drawing.Size(86, 20);
             this.label2.TabIndex = 11;
             this.label2.Text = "By tile $83:";
             // 
             // numericUpDownExit2X
             // 
-            this.numericUpDownExit2X.Location = new System.Drawing.Point(203, 74);
+            this.numericUpDownExit2X.Location = new System.Drawing.Point(304, 114);
+            this.numericUpDownExit2X.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.numericUpDownExit2X.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
             this.numericUpDownExit2X.Name = "numericUpDownExit2X";
-            this.numericUpDownExit2X.Size = new System.Drawing.Size(50, 20);
+            this.numericUpDownExit2X.Size = new System.Drawing.Size(75, 26);
             this.numericUpDownExit2X.TabIndex = 12;
             // 
             // numericUpDownExit2Y
             // 
-            this.numericUpDownExit2Y.Location = new System.Drawing.Point(265, 74);
+            this.numericUpDownExit2Y.Location = new System.Drawing.Point(398, 114);
+            this.numericUpDownExit2Y.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.numericUpDownExit2Y.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
             this.numericUpDownExit2Y.Name = "numericUpDownExit2Y";
-            this.numericUpDownExit2Y.Size = new System.Drawing.Size(45, 20);
+            this.numericUpDownExit2Y.Size = new System.Drawing.Size(68, 26);
             this.numericUpDownExit2Y.TabIndex = 13;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(268, 33);
+            this.label5.Location = new System.Drawing.Point(402, 51);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(14, 13);
+            this.label5.Size = new System.Drawing.Size(20, 20);
             this.label5.TabIndex = 10;
             this.label5.Text = "Y";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(205, 33);
+            this.label4.Location = new System.Drawing.Point(308, 51);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(14, 13);
+            this.label4.Size = new System.Drawing.Size(20, 20);
             this.label4.TabIndex = 9;
             this.label4.Text = "X";
             // 
             // ll
             // 
             this.ll.AutoSize = true;
-            this.ll.Location = new System.Drawing.Point(73, 23);
+            this.ll.Location = new System.Drawing.Point(110, 35);
+            this.ll.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ll.Name = "ll";
-            this.ll.Size = new System.Drawing.Size(44, 13);
+            this.ll.Size = new System.Drawing.Size(62, 20);
             this.ll.TabIndex = 8;
             this.ll.Text = "To Map";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 51);
+            this.label1.Location = new System.Drawing.Point(18, 78);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(59, 13);
+            this.label1.Size = new System.Drawing.Size(86, 20);
             this.label1.TabIndex = 4;
             this.label1.Text = "By tile $82:";
             // 
             // numericUpDownExit1X
             // 
-            this.numericUpDownExit1X.Location = new System.Drawing.Point(203, 49);
+            this.numericUpDownExit1X.Location = new System.Drawing.Point(304, 75);
+            this.numericUpDownExit1X.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.numericUpDownExit1X.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
             this.numericUpDownExit1X.Name = "numericUpDownExit1X";
-            this.numericUpDownExit1X.Size = new System.Drawing.Size(50, 20);
+            this.numericUpDownExit1X.Size = new System.Drawing.Size(75, 26);
             this.numericUpDownExit1X.TabIndex = 5;
             // 
             // numericUpDownExit1Y
             // 
-            this.numericUpDownExit1Y.Location = new System.Drawing.Point(265, 49);
+            this.numericUpDownExit1Y.Location = new System.Drawing.Point(398, 75);
+            this.numericUpDownExit1Y.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.numericUpDownExit1Y.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
             this.numericUpDownExit1Y.Name = "numericUpDownExit1Y";
-            this.numericUpDownExit1Y.Size = new System.Drawing.Size(45, 20);
+            this.numericUpDownExit1Y.Size = new System.Drawing.Size(68, 26);
             this.numericUpDownExit1Y.TabIndex = 6;
             // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.label12);
             this.groupBox3.Controls.Add(this.label11);
-            this.groupBox3.Controls.Add(this.numericUpDown1);
-            this.groupBox3.Controls.Add(this.numericUpDown3);
-            this.groupBox3.Controls.Add(this.numericUpDown2);
-            this.groupBox3.Controls.Add(this.numericUpDown4);
+            this.groupBox3.Controls.Add(this.numericUpDownYamoEnterCount2);
+            this.groupBox3.Controls.Add(this.numericUpDownYamoEnterCount1);
+            this.groupBox3.Controls.Add(this.numericUpDownNinjaEnterCount2);
+            this.groupBox3.Controls.Add(this.numericUpDownNinjaEnterCount1);
             this.groupBox3.Controls.Add(this.label9);
             this.groupBox3.Controls.Add(this.label10);
-            this.groupBox3.Location = new System.Drawing.Point(543, 37);
+            this.groupBox3.Location = new System.Drawing.Point(814, 57);
+            this.groupBox3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(168, 100);
+            this.groupBox3.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBox3.Size = new System.Drawing.Size(252, 154);
             this.groupBox3.TabIndex = 9;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Count";
@@ -475,93 +511,102 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(101, 19);
+            this.label12.Location = new System.Drawing.Point(152, 29);
+            this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(31, 13);
+            this.label12.Size = new System.Drawing.Size(44, 20);
             this.label12.TabIndex = 13;
             this.label12.Text = "Ninja";
             // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(41, 19);
+            this.label11.Location = new System.Drawing.Point(62, 29);
+            this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(34, 13);
+            this.label11.Size = new System.Drawing.Size(51, 20);
             this.label11.TabIndex = 12;
             this.label11.Text = "Yamo";
             // 
-            // numericUpDown1
+            // numericUpDownYamoEnterCount2
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(31, 65);
-            this.numericUpDown1.Maximum = new decimal(new int[] {
+            this.numericUpDownYamoEnterCount2.Location = new System.Drawing.Point(46, 100);
+            this.numericUpDownYamoEnterCount2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.numericUpDownYamoEnterCount2.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(53, 20);
-            this.numericUpDown1.TabIndex = 10;
+            this.numericUpDownYamoEnterCount2.Name = "numericUpDownYamoEnterCount2";
+            this.numericUpDownYamoEnterCount2.Size = new System.Drawing.Size(80, 26);
+            this.numericUpDownYamoEnterCount2.TabIndex = 10;
             // 
-            // numericUpDown3
+            // numericUpDownYamoEnterCount1
             // 
-            this.numericUpDown3.Location = new System.Drawing.Point(31, 39);
-            this.numericUpDown3.Maximum = new decimal(new int[] {
+            this.numericUpDownYamoEnterCount1.Location = new System.Drawing.Point(46, 60);
+            this.numericUpDownYamoEnterCount1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.numericUpDownYamoEnterCount1.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
-            this.numericUpDown3.Name = "numericUpDown3";
-            this.numericUpDown3.Size = new System.Drawing.Size(53, 20);
-            this.numericUpDown3.TabIndex = 8;
+            this.numericUpDownYamoEnterCount1.Name = "numericUpDownYamoEnterCount1";
+            this.numericUpDownYamoEnterCount1.Size = new System.Drawing.Size(80, 26);
+            this.numericUpDownYamoEnterCount1.TabIndex = 8;
             // 
-            // numericUpDown2
+            // numericUpDownNinjaEnterCount2
             // 
-            this.numericUpDown2.Location = new System.Drawing.Point(100, 65);
-            this.numericUpDown2.Maximum = new decimal(new int[] {
+            this.numericUpDownNinjaEnterCount2.Location = new System.Drawing.Point(150, 100);
+            this.numericUpDownNinjaEnterCount2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.numericUpDownNinjaEnterCount2.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
-            this.numericUpDown2.Name = "numericUpDown2";
-            this.numericUpDown2.Size = new System.Drawing.Size(45, 20);
-            this.numericUpDown2.TabIndex = 11;
+            this.numericUpDownNinjaEnterCount2.Name = "numericUpDownNinjaEnterCount2";
+            this.numericUpDownNinjaEnterCount2.Size = new System.Drawing.Size(68, 26);
+            this.numericUpDownNinjaEnterCount2.TabIndex = 11;
             // 
-            // numericUpDown4
+            // numericUpDownNinjaEnterCount1
             // 
-            this.numericUpDown4.Location = new System.Drawing.Point(100, 39);
-            this.numericUpDown4.Maximum = new decimal(new int[] {
+            this.numericUpDownNinjaEnterCount1.Location = new System.Drawing.Point(150, 60);
+            this.numericUpDownNinjaEnterCount1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.numericUpDownNinjaEnterCount1.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
-            this.numericUpDown4.Name = "numericUpDown4";
-            this.numericUpDown4.Size = new System.Drawing.Size(45, 20);
-            this.numericUpDown4.TabIndex = 9;
+            this.numericUpDownNinjaEnterCount1.Name = "numericUpDownNinjaEnterCount1";
+            this.numericUpDownNinjaEnterCount1.Size = new System.Drawing.Size(68, 26);
+            this.numericUpDownNinjaEnterCount1.TabIndex = 9;
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(6, 67);
+            this.label9.Location = new System.Drawing.Point(9, 103);
+            this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(16, 13);
+            this.label9.Size = new System.Drawing.Size(22, 20);
             this.label9.TabIndex = 7;
             this.label9.Text = "2:";
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(6, 41);
+            this.label10.Location = new System.Drawing.Point(9, 63);
+            this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(16, 13);
+            this.label10.Size = new System.Drawing.Size(22, 20);
             this.label10.TabIndex = 6;
             this.label10.Text = "1:";
             // 
             // button2
             // 
             this.button2.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button2.Location = new System.Drawing.Point(93, 312);
+            this.button2.Location = new System.Drawing.Point(140, 480);
+            this.button2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.Size = new System.Drawing.Size(112, 35);
             this.button2.TabIndex = 10;
             this.button2.Text = "Cancel";
             this.button2.UseVisualStyleBackColor = true;
@@ -571,9 +616,11 @@
             this.groupBox4.Controls.Add(this.radioButtonYamoFavorB);
             this.groupBox4.Controls.Add(this.radioButtonYamoFavorA);
             this.groupBox4.Controls.Add(this.radioButtonYamoRandom);
-            this.groupBox4.Location = new System.Drawing.Point(203, 37);
+            this.groupBox4.Location = new System.Drawing.Point(304, 57);
+            this.groupBox4.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(164, 100);
+            this.groupBox4.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBox4.Size = new System.Drawing.Size(246, 154);
             this.groupBox4.TabIndex = 11;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Yamo Spawn Location";
@@ -581,9 +628,10 @@
             // radioButtonYamoFavorB
             // 
             this.radioButtonYamoFavorB.AutoSize = true;
-            this.radioButtonYamoFavorB.Location = new System.Drawing.Point(12, 71);
+            this.radioButtonYamoFavorB.Location = new System.Drawing.Point(18, 109);
+            this.radioButtonYamoFavorB.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.radioButtonYamoFavorB.Name = "radioButtonYamoFavorB";
-            this.radioButtonYamoFavorB.Size = new System.Drawing.Size(102, 17);
+            this.radioButtonYamoFavorB.Size = new System.Drawing.Size(141, 24);
             this.radioButtonYamoFavorB.TabIndex = 2;
             this.radioButtonYamoFavorB.Text = "Favor location B";
             this.radioButtonYamoFavorB.UseVisualStyleBackColor = true;
@@ -591,9 +639,10 @@
             // radioButtonYamoFavorA
             // 
             this.radioButtonYamoFavorA.AutoSize = true;
-            this.radioButtonYamoFavorA.Location = new System.Drawing.Point(12, 48);
+            this.radioButtonYamoFavorA.Location = new System.Drawing.Point(18, 74);
+            this.radioButtonYamoFavorA.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.radioButtonYamoFavorA.Name = "radioButtonYamoFavorA";
-            this.radioButtonYamoFavorA.Size = new System.Drawing.Size(102, 17);
+            this.radioButtonYamoFavorA.Size = new System.Drawing.Size(141, 24);
             this.radioButtonYamoFavorA.TabIndex = 1;
             this.radioButtonYamoFavorA.Text = "Favor location A";
             this.radioButtonYamoFavorA.UseVisualStyleBackColor = true;
@@ -602,9 +651,10 @@
             // 
             this.radioButtonYamoRandom.AutoSize = true;
             this.radioButtonYamoRandom.Checked = true;
-            this.radioButtonYamoRandom.Location = new System.Drawing.Point(12, 25);
+            this.radioButtonYamoRandom.Location = new System.Drawing.Point(18, 38);
+            this.radioButtonYamoRandom.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.radioButtonYamoRandom.Name = "radioButtonYamoRandom";
-            this.radioButtonYamoRandom.Size = new System.Drawing.Size(144, 17);
+            this.radioButtonYamoRandom.Size = new System.Drawing.Size(205, 24);
             this.radioButtonYamoRandom.TabIndex = 0;
             this.radioButtonYamoRandom.TabStop = true;
             this.radioButtonYamoRandom.Text = "Randomly location A or B";
@@ -615,30 +665,34 @@
             this.groupBox5.Controls.Add(this.radioButtonNinjaFavorB);
             this.groupBox5.Controls.Add(this.radioButtonNinjaFavorA);
             this.groupBox5.Controls.Add(this.radioButtonNinjaRandom);
-            this.groupBox5.Location = new System.Drawing.Point(373, 37);
+            this.groupBox5.Location = new System.Drawing.Point(560, 57);
+            this.groupBox5.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(164, 100);
+            this.groupBox5.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBox5.Size = new System.Drawing.Size(246, 154);
             this.groupBox5.TabIndex = 12;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Ninja Spawn Location";
             // 
-            // radioButtonNinaFavorB
+            // radioButtonNinjaFavorB
             // 
             this.radioButtonNinjaFavorB.AutoSize = true;
-            this.radioButtonNinjaFavorB.Location = new System.Drawing.Point(12, 71);
-            this.radioButtonNinjaFavorB.Name = "radioButtonNinaFavorB";
-            this.radioButtonNinjaFavorB.Size = new System.Drawing.Size(102, 17);
+            this.radioButtonNinjaFavorB.Location = new System.Drawing.Point(18, 109);
+            this.radioButtonNinjaFavorB.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.radioButtonNinjaFavorB.Name = "radioButtonNinjaFavorB";
+            this.radioButtonNinjaFavorB.Size = new System.Drawing.Size(141, 24);
             this.radioButtonNinjaFavorB.TabIndex = 2;
             this.radioButtonNinjaFavorB.TabStop = true;
             this.radioButtonNinjaFavorB.Text = "Favor location B";
             this.radioButtonNinjaFavorB.UseVisualStyleBackColor = true;
             // 
-            // radioButtonNinaFavorA
+            // radioButtonNinjaFavorA
             // 
             this.radioButtonNinjaFavorA.AutoSize = true;
-            this.radioButtonNinjaFavorA.Location = new System.Drawing.Point(12, 48);
-            this.radioButtonNinjaFavorA.Name = "radioButtonNinaFavorA";
-            this.radioButtonNinjaFavorA.Size = new System.Drawing.Size(102, 17);
+            this.radioButtonNinjaFavorA.Location = new System.Drawing.Point(18, 74);
+            this.radioButtonNinjaFavorA.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.radioButtonNinjaFavorA.Name = "radioButtonNinjaFavorA";
+            this.radioButtonNinjaFavorA.Size = new System.Drawing.Size(141, 24);
             this.radioButtonNinjaFavorA.TabIndex = 1;
             this.radioButtonNinjaFavorA.TabStop = true;
             this.radioButtonNinjaFavorA.Text = "Favor location A";
@@ -647,9 +701,10 @@
             // radioButtonNinjaRandom
             // 
             this.radioButtonNinjaRandom.AutoSize = true;
-            this.radioButtonNinjaRandom.Location = new System.Drawing.Point(12, 25);
+            this.radioButtonNinjaRandom.Location = new System.Drawing.Point(18, 38);
+            this.radioButtonNinjaRandom.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.radioButtonNinjaRandom.Name = "radioButtonNinjaRandom";
-            this.radioButtonNinjaRandom.Size = new System.Drawing.Size(144, 17);
+            this.radioButtonNinjaRandom.Size = new System.Drawing.Size(205, 24);
             this.radioButtonNinjaRandom.TabIndex = 0;
             this.radioButtonNinjaRandom.TabStop = true;
             this.radioButtonNinjaRandom.Text = "Randomly location A or B";
@@ -657,9 +712,9 @@
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(728, 346);
+            this.ClientSize = new System.Drawing.Size(1092, 532);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.button2);
@@ -668,6 +723,7 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.checkBoxFoe);
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Map Data";
@@ -689,10 +745,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownExit1Y)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownYamoEnterCount2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownYamoEnterCount1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownNinjaEnterCount2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownNinjaEnterCount1)).EndInit();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.groupBox5.ResumeLayout(false);
@@ -739,10 +795,10 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label11;
-        public System.Windows.Forms.NumericUpDown numericUpDown1;
-        public System.Windows.Forms.NumericUpDown numericUpDown3;
-        public System.Windows.Forms.NumericUpDown numericUpDown2;
-        public System.Windows.Forms.NumericUpDown numericUpDown4;
+        public System.Windows.Forms.NumericUpDown numericUpDownYamoEnterCount2;
+        public System.Windows.Forms.NumericUpDown numericUpDownYamoEnterCount1;
+        public System.Windows.Forms.NumericUpDown numericUpDownNinjaEnterCount2;
+        public System.Windows.Forms.NumericUpDown numericUpDownNinjaEnterCount1;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Button button2;

@@ -23,6 +23,12 @@ namespace BLEditor
             this.numericUpDownBruceStartX2.Value = map.BruceStartX2;
             this.numericUpDownBruceStartY2.Value = map.BruceStartY2;
 
+            this.numericUpDownNinjaEnterCount1.Value = map.NinjaEnterCount1;
+            this.numericUpDownNinjaEnterCount2.Value = map.NinjaEnterCount2;
+
+            this.numericUpDownYamoEnterCount1.Value = map.YamoEnterCount1;
+            this.numericUpDownYamoEnterCount2.Value = map.YamoEnterCount2;
+
             switch (map.YamoSpawnPosition)
             {
                 case 1:
@@ -83,7 +89,5 @@ namespace BLEditor
 
             comboBoxExit.SelectedValue = (seletedMap == null) ? Map.EMPTY.UID : selectedMapID;
         }
-
-  
     }
 }

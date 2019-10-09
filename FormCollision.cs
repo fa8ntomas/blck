@@ -21,6 +21,8 @@ namespace BLEditor
         {
             InitializeComponent();
 
+            Console.WriteLine("**"+DetectionType.ToString() + (int)DetectionType);
+
             Map = map;
             this.zoneCollisionUserControl1.Map = map;
 

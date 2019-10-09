@@ -261,6 +261,10 @@ namespace BLEditor
             result.Add(new XElement("exit4", new XElement("map", this.Exit4MapID), new XElement("x", this.Exit4X), new XElement("y", this.Exit4Y)));
             result.Add(new XElement("YamoSpawnPosition", this.YamoSpawnPosition));
             result.Add(new XElement("NinjaSpawnPosition", this.NinjaSpawnPosition));
+            result.Add(new XElement("NinjaEnterCount1", this.NinjaEnterCount1));
+            result.Add(new XElement("NinjaEnterCount2", this.NinjaEnterCount2));
+            result.Add(new XElement("YamoEnterCount1", this.YamoEnterCount1));
+            result.Add(new XElement("YamoEnterCount2", this.YamoEnterCount2));
 
             return result;
         }
@@ -391,18 +395,39 @@ namespace BLEditor
 
             if (mapElemept.Elements("YamoSpawnPosition").Any())
             {
-                map.YamoSpawnPosition = Convert.ToInt16(mapElemept.Element("YamoSpawnPosition").Value);
+                map.YamoSpawnPosition = Convert.ToByte(mapElemept.Element("YamoSpawnPosition").Value);
             }
 
             if (mapElemept.Elements("NinjaSpawnPosition").Any())
             {
-                map.NinjaSpawnPosition = Convert.ToInt16(mapElemept.Element("NinjaSpawnPosition").Value);
+                map.NinjaSpawnPosition = Convert.ToByte(mapElemept.Element("NinjaSpawnPosition").Value);
             }
 
+            if (mapElemept.Elements("NinjaEnterCount1").Any())
+            {
+                map.NinjaEnterCount1 = Convert.ToByte(mapElemept.Element("NinjaEnterCount1").Value);
+            }
+
+            if (mapElemept.Elements("NinjaEnterCount2").Any())
+            {
+                map.NinjaEnterCount2 = Convert.ToByte(mapElemept.Element("NinjaEnterCount2").Value);
+            }
+
+            if (mapElemept.Elements("YamoEnterCount1").Any())
+            {
+                map.YamoEnterCount1 = Convert.ToByte(mapElemept.Element("YamoEnterCount1").Value);
+            }
+
+            if (mapElemept.Elements("YamoEnterCount2").Any())
+            {
+                map.YamoEnterCount2 = Convert.ToByte(mapElemept.Element("YamoEnterCount2").Value);
+            }
+     
             ImportColorDetection(mapElemept, "Colpf0Dectection", ref map.Colpf0Detection, ref map.Colpf0DetectionRects, ref map.Colpf0DetectionFlags);
             ImportColorDetection(mapElemept, "Colpf2Dectection", ref map.Colpf2Detection, ref map.Colpf2DetectionRects, ref map.Colpf2DetectionFlags);
             ImportColorDetection(mapElemept, "Colpf3Dectection", ref  map.Colpf3Detection, ref map.Colpf3DetectionRects, ref map.Colpf3DetectionFlags);
 
+            Console.WriteLine(map.Colpf0Detection.ToString());
             if (mapElemept.Elements("brucestart").Any())
             {
                 XElement brucestart = mapElemept.Element("brucestart");
@@ -767,8 +792,15 @@ namespace BLEditor
         public List<Rectangle> Colpf3DetectionRects = new List<Rectangle>();
         public List<ZoneColorDetection> Colpf3DetectionFlags = new List<ZoneColorDetection>();
 
-        public int YamoSpawnPosition { get; internal set; } = 0;
-        public int NinjaSpawnPosition { get; internal set; } = 0;
+        public byte YamoSpawnPosition { get; internal set; } = 0;
+        public byte NinjaSpawnPosition { get; internal set; } = 0;
+
+        public byte NinjaEnterCount1 { get; set; } = 0;
+        public byte NinjaEnterCount2 { get; set; } = 0;
+
+        public byte YamoEnterCount1 { get; set; } = 0;
+        public byte YamoEnterCount2 { get; set; } = 0;
+
     }
 
     public class MapListEntry

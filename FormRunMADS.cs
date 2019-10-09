@@ -37,15 +37,16 @@ namespace BLEditor
 
         private async void FormRunMADS_ExecAsync(object sender222, EventArgs ezzzz)
         {
-             String mapsetDirectory = Path.Combine(new FileInfo(Mapset.Path).Directory.FullName, "maps.asm");
+            String generatedSourceFile = Path.Combine(new FileInfo(Mapset.Path).Directory.FullName, "maps.asm");
 
-            ASM.export(mapsetDirectory, Mapset, firstmap);
+            ASM.export(generatedSourceFile, asmBaseLineFullPath, Mapset, firstmap);
 
-            XEXFullPath = $"{Path.Combine(Path.GetDirectoryName(mapsetDirectory), Path.GetFileNameWithoutExtension(Mapset.Path)) }.XEX";
+            XEXFullPath = $"{Path.Combine(Path.GetDirectoryName(generatedSourceFile), Path.GetFileNameWithoutExtension(Mapset.Path)) }.XEX";
 
             AddLine($"{Environment.NewLine}**Generating {XEXFullPath} **{Environment.NewLine}", Color.Red);
 
-            var arguments = $"-i:\"{Path.GetDirectoryName(mapsetDirectory)}\" \"{asmBaseLineFullPath}\" -o:\"{XEXFullPath}\"";
+            var arguments = $"-i:\"{Path.GetDirectoryName(generatedSourceFile)}\" \"{generatedSourceFile}\" -o:\"{XEXFullPath}\"";
+
             AddLine(arguments, Color.Red);
             var processResult = await ProcessAsyncHelper.RunProcessAsync(MADSFullPath, arguments, -1, p_OutputDataReceived, p_ErrorDataReceived);
 

@@ -13,30 +13,36 @@ namespace BLEditor
     {
         const int DataWidth = 4;
 
-        public static void export(String fileName, MapSet mapset, decimal firstmap=0)
+        public static void export(String fileName, string asmBaseLineFullPath,  MapSet mapset, decimal firstmap=0)
         {
             ASM asm = new ASM();
 
             using (StreamWriter file = new StreamWriter(fileName, false))
             {
+                file.WriteLine($"\ticl '{asmBaseLineFullPath}'");
+                file.WriteLine("\t.align $800,0");
                 file.WriteLine($"MAPCOUNT equ {mapset.Maps.Length - 1}");
                 file.WriteLine($"MAPSTART equ {firstmap}");
                 file.WriteLine();
 
-                asm.ExportFonts(file, mapset);
-                
-                asm.ExportDLIs(file, mapset);
-                asm.ExportLamps(file, mapset);
-                asm.ExportRLE(file, mapset);
                 asm.ExportFOE(file, mapset);
                 asm.ExportBruceStart(file, mapset);
                 asm.ExportSpawnPositions(file, mapset);
-                asm.ExportRoutines(file, mapset);
+                asm.ExportEnterPositions(file, mapset);
                 asm.ExportExit1(file, mapset);
                 asm.ExportExit2(file, mapset);
                 asm.ExportExit3(file, mapset);
                 asm.ExportExit4(file, mapset);
+                asm.ExportLamps(file, mapset);
                 asm.ExportCollision(file, mapset);
+                asm.ExportRoutines(file, mapset);
+                asm.ExportFonts(file, mapset);
+                asm.ExportDLIs(file, mapset);
+                asm.ExportRLE(file, mapset);
+
+                file.WriteLine("\torg $02E0");
+                file.WriteLine("\t.word L0418");
+
             }
         }
 
@@ -96,29 +102,24 @@ namespace BLEditor
             {
                 AddLabel(file, $"Map{i}Init");
 
-                file.WriteLine($"\t.local LocalMap{i}Init");
-                file.WriteLine($"\t.use LocalMap{i}TileCollision");
-                file.WriteLine($"\t.use LocalMap{i}Exec");
-
-                ExportLabels(file, mapset, i);
 
                 if (String.IsNullOrWhiteSpace(mapset.Maps[i].InitRoutinePath))
                 {
                     file.WriteLine("\trts");
                 } else
                 {
+                    file.WriteLine($"\t.local LocalMap{i}Init");
+                    file.WriteLine($"\t.use LocalMap{i}TileCollision");
+                    file.WriteLine($"\t.use LocalMap{i}Exec");
+
+                    ExportLabels(file, mapset, i);
+
                     AddIcl(file, mapset.Maps[i].InitRoutinePath);
+
+                    file.WriteLine("\t.endl");
                 }
 
-                file.WriteLine("\t.endl");
-
                 AddLabel(file, $"Map{i}Exec");
-
-                file.WriteLine($"\t.local LocalMap{i}Exec");
-                file.WriteLine($"\t.use LocalMap{i}TileCollision");
-                file.WriteLine($"\t.use LocalMap{i}Init");
-
-                ExportLabels(file, mapset, i);
 
                 if (String.IsNullOrWhiteSpace(mapset.Maps[i].ExecRoutinePath))
                 {
@@ -126,29 +127,37 @@ namespace BLEditor
                 }
                 else
                 {
+                    file.WriteLine($"\t.local LocalMap{i}Exec");
+                    file.WriteLine($"\t.use LocalMap{i}TileCollision");
+                    file.WriteLine($"\t.use LocalMap{i}Init");
+
+                    ExportLabels(file, mapset, i);
+
                     AddIcl(file, mapset.Maps[i].ExecRoutinePath);
+
+                    file.WriteLine("\t.endl");
                 }
 
-                file.WriteLine("\t.endl");
 
                 AddLabel(file, $"Map{i}TileCollision");
 
-                file.WriteLine($"\t.local LocalMap{i}TileCollision");
-                file.WriteLine($"\t.use LocalMap{i}Exec");
-                file.WriteLine($"\t.use LocalMap{i}Init");
-
-                ExportLabels(file, mapset, i);
-
                 if (String.IsNullOrWhiteSpace(mapset.Maps[i].TileCollisionRoutinePath))
                 {
-                    file.WriteLine("\trts");
+                     file.WriteLine("\trts");
                 }
                 else
                 {
+                    file.WriteLine($"\t.local LocalMap{i}TileCollision");
+                    file.WriteLine($"\t.use LocalMap{i}Exec");
+                    file.WriteLine($"\t.use LocalMap{i}Init");
+
+                    ExportLabels(file, mapset, i);
+
                     AddIcl(file, mapset.Maps[i].TileCollisionRoutinePath);
+
+                    file.WriteLine("\t.endl");
                 }
 
-                file.WriteLine("\t.endl");
             }
         }
 
@@ -211,22 +220,6 @@ namespace BLEditor
 
             ExportMapsBytes(file, mapset.Maps.Length, "MapDLILinesLo", (int i) => dlilow[i]);
             ExportMapsBytes(file, mapset.Maps.Length, "MapDLILinesHi", (int i) => dlihigh[i]);
-            /*
-            for (int i = 0; i < mapset.Maps.Length; i++)
-            {
-                AddLabel(file, $"MapColor{i}");
-                
-
-                foreach (var dli in mapset.Maps[i].DLIS)
-                {
-                    AtariPFColors atariPFColors = dli.AtariPFColors;
-                    // COLBK COLPF3 COLPF2 COLPF1 COLPF0
-                    AddBytes(file, atariPFColors.Colbk, atariPFColors.Colpf3, atariPFColors.Colpf2, atariPFColors.Colpf1, atariPFColors.Colpf0);
-                }
-            }
-
-            ExportMapsTable(file, mapset.Maps.Length, "MapColors", (int i) => $"MapColor{i}");
-            */
             ExportMapsHighLowComponents(file, mapset.Maps.Length, false, "MapDliLo", (int i) => $"Map{i}Dli");
             ExportMapsHighLowComponents(file, mapset.Maps.Length, true, "MapDliHi", (int i) => $"Map{i}Dli");
 
@@ -351,7 +344,15 @@ namespace BLEditor
         private void ExportSpawnPositions(StreamWriter file, MapSet mapset)
         {
             ExportMapsBytes(file, mapset.Maps.Length, "MapL0D1C", (int i) => { switch (mapset.Maps[i].NinjaSpawnPosition) { case 1: return 0x80; case 2: return 2; default: return 0; } });
-            ExportMapsBytes(file, mapset.Maps.Length, "MapL0D58", (int i) => { switch (mapset.Maps[i].YamoSpawnPosition) { case 1: return 0x80; case 2: return 2; default: return 0; } });   
+            ExportMapsBytes(file, mapset.Maps.Length, "MapL0D58", (int i) => { switch (mapset.Maps[i].YamoSpawnPosition) { case 1: return 0x80; case 2: return 2; default: return 0; } });
+        }
+
+        private void ExportEnterPositions(StreamWriter file, MapSet mapset)
+        {
+            ExportMapsBytes(file, mapset.Maps.Length, "MapNinjaEnterCount1", (int i) => { return mapset.Maps[i].NinjaEnterCount1; });
+            ExportMapsBytes(file, mapset.Maps.Length, "MapNinjaEnterCount2", (int i) => { return mapset.Maps[i].NinjaEnterCount2; });
+            ExportMapsBytes(file, mapset.Maps.Length, "MapYamoEnterCount1", (int i) => { return mapset.Maps[i].YamoEnterCount1; });
+            ExportMapsBytes(file, mapset.Maps.Length, "MapYamoEnterCount2", (int i) => { return mapset.Maps[i].YamoEnterCount2; });
         }
 
         private void ExportCollision(StreamWriter file, MapSet mapset)
@@ -391,10 +392,11 @@ namespace BLEditor
         {
             switch (ColorDetection)
             {
-                case Map.TypeColorDetection.Always:
+                case Map.TypeColorDetection.None:
                     file.WriteLine($"\tclc");
                     file.WriteLine($"\trts");
                     break;
+
                 case Map.TypeColorDetection.Outside:
                     file.WriteLine($"\tjsr @+1");
                     file.WriteLine($"\tbcs @+");
