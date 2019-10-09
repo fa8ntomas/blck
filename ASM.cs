@@ -162,14 +162,22 @@ namespace BLEditor
         }
 
         private void ExportLabels(StreamWriter file, MapSet mapset, int i)
-        {
-            file.WriteLine($"\tCurrentFontAdr = Font{i}");
+        { 
+            for (int j = 0; j < mapset.CharSets.Length; j++)
+            {
+                if (mapset.Maps[i].FontID == mapset.CharSets[j].UID)
+                {
+                    file.WriteLine($"\tCurrentFontAdr = Font{j}");
+                    break;
+                }
+            }
+
             DLI[] dlis = mapset.Maps[i].DLIS;
             for (int j = 0; j < dlis.Length; j++)
             {
                 file.WriteLine($"\tCurrentDli{j}Adr = Map{i}Dli{j}");
             }
-            file.WriteLine($"\tCurrentPlayerLampsCounts=PlayerMap{i}LampsCounts");
+         //   file.WriteLine($"\tCurrentPlayerLampsCounts=PlayerMap{i}LampsCounts");
             file.WriteLine($"\tCurrentPlayerLamps=Map{i}Lamps");
         }
 

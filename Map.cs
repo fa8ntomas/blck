@@ -110,7 +110,10 @@ namespace BLEditor
                 return String.Empty;
             }
 
-            return System.IO.Path.Combine(PathHelper.RelativePath(System.IO.Path.GetDirectoryName(Filename), System.IO.Path.GetDirectoryName(XMLFilename)), System.IO.Path.GetFileName(Filename));
+            String result= System.IO.Path.Combine(PathHelper.RelativePath(System.IO.Path.GetDirectoryName(Filename), System.IO.Path.GetDirectoryName(XMLFilename)), System.IO.Path.GetFileName(Filename));
+
+            Console.WriteLine(System.IO.Path.GetDirectoryName(Filename) + " -- " + XMLFilename + "--" + PathHelper.RelativePath(System.IO.Path.GetDirectoryName(Filename), System.IO.Path.GetDirectoryName(XMLFilename)));
+            return result;
         }
 
         public XElement Save(String MapSetSaveFileName, bool moveToMapSetDirectory = false)
@@ -335,7 +338,7 @@ namespace BLEditor
 
             if (mapElemept.Elements("InitRoutinePath").Any())
             {
-                map.InitRoutinePath = Convert.ToString(mapElemept.Element("InitRoutinePath").Value);
+                map.InitRoutinePath = mapElemept.Element("InitRoutinePath").Value.Trim();
                 if (!String.IsNullOrWhiteSpace(map.InitRoutinePath))
                 {
                     if (!File.Exists(map.InitRoutinePath))
@@ -354,7 +357,7 @@ namespace BLEditor
 
             if (mapElemept.Elements("ExecRoutinePath").Any())
             {
-                map.ExecRoutinePath = Convert.ToString(mapElemept.Element("ExecRoutinePath").Value);
+                map.ExecRoutinePath = mapElemept.Element("ExecRoutinePath").Value.Trim();
                 if (!String.IsNullOrWhiteSpace(map.ExecRoutinePath))
                 {
                     if (!File.Exists(map.ExecRoutinePath))
@@ -373,7 +376,7 @@ namespace BLEditor
 
             if (mapElemept.Elements("TileCollisionRoutinePath").Any())
             {
-                map.TileCollisionRoutinePath = Convert.ToString(mapElemept.Element("TileCollisionRoutinePath").Value);
+                map.TileCollisionRoutinePath = mapElemept.Element("TileCollisionRoutinePath").Value.Trim();
                 if (!String.IsNullOrWhiteSpace(map.TileCollisionRoutinePath))
                 {
                     if (!File.Exists(map.TileCollisionRoutinePath))
@@ -482,7 +485,7 @@ namespace BLEditor
                 XElement Colpf2Dectection = mapElemept.Element(tagName);
                 if (Colpf2Dectection.Elements("Type").Any())
                 {
-                    ColpfDectection = (TypeColorDetection)Enum.Parse(typeof(TypeColorDetection), Colpf2Dectection.Element("Type").Value);
+                    ColpfDectection = (TypeColorDetection)Enum.Parse(typeof(TypeColorDetection), Colpf2Dectection.Element("Type").Value.Trim());
                     if ((ColpfDectection == TypeColorDetection.Inside || ColpfDectection == TypeColorDetection.Outside) && Colpf2Dectection.Elements("Zones").Any())
                     {
                         foreach (XElement item in Colpf2Dectection.Element("Zones").Descendants("rect"))
@@ -498,7 +501,7 @@ namespace BLEditor
                         {
                             foreach (XElement item in Colpf2Dectection.Element("Flags").Descendants("Flag"))
                             {
-                                var zoneColorDetection = (ZoneColorDetection)Enum.Parse(typeof(ZoneColorDetection), item.Value);
+                                var zoneColorDetection = (ZoneColorDetection)Enum.Parse(typeof(ZoneColorDetection), item.Value.Trim());
                                  ColpfDetectionFlags.Add(zoneColorDetection);
                             }
                         }

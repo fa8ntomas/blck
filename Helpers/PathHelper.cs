@@ -33,7 +33,7 @@ namespace BLEditor
                     list.Add(candidateInfo.Name);
                     while (candidateInfo.Parent != null)
                     {
-                        if (String.Compare(candidateInfo.FullName, otherInfo.FullName, StringComparison.OrdinalIgnoreCase) == 0)
+                        if (String.Compare(candidateInfo.Parent.FullName, otherInfo.FullName, StringComparison.OrdinalIgnoreCase) == 0)
                         {
                             isRelative = true;
                             break;
