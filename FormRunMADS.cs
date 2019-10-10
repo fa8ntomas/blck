@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,6 +35,8 @@ namespace BLEditor
         private decimal firstmap;
 
         public string XEXFullPath { get; private set; }
+
+  
 
         private async void FormRunMADS_ExecAsync(object sender222, EventArgs ezzzz)
         {

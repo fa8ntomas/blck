@@ -12,14 +12,16 @@ namespace BLEditor
     class ASM
     {
         const int DataWidth = 4;
+        private static readonly Encoding isoLatin1Encoding = Encoding.GetEncoding("ISO-8859-1");
 
         public static void export(String fileName, string asmBaseLineFullPath,  MapSet mapset, decimal firstmap=0)
         {
             ASM asm = new ASM();
 
-            using (StreamWriter file = new StreamWriter(fileName, false))
+            using (StreamWriter file = new StreamWriter(fileName, false, isoLatin1Encoding))
             {
-                file.WriteLine($"\ticl '{asmBaseLineFullPath}'");
+                asm.AddIcl(file,asmBaseLineFullPath);
+
                 file.WriteLine("\t.align $800,0");
                 file.WriteLine($"MAPCOUNT equ {mapset.Maps.Length - 1}");
                 file.WriteLine($"MAPSTART equ {firstmap}");

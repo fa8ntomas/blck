@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -68,6 +69,20 @@ namespace BLEditor
         }
 
 
+        // Define GetShortPathName API function.
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        static extern uint GetShortPathName(string lpszLongPath, char[] lpszShortPath, int cchBuffer);
+
+        public static string ShortFileName(string long_name)
+        {
+            char[] name_chars = new char[1024];
+            long length = GetShortPathName(
+                long_name, name_chars,
+                name_chars.Length);
+
+            string short_name = new string(name_chars);
+            return short_name.Substring(0, (int)length);
+        }
 
         public static string CreateFileWithUniqueName(string folder, string fileName, int maxAttempts = 1024)
         {
@@ -107,4 +122,6 @@ namespace BLEditor
             throw new Exception("Could not create unique filename in " + maxAttempts + " attempts");
         }
     }
+
+
 }

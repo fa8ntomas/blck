@@ -57,7 +57,6 @@ namespace BLEditor
             madsLexer.Style(scintilla1, startPos, endPos);
         }
 
-
         private void FormASMEdit_FormClosing(object sender, FormClosingEventArgs e)
         {
             //In case windows is trying to shut down, don't hold the process up
