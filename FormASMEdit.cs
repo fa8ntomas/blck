@@ -65,10 +65,11 @@ namespace BLEditor
 
             if (this.DialogResult == DialogResult.Cancel)
             {
+                // Assume that X has been clicked and act accordingly.
+                // Confirm user wants to close
+
                 if (!string.Equals(scintilla1.Text, InitialeCode))
                 {
-                    // Assume that X has been clicked and act accordingly.
-                    // Confirm user wants to close
                     switch (MessageBox.Show(this, "Save Routine?", "", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
                     {
                         //Stay on this form
