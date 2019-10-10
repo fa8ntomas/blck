@@ -313,9 +313,7 @@ namespace BLEditor
         {
             Map map = CreateNewMap(mapSet, mapSet.GetFont(GuidHelper.parse(mapElemept.Attribute("font")?.Value)), mapElemept.Attribute("uid")?.Value);
             map.Name = mapElemept.Attribute("name").Value;
-
             map.Path = mapElemept.Attribute("path").Value;
-
             if (!File.Exists(map.Path))
             {
                 map.Path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(mapSet.Path), map.Path);
@@ -324,7 +322,6 @@ namespace BLEditor
             map.MapData = DecodeRLE(File.ReadAllBytes(map.Path));
 
             // DLI
-
             XElement dlis = mapElemept.Element("dlis");
             List<DLI> DLIList = new List<DLI>();
             foreach (XElement xdli in dlis.Elements("dli"))
@@ -334,98 +331,16 @@ namespace BLEditor
             }
             map.DLIS = DLIList.ToArray();
 
-            // Init Routine
-
-            if (mapElemept.Elements("InitRoutinePath").Any())
-            {
-                map.InitRoutinePath = mapElemept.Element("InitRoutinePath").Value.Trim();
-                if (!String.IsNullOrWhiteSpace(map.InitRoutinePath))
-                {
-                    if (!File.Exists(map.InitRoutinePath))
-                    {
-                        map.InitRoutinePath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(mapSet.Path), map.InitRoutinePath);
-                    }
-
-                    if (File.Exists(map.InitRoutinePath))
-                    {
-                        map.InitRoutine = File.ReadAllText(map.InitRoutinePath);
-                    }
-                }
-            }
-
-            // Exec Routine
-
-            if (mapElemept.Elements("ExecRoutinePath").Any())
-            {
-                map.ExecRoutinePath = mapElemept.Element("ExecRoutinePath").Value.Trim();
-                if (!String.IsNullOrWhiteSpace(map.ExecRoutinePath))
-                {
-                    if (!File.Exists(map.ExecRoutinePath))
-                    {
-                        map.ExecRoutinePath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(mapSet.Path), map.ExecRoutinePath);
-                    }
-
-                    if (File.Exists(map.ExecRoutinePath))
-                    {
-                        map.ExecRoutine = File.ReadAllText(map.ExecRoutinePath);
-                    }
-                }
-            }
-
-            // Tile Collision Routine
-
-            if (mapElemept.Elements("TileCollisionRoutinePath").Any())
-            {
-                map.TileCollisionRoutinePath = mapElemept.Element("TileCollisionRoutinePath").Value.Trim();
-                if (!String.IsNullOrWhiteSpace(map.TileCollisionRoutinePath))
-                {
-                    if (!File.Exists(map.TileCollisionRoutinePath))
-                    {
-                        map.TileCollisionRoutinePath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(mapSet.Path), map.TileCollisionRoutinePath);
-                    }
-
-                    if (File.Exists(map.TileCollisionRoutinePath))
-                    {
-                        map.TileCollisionRoutine = File.ReadAllText(map.TileCollisionRoutinePath);
-                    }
-                }
-            }
-
-            if (mapElemept.Elements("foe").Any())
-            {
-                map.Foe = Convert.ToBoolean(mapElemept.Element("foe").Value);
-            }
-
-            if (mapElemept.Elements("YamoSpawnPosition").Any())
-            {
-                map.YamoSpawnPosition = Convert.ToByte(mapElemept.Element("YamoSpawnPosition").Value);
-            }
-
-            if (mapElemept.Elements("NinjaSpawnPosition").Any())
-            {
-                map.NinjaSpawnPosition = Convert.ToByte(mapElemept.Element("NinjaSpawnPosition").Value);
-            }
-
-            if (mapElemept.Elements("NinjaEnterCount1").Any())
-            {
-                map.NinjaEnterCount1 = Convert.ToByte(mapElemept.Element("NinjaEnterCount1").Value);
-            }
-
-            if (mapElemept.Elements("NinjaEnterCount2").Any())
-            {
-                map.NinjaEnterCount2 = Convert.ToByte(mapElemept.Element("NinjaEnterCount2").Value);
-            }
-
-            if (mapElemept.Elements("YamoEnterCount1").Any())
-            {
-                map.YamoEnterCount1 = Convert.ToByte(mapElemept.Element("YamoEnterCount1").Value);
-            }
-
-            if (mapElemept.Elements("YamoEnterCount2").Any())
-            {
-                map.YamoEnterCount2 = Convert.ToByte(mapElemept.Element("YamoEnterCount2").Value);
-            }
-     
+            ImportTextFile(mapElemept, "InitRoutinePath", mapSet.Path, (Path, Content) => { map.InitRoutinePath = Path; map.InitRoutine = Content; });
+            ImportTextFile(mapElemept, "ExecRoutinePath", mapSet.Path,(Path, Content) => { map.ExecRoutinePath = Path; map.ExecRoutine = Content; });
+            ImportTextFile(mapElemept, "TileCollisionRoutinePath", mapSet.Path, (Path, Content) => { map.TileCollisionRoutinePath = Path; map.TileCollisionRoutine = Content; });
+            ImportBoolean(mapElemept, "foe", value => map.Foe = value);
+            ImportByte(mapElemept, "YamoSpawnPosition", value => map.YamoSpawnPosition= value);
+            ImportByte(mapElemept, "NinjaSpawnPosition", value => map.NinjaSpawnPosition = value);
+            ImportByte(mapElemept, "NinjaEnterCount1", value => map.NinjaEnterCount1 = value);
+            ImportByte(mapElemept, "NinjaEnterCount2", value => map.NinjaEnterCount2 = value);
+            ImportByte(mapElemept, "YamoEnterCount1", value => map.YamoEnterCount1 = value);
+            ImportByte(mapElemept, "YamoEnterCount2", value => map.YamoEnterCount2 = value);
             ImportColorDetection(mapElemept, "Colpf0Dectection", ref map.Colpf0Detection, ref map.Colpf0DetectionRects, ref map.Colpf0DetectionFlags);
             ImportColorDetection(mapElemept, "Colpf2Dectection", ref map.Colpf2Detection, ref map.Colpf2DetectionRects, ref map.Colpf2DetectionFlags);
             ImportColorDetection(mapElemept, "Colpf3Dectection", ref  map.Colpf3Detection, ref map.Colpf3DetectionRects, ref map.Colpf3DetectionFlags);
@@ -478,6 +393,50 @@ namespace BLEditor
             return map;
         }
 
+        private static void ImportTextFile(XElement mapElemept, string tagName, string mapSetPath, Action<string,string> setValue)
+        {
+            if (mapElemept.Elements(tagName).Any())
+            {
+                String Path = mapElemept.Element(tagName).Value.Trim();
+                if (!String.IsNullOrWhiteSpace(Path))
+                {
+                    if (!File.Exists(Path))
+                    {
+                        Path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(mapSetPath), Path);
+                    }
+
+                    String Content = null;
+                    if (File.Exists(Path))
+                    {
+                        Content = File.ReadAllText(Path);
+                    }
+
+                    setValue(Path, Content);
+                }
+            }
+        }
+
+        private static void ImportByte(XElement mapElemept, string tagName, Action<byte> setValue, uint defaultValue =256)
+        {
+            if (mapElemept.Elements(tagName).Any())
+            {
+                setValue(Convert.ToByte(mapElemept.Element(tagName).Value.Trim()));
+            } else if (defaultValue<256)
+            {
+                setValue(Convert.ToByte(defaultValue));
+            }
+        }
+        private static void ImportBoolean(XElement mapElemept, string tagName, Action<bool> setValue, bool? defaultValue = null)
+        {
+            if (mapElemept.Elements(tagName).Any())
+            {
+                setValue(Convert.ToBoolean(mapElemept.Element(tagName).Value.Trim()));
+            }
+            else if (defaultValue.HasValue)
+            {
+                setValue(defaultValue.Value);
+            }
+        }
         private static void ImportColorDetection(XElement mapElemept, string tagName, ref TypeColorDetection ColpfDectection, ref List<Rectangle> ColpfDectectionRect, ref List<ZoneColorDetection> ColpfDetectionFlags)
         {
             if (mapElemept.Elements(tagName).Any())
@@ -795,8 +754,8 @@ namespace BLEditor
         public List<Rectangle> Colpf3DetectionRects = new List<Rectangle>();
         public List<ZoneColorDetection> Colpf3DetectionFlags = new List<ZoneColorDetection>();
 
-        public byte YamoSpawnPosition { get; internal set; } = 0;
-        public byte NinjaSpawnPosition { get; internal set; } = 0;
+        public byte YamoSpawnPosition { get;  set; } = 0;
+        public byte NinjaSpawnPosition { get;  set; } = 0;
 
         public byte NinjaEnterCount1 { get; set; } = 0;
         public byte NinjaEnterCount2 { get; set; } = 0;

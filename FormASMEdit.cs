@@ -14,7 +14,10 @@ namespace BLEditor
 {
     public partial class FormASMEdit : Form
     {
-        Map Map;
+        private readonly Map Map;
+        private readonly String InitialeCode;
+        private readonly MADSLexer madsLexer = new MADSLexer();
+        private readonly pbx1.TypeNode typeNode;
 
         public FormASMEdit(Map map, pbx1.TypeNode typeNode, String code, String title)
         {
@@ -25,6 +28,7 @@ namespace BLEditor
             this.Text = title;
             this.typeNode = typeNode;
             this.Map = map;
+            this.InitialeCode = scintilla1.Text;
         }
 
         private void InitSyntaxColoring()
@@ -44,33 +48,13 @@ namespace BLEditor
             scintilla1.Lexer = Lexer.Container;
         }
 
-        private MADSLexer madsLexer = new MADSLexer();
-        private pbx1.TypeNode typeNode;
-
+    
         private void scintilla1_StyleNeeded(object sender, StyleNeededEventArgs e)
         {
             var startPos = scintilla1.GetEndStyled();
             var endPos = e.Position;
 
             madsLexer.Style(scintilla1, startPos, endPos);
-        }
-
-
-        public static Color IntToColor(int rgb)
-        {
-            return Color.FromArgb(255, (byte)(rgb >> 16), (byte)(rgb >> 8), (byte)rgb);
-        }
-
-        public void InvokeIfNeeded(Action action)
-        {
-            if (this.InvokeRequired)
-            {
-                this.BeginInvoke(action);
-            }
-            else
-            {
-                action.Invoke();
-            }
         }
 
 
@@ -81,20 +65,23 @@ namespace BLEditor
 
             if (this.DialogResult == DialogResult.Cancel)
             {
-                // Assume that X has been clicked and act accordingly.
-                // Confirm user wants to close
-                switch (MessageBox.Show(this, "Save Routine?", "",MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+                if (!string.Equals(scintilla1.Text, InitialeCode))
                 {
-                    //Stay on this form
-                    case DialogResult.Cancel:
-                        e.Cancel = true;
-                        break;
-                    case DialogResult.No:
-                        this.DialogResult = DialogResult.Cancel;
-                        break;
-                    default:
-                        this.DialogResult = DialogResult.OK;
-                        break;
+                    // Assume that X has been clicked and act accordingly.
+                    // Confirm user wants to close
+                    switch (MessageBox.Show(this, "Save Routine?", "", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+                    {
+                        //Stay on this form
+                        case DialogResult.Cancel:
+                            e.Cancel = true;
+                            break;
+                        case DialogResult.No:
+                            this.DialogResult = DialogResult.Cancel;
+                            break;
+                        default:
+                            this.DialogResult = DialogResult.OK;
+                            break;
+                    }
                 }
             }
         }
