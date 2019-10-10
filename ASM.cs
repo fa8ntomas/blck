@@ -104,62 +104,63 @@ namespace BLEditor
             {
                 AddLabel(file, $"Map{i}Init");
 
-
+                file.WriteLine($"\t.local LocalMap{i}Init");
+ 
+ 
                 if (String.IsNullOrWhiteSpace(mapset.Maps[i].InitRoutinePath))
                 {
                     file.WriteLine("\trts");
                 } else
                 {
-                    file.WriteLine($"\t.local LocalMap{i}Init");
                     file.WriteLine($"\t.use LocalMap{i}TileCollision");
                     file.WriteLine($"\t.use LocalMap{i}Exec");
 
                     ExportLabels(file, mapset, i);
 
                     AddIcl(file, mapset.Maps[i].InitRoutinePath);
-
-                    file.WriteLine("\t.endl");
                 }
+
+                file.WriteLine("\t.endl");
 
                 AddLabel(file, $"Map{i}Exec");
 
+                file.WriteLine($"\t.local LocalMap{i}Exec");
+ 
                 if (String.IsNullOrWhiteSpace(mapset.Maps[i].ExecRoutinePath))
                 {
                     file.WriteLine("\trts");
                 }
                 else
                 {
-                    file.WriteLine($"\t.local LocalMap{i}Exec");
                     file.WriteLine($"\t.use LocalMap{i}TileCollision");
                     file.WriteLine($"\t.use LocalMap{i}Init");
 
                     ExportLabels(file, mapset, i);
 
                     AddIcl(file, mapset.Maps[i].ExecRoutinePath);
-
-                    file.WriteLine("\t.endl");
                 }
 
+                file.WriteLine("\t.endl");
 
                 AddLabel(file, $"Map{i}TileCollision");
 
+                file.WriteLine($"\t.local LocalMap{i}TileCollision");
+ 
                 if (String.IsNullOrWhiteSpace(mapset.Maps[i].TileCollisionRoutinePath))
                 {
                      file.WriteLine("\trts");
                 }
                 else
                 {
-                    file.WriteLine($"\t.local LocalMap{i}TileCollision");
                     file.WriteLine($"\t.use LocalMap{i}Exec");
                     file.WriteLine($"\t.use LocalMap{i}Init");
 
                     ExportLabels(file, mapset, i);
 
                     AddIcl(file, mapset.Maps[i].TileCollisionRoutinePath);
-
-                    file.WriteLine("\t.endl");
                 }
 
+                file.WriteLine("\t.endl");
             }
         }
 
