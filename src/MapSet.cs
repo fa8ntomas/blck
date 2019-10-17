@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Security;
@@ -33,7 +34,7 @@ namespace BLEditor
 
                 return false;
             }
-            private set { isDirty = value; }
+            private set { isDirty = value;  }
         }
 
         protected void SetField<T>(ref T field, T value)
@@ -46,12 +47,25 @@ namespace BLEditor
         }
 
         List<CharacterSet> charSets = new List<CharacterSet>();
-        public CharacterSet[] CharSets { get { return charSets.ToArray(); } private set { } }
+        public ReadOnlyCollection<CharacterSet> CharSets { get { return charSets.AsReadOnly(); }  }
 
-        List<Map> maps = new List<Map>();
-        public Map[] Maps { get { return maps.ToArray(); } private set { } }
+        private List<Map> maps = new List<Map>();
+        public ReadOnlyCollection<Map> Maps { get { return maps.AsReadOnly(); } }
 
         public String Path { get; set; }
+    
+        private List<String> includes = new List<String>();
+        public ReadOnlyCollection<String> Includes { get { return includes.AsReadOnly(); } }
+
+        public void AddInclude(String include)
+        {
+            if (!includes.Contains(include))
+            {
+                includes.Add(include);
+                IsDirty = true;
+                Changed?.Invoke(this, null);
+            }
+        }
 
         public void AddCharSet(CharacterSet newCharSet)
         {
@@ -64,10 +78,10 @@ namespace BLEditor
 
             List<CharacterSet> usedCharSets = new List<CharacterSet>();
             bool uselessCharset = false;
-            for (int i = 0; i < CharSets.Length; i++)
+            for (int i = 0; i < CharSets.Count; i++)
             {
                 bool used = false;
-                for (int j = 0; j < Maps.Length && !used; j++)
+                for (int j = 0; j < Maps.Count && !used; j++)
                 {
                     used = Maps[j].FontID == CharSets[i].UID;
                 }
@@ -145,6 +159,13 @@ namespace BLEditor
                     xmlTree1.Add(characterSet.Save(Path));
                 }
 
+                foreach (String include in Includes)
+                { 
+                    XElement includeElement = new XElement("include");
+                    includeElement.SetValue(System.IO.Path.Combine(PathHelper.RelativePath(System.IO.Path.GetDirectoryName(include), System.IO.Path.GetDirectoryName(Path)), System.IO.Path.GetFileName(include)));
+                    xmlTree1.Add(includeElement);
+                }
+            
                 foreach (Map map in maps)
                 {
                     xmlTree1.Add(map.Save(Path));
@@ -242,15 +263,20 @@ namespace BLEditor
 
             Path = fileName;
 
-            XElement booksFromFile = XElement.Load(fileName);
-            foreach (XElement node in booksFromFile.Elements("font"))
+            XElement xml = XElement.Load(fileName);
+
+            foreach (XElement node in xml.Elements("font"))
             {
                 CharacterSet characterSet = CharacterSet.Load(this, node);
                 AddCharSet(characterSet);
             }
 
+            foreach (XElement node in xml.Elements("include"))
+            {
+                AddInclude(node.Value);
+            }
 
-            foreach (XElement node in booksFromFile.Elements("map"))
+            foreach (XElement node in xml.Elements("map"))
             {
 
                 Map loadedMap = Map.Load(this, node);
@@ -261,8 +287,7 @@ namespace BLEditor
                 if (characterSet == null)
                 {
                     MessageBox.Show("Unknown font: " + loadedMap.FontID);
-                }
-             
+                }          
             }
 
             IsNew = false;

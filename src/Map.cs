@@ -763,6 +763,8 @@ namespace BLEditor
         public byte YamoEnterCount1 { get; set; } = 0;
         public byte YamoEnterCount2 { get; set; } = 0;
 
+         
+        public List<String> Includes { get; set; }
     }
 
     public class MapListEntry

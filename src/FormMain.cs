@@ -45,7 +45,7 @@ namespace BLEditor
             this.addANewMapFromAnImageMenu.Click += (s, e) => { addANewMapFromAnImage(); };
             this.addANewMapMenu.Click += (s, e) => { addANewMap(); };
             this.addAnExistingMapMenu.Click += (s, e) => { addAExistingMap(); };
-
+            this.addIncludeMenu.Click += (s, e) => { AddInclude(); };
             treeViewMaps.MouseDown += (sender, args) => treeViewMaps_MouseDown(args);
 
             renameMenu.Click += (s, e) => { RenameMap(s); };
@@ -58,6 +58,18 @@ namespace BLEditor
             this.CopyCharMenu.Click += (s, e) => { CopyChar(); };
         }
 
+        private void AddInclude()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            openFileDialog.Filter = "Assembly|*.asm";
+            openFileDialog.Title = "Add include";
+            openFileDialog.ShowDialog();
+            if (openFileDialog.FileName != "")
+            {
+                mapSet.AddInclude(openFileDialog.FileName);
+            }
+        }
         private void treeViewMaps_MouseDown(MouseEventArgs e)
         {
             // Make sure this is the right button.
@@ -162,9 +174,24 @@ namespace BLEditor
 
     
             treeViewMaps.Nodes.Clear();
+
             TreeNode gameDataNode = new TreeNode("Game Data");
             gameDataNode.Tag = TypeNode.GameData;
             treeViewMaps.Nodes.Add(gameDataNode);
+     
+            if (mapSet.Includes.Count > 0)
+            {
+                TreeNode gameIncludeNode = new TreeNode("Includes");
+                gameIncludeNode.Tag = TypeNode.GameData;
+                treeViewMaps.Nodes.Add(gameIncludeNode);
+
+                foreach (String include in mapSet.Includes)
+                {
+                    TreeNode gameIncludeFileNode = new TreeNode(include);
+                    gameIncludeFileNode.Tag = TypeNode.IncludeFile;
+                    gameIncludeNode.Nodes.Add(gameIncludeFileNode);
+                }
+            }
 
             foreach (Map map in mapSet.Maps)
             {
@@ -197,7 +224,7 @@ namespace BLEditor
             }
         }
 
-        public enum TypeNode { GameData, Map, MapInit, MapExec, MapTileCollision, MapData, CColpf0, CColpf2, CColpf3 };
+        public enum TypeNode { GameData, Includes, IncludeFile, Map, MapInit, MapExec, MapTileCollision, MapData, CColpf0, CColpf2, CColpf3 };
 
         private void mapSet_MapNameChanged(MapNameChangedEventArgs e)
         {

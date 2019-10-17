@@ -91,15 +91,15 @@ namespace BLEditor
 
         public void CreateDLISegment(MapSet mapset)
         {
-            if (mapset.Maps.Length> 0x0F4C- 0x0F38)
+            if (mapset.Maps.Count> 0x0F4C- 0x0F38)
             {
                 throw new ArgumentException();
             }
 
-            byte[] dlilow = new byte[mapset.Maps.Length];
-            byte[] dlihigh = new byte[mapset.Maps.Length];
+            byte[] dlilow = new byte[mapset.Maps.Count];
+            byte[] dlihigh = new byte[mapset.Maps.Count];
 
-            for (int i = 0; i < mapset.Maps.Length; i++)
+            for (int i = 0; i < mapset.Maps.Count; i++)
             {
                 foreach (var dli in mapset.Maps[i].DLIS)
                 {

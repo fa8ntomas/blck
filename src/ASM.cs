@@ -23,7 +23,7 @@ namespace BLEditor
                 asm.AddIcl(file,asmBaseLineFullPath);
 
                 file.WriteLine("\t.align $800,0");
-                file.WriteLine($"MAPCOUNT equ {mapset.Maps.Length - 1}");
+                file.WriteLine($"MAPCOUNT equ {mapset.Maps.Count - 1}");
                 file.WriteLine($"MAPSTART equ {firstmap}");
                 file.WriteLine();
 
@@ -50,57 +50,57 @@ namespace BLEditor
 
         private void ExportExit1(StreamWriter file, MapSet mapset)
         {
-            ExportMapsBytes(file, mapset.Maps.Length, "MapExit1X", (int i) => mapset.Maps[i].Exit1X);
-            ExportMapsBytes(file, mapset.Maps.Length, "MapExit1Y", (int i) => mapset.Maps[i].Exit1Y);
-            ExportMapsBytes(file, mapset.Maps.Length, "MapExits1", (int i) => mapset.GetMapIndex(mapset.Maps[i].Exit1MapID));
+            ExportMapsBytes(file, mapset.Maps.Count, "MapExit1X", (int i) => mapset.Maps[i].Exit1X);
+            ExportMapsBytes(file, mapset.Maps.Count, "MapExit1Y", (int i) => mapset.Maps[i].Exit1Y);
+            ExportMapsBytes(file, mapset.Maps.Count, "MapExits1", (int i) => mapset.GetMapIndex(mapset.Maps[i].Exit1MapID));
         }
 
         private void ExportExit2(StreamWriter file, MapSet mapset)
         {
-            ExportMapsBytes(file, mapset.Maps.Length, "MapExit2X", (int i) => mapset.Maps[i].Exit2X);
-            ExportMapsBytes(file, mapset.Maps.Length, "MapExit2Y", (int i) => mapset.Maps[i].Exit2Y);
-            ExportMapsBytes(file, mapset.Maps.Length, "MapExits2", (int i) => mapset.GetMapIndex(mapset.Maps[i].Exit2MapID));
+            ExportMapsBytes(file, mapset.Maps.Count, "MapExit2X", (int i) => mapset.Maps[i].Exit2X);
+            ExportMapsBytes(file, mapset.Maps.Count, "MapExit2Y", (int i) => mapset.Maps[i].Exit2Y);
+            ExportMapsBytes(file, mapset.Maps.Count, "MapExits2", (int i) => mapset.GetMapIndex(mapset.Maps[i].Exit2MapID));
         }
 
         private void ExportExit3(StreamWriter file, MapSet mapset)
         {
-            ExportMapsBytes(file, mapset.Maps.Length, "MapExit3X", (int i) => mapset.Maps[i].Exit3X);
-            ExportMapsBytes(file, mapset.Maps.Length, "MapExit3Y", (int i) => mapset.Maps[i].Exit3Y);
-            ExportMapsBytes(file, mapset.Maps.Length, "MapExits3", (int i) => mapset.GetMapIndex(mapset.Maps[i].Exit3MapID));
+            ExportMapsBytes(file, mapset.Maps.Count, "MapExit3X", (int i) => mapset.Maps[i].Exit3X);
+            ExportMapsBytes(file, mapset.Maps.Count, "MapExit3Y", (int i) => mapset.Maps[i].Exit3Y);
+            ExportMapsBytes(file, mapset.Maps.Count, "MapExits3", (int i) => mapset.GetMapIndex(mapset.Maps[i].Exit3MapID));
         }
 
         private void ExportExit4(StreamWriter file, MapSet mapset)
         {
-            ExportMapsBytes(file, mapset.Maps.Length, "MapExit4X", (int i) => mapset.Maps[i].Exit4X);
-            ExportMapsBytes(file, mapset.Maps.Length, "MapExit4Y", (int i) => mapset.Maps[i].Exit4Y);
-            ExportMapsBytes(file, mapset.Maps.Length, "MapExits4", (int i) => mapset.GetMapIndex(mapset.Maps[i].Exit4MapID));
+            ExportMapsBytes(file, mapset.Maps.Count, "MapExit4X", (int i) => mapset.Maps[i].Exit4X);
+            ExportMapsBytes(file, mapset.Maps.Count, "MapExit4Y", (int i) => mapset.Maps[i].Exit4Y);
+            ExportMapsBytes(file, mapset.Maps.Count, "MapExits4", (int i) => mapset.GetMapIndex(mapset.Maps[i].Exit4MapID));
         }
 
         private void ExportFonts(StreamWriter file, MapSet mapset)
         {
             file.WriteLine("\t.align $400,0   ; Useless I hope");
 
-            for (int i = 0; i < mapset.CharSets.Length; i++)
+            for (int i = 0; i < mapset.CharSets.Count; i++)
             {
                 AddLabel(file, $"Font{i}");
                 AddIns(file, mapset.CharSets[i].Path);
             }
 
-            ExportMapsHighLowComponents(file, mapset.Maps.Length, true, "MapFonts", (int i) => { for (int j = 0; j < mapset.CharSets.Length; j++) if (mapset.Maps[i].FontID == mapset.CharSets[j].UID) return $"Font{j}"; return null; });
+            ExportMapsHighLowComponents(file, mapset.Maps.Count, true, "MapFonts", (int i) => { for (int j = 0; j < mapset.CharSets.Count; j++) if (mapset.Maps[i].FontID == mapset.CharSets[j].UID) return $"Font{j}"; return null; });
         }
 
         private void ExportRoutines(StreamWriter file, MapSet mapset)
         {
-            ExportMapsHighLowComponents(file, mapset.Maps.Length, false, "MapInitsLo", (int i) => $"(Map{i}Init-1)");
-            ExportMapsHighLowComponents(file, mapset.Maps.Length, true, "MapInitsHi", (int i) => $"(Map{i}Init-1)");
+            ExportMapsHighLowComponents(file, mapset.Maps.Count, false, "MapInitsLo", (int i) => $"(Map{i}Init-1)");
+            ExportMapsHighLowComponents(file, mapset.Maps.Count, true, "MapInitsHi", (int i) => $"(Map{i}Init-1)");
 
-            ExportMapsHighLowComponents(file, mapset.Maps.Length, false, "MapExecsLo", (int i) => $"(Map{i}Exec-1)");
-            ExportMapsHighLowComponents(file, mapset.Maps.Length, true, "MapExecsHi", (int i) => $"(Map{i}Exec-1)");
+            ExportMapsHighLowComponents(file, mapset.Maps.Count, false, "MapExecsLo", (int i) => $"(Map{i}Exec-1)");
+            ExportMapsHighLowComponents(file, mapset.Maps.Count, true, "MapExecsHi", (int i) => $"(Map{i}Exec-1)");
 
-            ExportMapsHighLowComponents(file, mapset.Maps.Length, false, "MapTileCollisionLo", (int i) => $"(Map{i}TileCollision-1)");
-            ExportMapsHighLowComponents(file, mapset.Maps.Length, true, "MapTileCollisionHi", (int i) => $"(Map{i}TileCollision-1)");
+            ExportMapsHighLowComponents(file, mapset.Maps.Count, false, "MapTileCollisionLo", (int i) => $"(Map{i}TileCollision-1)");
+            ExportMapsHighLowComponents(file, mapset.Maps.Count, true, "MapTileCollisionHi", (int i) => $"(Map{i}TileCollision-1)");
 
-            for (int i = 0; i < mapset.Maps.Length; i++)
+            for (int i = 0; i < mapset.Maps.Count; i++)
             {
                 AddLabel(file, $"Map{i}Init");
 
@@ -166,7 +166,7 @@ namespace BLEditor
 
         private void ExportLabels(StreamWriter file, MapSet mapset, int i)
         { 
-            for (int j = 0; j < mapset.CharSets.Length; j++)
+            for (int j = 0; j < mapset.CharSets.Count; j++)
             {
                 if (mapset.Maps[i].FontID == mapset.CharSets[j].UID)
                 {
@@ -186,35 +186,35 @@ namespace BLEditor
 
         private void ExportFOE(StreamWriter file, MapSet mapset)
         {
-            ExportMapsBytes(file, mapset.Maps.Length, "MapFoeFlags", (int i) => (byte)(mapset.Maps[i].Foe ? 0x00 : 0xFF));
+            ExportMapsBytes(file, mapset.Maps.Count, "MapFoeFlags", (int i) => (byte)(mapset.Maps[i].Foe ? 0x00 : 0xFF));
         }
 
         private void ExportBruceStart(StreamWriter file, MapSet mapset)
         {
-            ExportMapsBytes(file, mapset.Maps.Length, "MapBruceStartX1", (int i) => mapset.Maps[i].BruceStartX1);
-            ExportMapsBytes(file, mapset.Maps.Length, "MapBruceStartY1", (int i) => mapset.Maps[i].BruceStartY1);
-            ExportMapsBytes(file, mapset.Maps.Length, "MapBruceStartX2", (int i) => mapset.Maps[i].BruceStartX2);
-            ExportMapsBytes(file, mapset.Maps.Length, "MapBruceStartY2", (int i) => mapset.Maps[i].BruceStartY2);
+            ExportMapsBytes(file, mapset.Maps.Count, "MapBruceStartX1", (int i) => mapset.Maps[i].BruceStartX1);
+            ExportMapsBytes(file, mapset.Maps.Count, "MapBruceStartY1", (int i) => mapset.Maps[i].BruceStartY1);
+            ExportMapsBytes(file, mapset.Maps.Count, "MapBruceStartX2", (int i) => mapset.Maps[i].BruceStartX2);
+            ExportMapsBytes(file, mapset.Maps.Count, "MapBruceStartY2", (int i) => mapset.Maps[i].BruceStartY2);
         }
 
         private void ExportRLE(StreamWriter file, MapSet mapset)
         {
-            for (int i = 0; i < mapset.Maps.Length; i++)
+            for (int i = 0; i < mapset.Maps.Count; i++)
             {
                 AddLabel(file, $"Map{i}Rle");
                 AddIns(file, mapset.Maps[i].Path);
             }
 
-            ExportMapsHighLowComponents(file, mapset.Maps.Length, false, "MapDataLo", (int i) => $"Map{i}Rle");
-            ExportMapsHighLowComponents(file, mapset.Maps.Length, true, "MapDataHi", (int i) => $"Map{i}Rle");
+            ExportMapsHighLowComponents(file, mapset.Maps.Count, false, "MapDataLo", (int i) => $"Map{i}Rle");
+            ExportMapsHighLowComponents(file, mapset.Maps.Count, true, "MapDataHi", (int i) => $"Map{i}Rle");
         }
 
         private void ExportDLIs(StreamWriter file, MapSet mapset)
         {
-            byte[] dlilow = new byte[mapset.Maps.Length];
-            byte[] dlihigh = new byte[mapset.Maps.Length];
+            byte[] dlilow = new byte[mapset.Maps.Count];
+            byte[] dlihigh = new byte[mapset.Maps.Count];
 
-            for (int i = 0; i < mapset.Maps.Length; i++)
+            for (int i = 0; i < mapset.Maps.Count; i++)
             {
                 foreach (var dli in mapset.Maps[i].DLIS)
                 {
@@ -229,12 +229,12 @@ namespace BLEditor
                 }
             }
 
-            ExportMapsBytes(file, mapset.Maps.Length, "MapDLILinesLo", (int i) => dlilow[i]);
-            ExportMapsBytes(file, mapset.Maps.Length, "MapDLILinesHi", (int i) => dlihigh[i]);
-            ExportMapsHighLowComponents(file, mapset.Maps.Length, false, "MapDliLo", (int i) => $"Map{i}Dli");
-            ExportMapsHighLowComponents(file, mapset.Maps.Length, true, "MapDliHi", (int i) => $"Map{i}Dli");
+            ExportMapsBytes(file, mapset.Maps.Count, "MapDLILinesLo", (int i) => dlilow[i]);
+            ExportMapsBytes(file, mapset.Maps.Count, "MapDLILinesHi", (int i) => dlihigh[i]);
+            ExportMapsHighLowComponents(file, mapset.Maps.Count, false, "MapDliLo", (int i) => $"Map{i}Dli");
+            ExportMapsHighLowComponents(file, mapset.Maps.Count, true, "MapDliHi", (int i) => $"Map{i}Dli");
 
-            for (int i = 0; i < mapset.Maps.Length; i++)
+            for (int i = 0; i < mapset.Maps.Count; i++)
             {
                 DLI[] dlis = mapset.Maps[i].DLIS;
 
@@ -354,44 +354,44 @@ namespace BLEditor
 
         private void ExportSpawnPositions(StreamWriter file, MapSet mapset)
         {
-            ExportMapsBytes(file, mapset.Maps.Length, "MapL0D1C", (int i) => { switch (mapset.Maps[i].NinjaSpawnPosition) { case 1: return 0x80; case 2: return 2; default: return 0; } });
-            ExportMapsBytes(file, mapset.Maps.Length, "MapL0D58", (int i) => { switch (mapset.Maps[i].YamoSpawnPosition) { case 1: return 0x80; case 2: return 2; default: return 0; } });
+            ExportMapsBytes(file, mapset.Maps.Count, "MapL0D1C", (int i) => { switch (mapset.Maps[i].NinjaSpawnPosition) { case 1: return 0x80; case 2: return 2; default: return 0; } });
+            ExportMapsBytes(file, mapset.Maps.Count, "MapL0D58", (int i) => { switch (mapset.Maps[i].YamoSpawnPosition) { case 1: return 0x80; case 2: return 2; default: return 0; } });
         }
 
         private void ExportEnterPositions(StreamWriter file, MapSet mapset)
         {
-            ExportMapsBytes(file, mapset.Maps.Length, "MapNinjaEnterCount1", (int i) => { return mapset.Maps[i].NinjaEnterCount1; });
-            ExportMapsBytes(file, mapset.Maps.Length, "MapNinjaEnterCount2", (int i) => { return mapset.Maps[i].NinjaEnterCount2; });
-            ExportMapsBytes(file, mapset.Maps.Length, "MapYamoEnterCount1", (int i) => { return mapset.Maps[i].YamoEnterCount1; });
-            ExportMapsBytes(file, mapset.Maps.Length, "MapYamoEnterCount2", (int i) => { return mapset.Maps[i].YamoEnterCount2; });
+            ExportMapsBytes(file, mapset.Maps.Count, "MapNinjaEnterCount1", (int i) => { return mapset.Maps[i].NinjaEnterCount1; });
+            ExportMapsBytes(file, mapset.Maps.Count, "MapNinjaEnterCount2", (int i) => { return mapset.Maps[i].NinjaEnterCount2; });
+            ExportMapsBytes(file, mapset.Maps.Count, "MapYamoEnterCount1", (int i) => { return mapset.Maps[i].YamoEnterCount1; });
+            ExportMapsBytes(file, mapset.Maps.Count, "MapYamoEnterCount2", (int i) => { return mapset.Maps[i].YamoEnterCount2; });
         }
 
         private void ExportCollision(StreamWriter file, MapSet mapset)
         {
-            ExportMapsHighLowComponents(file, mapset.Maps.Length, false, "MapColpf0CollisionsLo", (int i) => $"(Map{i}Colpf0Collision-1)");
-            ExportMapsHighLowComponents(file, mapset.Maps.Length, true, "MapColpf0CollisionsHi", (int i) => $"(Map{i}Colpf0Collision-1)");
+            ExportMapsHighLowComponents(file, mapset.Maps.Count, false, "MapColpf0CollisionsLo", (int i) => $"(Map{i}Colpf0Collision-1)");
+            ExportMapsHighLowComponents(file, mapset.Maps.Count, true, "MapColpf0CollisionsHi", (int i) => $"(Map{i}Colpf0Collision-1)");
 
-            for (int i = 0; i < mapset.Maps.Length; i++)
+            for (int i = 0; i < mapset.Maps.Count; i++)
             {
                 Map map = mapset.Maps[i];
                 AddLabel(file, $"Map{i}Colpf0Collision");
                 ExportColorCollision(file, i,map.Colpf0Detection, map.Colpf0DetectionRects,map.Colpf0DetectionFlags);
             }
 
-            ExportMapsHighLowComponents(file, mapset.Maps.Length, false, "MapColpf2CollisionsLo", (int i) => $"(Map{i}Colpf2Collision-1)");
-            ExportMapsHighLowComponents(file, mapset.Maps.Length, true, "MapColpf2CollisionsHi", (int i) => $"(Map{i}Colpf2Collision-1)");
+            ExportMapsHighLowComponents(file, mapset.Maps.Count, false, "MapColpf2CollisionsLo", (int i) => $"(Map{i}Colpf2Collision-1)");
+            ExportMapsHighLowComponents(file, mapset.Maps.Count, true, "MapColpf2CollisionsHi", (int i) => $"(Map{i}Colpf2Collision-1)");
 
-            for (int i = 0; i < mapset.Maps.Length; i++)
+            for (int i = 0; i < mapset.Maps.Count; i++)
             {
                 Map map = mapset.Maps[i];
                 AddLabel(file, $"Map{i}Colpf2Collision");
                 ExportColorCollision(file, i, map.Colpf2Detection, map.Colpf2DetectionRects, map.Colpf2DetectionFlags);
             }
 
-            ExportMapsHighLowComponents(file, mapset.Maps.Length, false, "MapColpf3CollisionsLo", (int i) => $"(Map{i}Colpf3Collision-1)");
-            ExportMapsHighLowComponents(file, mapset.Maps.Length, true, "MapColpf3CollisionsHi", (int i) => $"(Map{i}Colpf3Collision-1)");
+            ExportMapsHighLowComponents(file, mapset.Maps.Count, false, "MapColpf3CollisionsLo", (int i) => $"(Map{i}Colpf3Collision-1)");
+            ExportMapsHighLowComponents(file, mapset.Maps.Count, true, "MapColpf3CollisionsHi", (int i) => $"(Map{i}Colpf3Collision-1)");
 
-            for (int i = 0; i < mapset.Maps.Length; i++)
+            for (int i = 0; i < mapset.Maps.Count; i++)
             {
                 Map map = mapset.Maps[i];
                 AddLabel(file, $"Map{i}Colpf3Collision");
@@ -483,9 +483,9 @@ namespace BLEditor
 
         private void ExportLamps(StreamWriter file, MapSet mapset)
         {
-            int[] LampCounts = new int[mapset.Maps.Length];
+            int[] LampCounts = new int[mapset.Maps.Count];
 
-            for (int i = 0; i < mapset.Maps.Length; i++)
+            for (int i = 0; i < mapset.Maps.Count; i++)
             {
                 Map map = mapset.Maps[i];
 
@@ -511,8 +511,8 @@ namespace BLEditor
                 AddBytes(file, 0xff);
             }
 
-            ExportMapsBytes(file, mapset.Maps.Length, "MapLampsCount", (int i) => (byte)LampCounts[i]);
-            ExportMapsTable(file, mapset.Maps.Length, "MapLamps", (int i) => $"Map{i}Lamps");
+            ExportMapsBytes(file, mapset.Maps.Count, "MapLampsCount", (int i) => (byte)LampCounts[i]);
+            ExportMapsTable(file, mapset.Maps.Count, "MapLamps", (int i) => $"Map{i}Lamps");
         }
 
         private bool IsLamp(byte lampChar)
