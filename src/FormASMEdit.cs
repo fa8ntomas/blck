@@ -96,13 +96,13 @@ namespace BLEditor
         {
             switch (typeNode)
             {
-                case pbx1.TypeNode.Init:
+                case pbx1.TypeNode.MapInit:
                     Map.InitRoutine = scintilla1.Text;
                     break;
-                case pbx1.TypeNode.Exec:
+                case pbx1.TypeNode.MapExec:
                     Map.ExecRoutine = scintilla1.Text;
                     break;
-                case pbx1.TypeNode.TileCollision:
+                case pbx1.TypeNode.MapTileCollision:
                     Map.TileCollisionRoutine = scintilla1.Text;
                     break;
             }

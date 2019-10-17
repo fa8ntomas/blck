@@ -48,7 +48,7 @@ namespace BLEditor
 
             AddLine($"{Environment.NewLine}**Generating {XEXFullPath} **{Environment.NewLine}", Color.Red);
 
-            var arguments = $"-i:\"{Path.GetDirectoryName(generatedSourceFile)}\" \"{generatedSourceFile}\" -o:\"{XEXFullPath}\"";
+            var arguments = $"-i:\"{Path.GetDirectoryName(generatedSourceFile)}\" \"{generatedSourceFile}\" -o:\"{XEXFullPath}\" -d:BLCK_TIXPM";
 
             AddLine(arguments, Color.Red);
             var processResult = await ProcessAsyncHelper.RunProcessAsync(MADSFullPath, arguments, -1, p_OutputDataReceived, p_ErrorDataReceived);

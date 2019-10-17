@@ -162,20 +162,24 @@ namespace BLEditor
 
     
             treeViewMaps.Nodes.Clear();
+            TreeNode gameDataNode = new TreeNode("Game Data");
+            gameDataNode.Tag = TypeNode.GameData;
+            treeViewMaps.Nodes.Add(gameDataNode);
+
             foreach (Map map in mapSet.Maps)
             {
+                TreeNode dataNode = new TreeNode("Map Data");
+                dataNode.Tag = TypeNode.MapData;
+
                 TreeNode initNode = new TreeNode("Init routine");
-                initNode.Tag = TypeNode.Init;
+                initNode.Tag = TypeNode.MapInit;
 
                 TreeNode execNode = new TreeNode("Exec routine");
-                execNode.Tag = TypeNode.Exec;
+                execNode.Tag = TypeNode.MapExec;
 
                 TreeNode tcollisionNode = new TreeNode("Tite Collision routine");
-                tcollisionNode.Tag = TypeNode.TileCollision;
-
-                TreeNode dataNode = new TreeNode("Data");
-                dataNode.Tag = TypeNode.Data;
-
+                tcollisionNode.Tag = TypeNode.MapTileCollision;
+             
                 TreeNode ccolpf0 = new TreeNode("Colpf0 Collision");
                 ccolpf0.Tag = TypeNode.CColpf0;
 
@@ -188,11 +192,12 @@ namespace BLEditor
                 TreeNode[] array = new TreeNode[] { initNode, execNode, tcollisionNode, dataNode, ccolpf0, ccolpf2, ccolpf3 };
              
                 MapTreeNode treeNode = new MapTreeNode(map, array);
+                treeNode.Tag= TypeNode.Map;
                 treeViewMaps.Nodes.Add(treeNode);
             }
         }
 
-        public enum TypeNode { Init, Exec, TileCollision, Data, CColpf0, CColpf2, CColpf3 };
+        public enum TypeNode { GameData, Map, MapInit, MapExec, MapTileCollision, MapData, CColpf0, CColpf2, CColpf3 };
 
         private void mapSet_MapNameChanged(MapNameChangedEventArgs e)
         {
@@ -589,25 +594,29 @@ namespace BLEditor
 
         private void treeViewMaps_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            Debug.WriteLine("treeViewMaps_NodeMouseDoubleClick");
-
-            Map map = GetMap(e.Node);
-            if (map == null)
-            {
-                return;
-            }
-
-            if (e.Node.Parent == null)
-            {
-                 PopulateMap(map);     
-            }
-            else if (e.Node.Tag is TypeNode typeNode)
+            
+            if (e.Node.Tag is TypeNode typeNode)
             {
                 switch (typeNode)
                 {
-
-                    case TypeNode.Data:
+                    case TypeNode.GameData:
                         {
+                            FormGameData d = new FormGameData();
+                            if (d.ShowDialog() == DialogResult.OK)
+                            {
+
+                            }
+                        }; break;
+
+                    case TypeNode.Map:
+                        {
+                            Map map = GetMap(e.Node);
+                            PopulateMap(map);
+                        }; break;
+
+                    case TypeNode.MapData:
+                        {
+                            Map map = GetMap(e.Node);
                             Form1 form1 = new Form1(map);
                             if (form1.ShowDialog() == DialogResult.OK)
                             {
@@ -704,6 +713,7 @@ namespace BLEditor
 
                     case TypeNode.CColpf0:
                         {
+                            Map map = GetMap(e.Node);
                             FormColision fedit = new FormColision(map, map.Colpf0Detection, map.Colpf0DetectionRects, map.Colpf0DetectionFlags);
                             if (fedit.ShowDialog() == DialogResult.OK)
                             {
@@ -719,6 +729,7 @@ namespace BLEditor
 
                     case TypeNode.CColpf2:
                         {
+                            Map map = GetMap(e.Node);
                             FormColision fedit = new FormColision(map, map.Colpf2Detection, map.Colpf2DetectionRects, map.Colpf2DetectionFlags);
                             if (fedit.ShowDialog() == DialogResult.OK)
                             {
@@ -734,6 +745,7 @@ namespace BLEditor
 
                     case TypeNode.CColpf3:
                         {
+                            Map map = GetMap(e.Node);
                             FormColision fedit = new FormColision(map, map.Colpf3Detection, map.Colpf3DetectionRects, map.Colpf3DetectionFlags);
                             if (fedit.ShowDialog() == DialogResult.OK)
                             {
@@ -747,8 +759,9 @@ namespace BLEditor
                             }
                         }; break;
 
-                    case TypeNode.Init:
+                    case TypeNode.MapInit:
                         {
+                            Map map = GetMap(e.Node);
                             String code = (!String.IsNullOrEmpty(map.InitRoutine)) ? map.InitRoutine : $"\t\t; ** Map '{map.Name}' Init **\n\n\n\trts";
                             FormASMEdit fedit = new FormASMEdit(map,typeNode, code, $"Init Routine for map {map.Name}");
                             if (fedit.ShowDialog() == DialogResult.OK)
@@ -757,8 +770,9 @@ namespace BLEditor
                             }
                         };  break;
 
-                    case TypeNode.Exec:
+                    case TypeNode.MapExec:
                         {
+                            Map map = GetMap(e.Node);
                             String code = (!String.IsNullOrEmpty(map.ExecRoutine)) ? map.ExecRoutine : $"\t\t; ** Map '{map.Name}' Exec **\n\n\n\trts";
                             FormASMEdit fedit = new FormASMEdit(map, typeNode, code, $"Exec Routine for map {map.Name}");
                             if (fedit.ShowDialog() == DialogResult.OK)
@@ -767,8 +781,9 @@ namespace BLEditor
                             }
                         }; break;
 
-                    case TypeNode.TileCollision:
+                    case TypeNode.MapTileCollision:
                         {
+                            Map map = GetMap(e.Node);
                             String code = (!String.IsNullOrEmpty(map.TileCollisionRoutine)) ? map.TileCollisionRoutine : $"\t\t; ** Map '{map.Name}' Tile Collision **\n\t\t; A = Title\n\t\t; X = Actor\n\n\t\trts";
                             FormASMEdit fedit = new FormASMEdit(map, typeNode, code, $"Tile Collision Routine for map {map.Name}");
                             if (fedit.ShowDialog() == DialogResult.OK)
