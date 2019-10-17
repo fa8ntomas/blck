@@ -24,28 +24,39 @@ namespace BLEditor
         public class PropertyBag
         {
             [CategoryAttribute("Assembler Settings")]
-            [DisplayName("Mad-Assembler")]
-            [Description("Mad-Assembler Full Path")]
+            [DisplayName("Mad-Assembler Path")]
+            [Description("Mad-Assembler Full Path.")]
             [Editor(typeof(MADSLocationEditor), typeof(UITypeEditor))]
             public string MADSFullPath { get; set; }
 
             [CategoryAttribute("Assembler Settings")]
             [DisplayName("Assembly Code")]
-            [Description("Assembly Code Full Path")]
+            [Description("Assembly Code Full Path.")]
             [Editor(typeof(AssemblyLocationEditor), typeof(UITypeEditor))]
             public string AssemblyFullPath { get; set; }
 
-
             [CategoryAttribute("Emulator Settings")]
             [DisplayName("Emulator Path")]
-            [Description("Emulator Full Path")]
+            [Description("Emulator Full Path.")]
             [Editor(typeof(ExeLocationEditor), typeof(UITypeEditor))]
             public string EmulatorFullPath { get; set; }
-
+                  
             [CategoryAttribute("Emulator Settings")]
             [DisplayName("Emulator command line")]
             [Description("Emulator command line. «{0}» = full path of the generated XEX.\nExample of command line for Altirra:« /run \"{0}\" »")]
             public string EmulatorCommandLine { get; set; }
+          
+            [CategoryAttribute("Exomizer Settings")]
+            [DisplayName("Exomizer Path")]
+            [Description("Exomizer Full Path")]
+            [Editor(typeof(ExeLocationEditor), typeof(UITypeEditor))]
+            public string ExomizerFullPath { get; set; }
+    
+            [CategoryAttribute("Exomizer Settings")]
+            [DisplayName("Exomizer command line")]
+            [Description("Exomizer command line.")]
+            [Editor(typeof(ExeLocationEditor), typeof(UITypeEditor))]
+            public string ExomizerCommandLine { get; set; }
 
             [CategoryAttribute("Other Settings")]
             [DisplayName("External Palette")]
@@ -60,6 +71,8 @@ namespace BLEditor
                 PaletteFullPath = Properties.Settings.Default["PaletteFullPath"].ToString();
                 EmulatorFullPath = Properties.Settings.Default["EmulatorFullPath"].ToString();
                 EmulatorCommandLine = Properties.Settings.Default["EmulatorCommandLine"].ToString();
+                ExomizerFullPath = Properties.Settings.Default["ExomizerFullPath"].ToString();
+                ExomizerCommandLine = Properties.Settings.Default["ExomizerCommandLine"].ToString();
             }
 
             public void Save()
@@ -69,6 +82,8 @@ namespace BLEditor
                 Properties.Settings.Default["PaletteFullPath"] = PaletteFullPath;
                 Properties.Settings.Default["EmulatorFullPath"] = EmulatorFullPath;
                 Properties.Settings.Default["EmulatorCommandLine"] = EmulatorCommandLine;
+                Properties.Settings.Default["ExomizerFullPath"] = ExomizerFullPath;
+                Properties.Settings.Default["ExomizerCommandLine"] = ExomizerCommandLine;
                 Properties.Settings.Default.Save();
             }
         }

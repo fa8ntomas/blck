@@ -17,38 +17,51 @@ namespace BLEditor
 {
     public partial class FormRunMADS : Form
     {
-        public FormRunMADS(MapSet mapset,String MADSFullPath, String asmBaseLineFullPath, bool runEmulator, decimal firstmap=0)
+        public FormRunMADS(MapSet mapset,String MADSFullPath, String AsmBaseLineFullPath, bool runEmulator, decimal firstmap=0)
         {
             InitializeComponent();
             this.MADSFullPath = MADSFullPath;
-            this.asmBaseLineFullPath = asmBaseLineFullPath;
+            this.AsmBaseLineFullPath = AsmBaseLineFullPath;
             this.Mapset = mapset;
             this.runEmulator = runEmulator;
             this.firstmap = firstmap;
-            this.Shown += FormRunMADS_ExecAsync;
+            this.Shown += (s, e) => { CompileAndRun(); };
+        }
+
+        public FormRunMADS(MapSet Mapset, string MADSFullPath, string AsmBaseLineFullPath, string ExomizerFullPath)
+        {
+            InitializeComponent();
+            this.Mapset = Mapset;
+            this.MADSFullPath = MADSFullPath;
+            this.AsmBaseLineFullPath = AsmBaseLineFullPath;
+            this.ExomizerFullPath = ExomizerFullPath;
+            this.Shown += (s, e) => { GenerateRelease(); };
         }
 
         private string MADSFullPath;
-        private string asmBaseLineFullPath;
+        private string AsmBaseLineFullPath;
         private MapSet Mapset;
         private bool runEmulator;
         private decimal firstmap;
+        private string ExomizerFullPath;
 
-        public string XEXFullPath { get; private set; }
-
-  
-
-        private async void FormRunMADS_ExecAsync(object sender222, EventArgs ezzzz)
+        public String GetXEXFullPath()
+        {
+            return $"{Path.Combine(new FileInfo(Mapset.Path).Directory.FullName, Path.GetFileNameWithoutExtension(Mapset.Path)) }.XEX";
+        }
+        public String GetPackedXEXFullPath()
+        {
+            return $"{Path.Combine(new FileInfo(Mapset.Path).Directory.FullName, Path.GetFileNameWithoutExtension(Mapset.Path)) }-packed.XEX";
+        }
+        private async void Compile(Action func)
         {
             String generatedSourceFile = Path.Combine(new FileInfo(Mapset.Path).Directory.FullName, "maps.asm");
 
-            ASM.export(generatedSourceFile, asmBaseLineFullPath, Mapset, firstmap);
+            ASM.export(generatedSourceFile, AsmBaseLineFullPath, Mapset, firstmap);
 
-            XEXFullPath = $"{Path.Combine(Path.GetDirectoryName(generatedSourceFile), Path.GetFileNameWithoutExtension(Mapset.Path)) }.XEX";
+            AddLine($"{Environment.NewLine}**Generating {GetXEXFullPath()} **{Environment.NewLine}", Color.Red);
 
-            AddLine($"{Environment.NewLine}**Generating {XEXFullPath} **{Environment.NewLine}", Color.Red);
-
-            var arguments = $"-i:\"{Path.GetDirectoryName(generatedSourceFile)}\" \"{generatedSourceFile}\" -o:\"{XEXFullPath}\" -d:BLCK_TIXPM";
+            var arguments = $"-i:\"{Path.GetDirectoryName(generatedSourceFile)}\" \"{generatedSourceFile}\" -o:\"{GetXEXFullPath()}\" -d:BLCK_TIXPM";
 
             AddLine(arguments, Color.Red);
             var processResult = await ProcessAsyncHelper.RunProcessAsync(MADSFullPath, arguments, -1, p_OutputDataReceived, p_ErrorDataReceived);
@@ -59,18 +72,47 @@ namespace BLEditor
             // 0 = no errors
             buttonOK.Enabled = true;
 
-            if (processResult.ExitCode == 0 && runEmulator)
-            {          
-                String EmulatorFullPath = Properties.Settings.Default["EmulatorFullPath"].ToString();
-                String EmulatorCommandLine = Properties.Settings.Default["EmulatorCommandLine"].ToString();
-                if (File.Exists(EmulatorFullPath))
-                {
-                    Process.Start(EmulatorFullPath, String.Format(EmulatorCommandLine, XEXFullPath));
-                    DialogResult = DialogResult.OK;
-                }
+            if (processResult.ExitCode == 0)
+            {
+                func();
             }     
         }
 
+        private  void CompileAndRun()
+        {
+            Compile( () =>
+            {
+                if (runEmulator) { 
+                    String EmulatorFullPath = Properties.Settings.Default["EmulatorFullPath"].ToString();
+                    String EmulatorCommandLine = Properties.Settings.Default["EmulatorCommandLine"].ToString();
+                    if (File.Exists(EmulatorFullPath))
+                    {
+                        Process.Start(EmulatorFullPath, String.Format(EmulatorCommandLine, GetXEXFullPath()));
+                        DialogResult = DialogResult.OK;
+                    }
+                }
+            });
+
+        }
+
+        private  void GenerateRelease()
+        {
+            Compile(async () =>
+            {
+                String ExomizerFullPath = Properties.Settings.Default["ExomizerFullPath"].ToString();
+                String EmulatorCommandLine = Properties.Settings.Default["EmulatorCommandLine"].ToString();
+                if (File.Exists(ExomizerFullPath))
+                {
+                    var arguments = $"sfx sys -B -n \"{GetXEXFullPath()}\" -t 168 -o \"{GetPackedXEXFullPath()}\"";
+                    AddLine($"{Environment.NewLine}** {arguments} **{Environment.NewLine}", Color.Red);
+
+                    var processResult = await ProcessAsyncHelper.RunProcessAsync(ExomizerFullPath, arguments, -1, p_OutputDataReceived, p_ErrorDataReceived);
+
+                  //  DialogResult = DialogResult.OK;
+                }
+            });
+
+        }
         void p_ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
             Process p = sender as Process;
@@ -131,20 +173,54 @@ namespace BLEditor
 
         public static void Compile(MapSet mapSet, bool runEmulator=true, decimal firstmap = 0)
         {
-            String MADSFullPath = Properties.Settings.Default["MADSFullPath"].ToString();
+            String MADSFullPath = "";
+            String AssemblyFullPath= "";
+            if (!CheckMadsPath(ref MADSFullPath, ref AssemblyFullPath)) return;
+
+            new FormRunMADS(mapSet, MADSFullPath, AssemblyFullPath, runEmulator, firstmap).ShowDialog();
+        }
+
+        private static bool CheckMadsPath(ref String MADSFullPath, ref String AssemblyFullPath)
+        {
+            MADSFullPath = Properties.Settings.Default["MADSFullPath"].ToString();
             if (!File.Exists(MADSFullPath))
             {
                 MessageBox.Show("Please configure 'MADSFullPath' in Settings");
-                return;
+                return false;
             }
-            String AssemblyFullPath = Properties.Settings.Default["AssemblyFullPath"].ToString();
+
+            AssemblyFullPath = Properties.Settings.Default["AssemblyFullPath"].ToString();
             if (!File.Exists(AssemblyFullPath))
             {
                 MessageBox.Show("Please configure 'AssemblyFullPath' in Settings");
-                return;
+                return false;
             }
 
-            new FormRunMADS(mapSet, MADSFullPath, AssemblyFullPath, runEmulator, firstmap).ShowDialog();
+            return true;
+        }
+
+        private static bool CheckExomizerPath(ref String ExomizerFullPath)
+        {
+            ExomizerFullPath = Properties.Settings.Default["ExomizerFullPath"].ToString();
+            if (!File.Exists(ExomizerFullPath))
+            {
+                MessageBox.Show("Please configure 'ExomizerFullPath' in Settings");
+                return false;
+            }
+
+            return true;
+        }
+        internal static void BuidRelease(MapSet mapSet)
+        {
+            String MADSFullPath = "";
+            String AssemblyFullPath = "";
+            if (!CheckMadsPath(ref MADSFullPath, ref AssemblyFullPath)) return;
+
+            String ExomizerFullPath = "";
+            if (!CheckExomizerPath(ref ExomizerFullPath)) return;
+
+            new FormRunMADS(mapSet, MADSFullPath, AssemblyFullPath, ExomizerFullPath).ShowDialog();
+
         }
     }
 }

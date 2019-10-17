@@ -43,8 +43,18 @@
             this.saveMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.gameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.addANewMapMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.addANewMapFromAnImageMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.addAnExistingMapMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.addIncludeMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.runMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.buildReleaseMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuMap = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.renameMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,17 +65,9 @@
             this.importBitmapIntoFontMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.copyFromFontMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.treeViewMaps = new System.Windows.Forms.TreeView();
-            this.button2 = new System.Windows.Forms.Button();
+            this.runButton = new System.Windows.Forms.Button();
             this.firstMapNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
-            this.gameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addIncludeMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.addANewMapMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.addANewMapFromAnImageMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.addAnExistingMapMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.buttonEditFnt = new BLEditor.MenuButton();
             this.dliList = new BLEditor.DLIListUserControl();
             this.menuStrip1.SuspendLayout();
@@ -129,7 +131,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem1,
-            this.gameToolStripMenuItem});
+            this.gameToolStripMenuItem,
+            this.settingsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1283, 24);
@@ -143,9 +146,7 @@
             this.loadMenu,
             this.saveMenu,
             this.saveAsMenu,
-            this.exportToolStripMenuItem,
-            this.toolStripSeparator1,
-            this.toolStripSeparator2});
+            this.exportToolStripMenuItem});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(37, 20);
             this.toolStripMenuItem1.Text = "File";
@@ -181,15 +182,86 @@
             this.exportToolStripMenuItem.Text = "Export";
             this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
             // 
+            // gameToolStripMenuItem
+            // 
+            this.gameToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripSeparator3,
+            this.addANewMapMenu,
+            this.addANewMapFromAnImageMenu,
+            this.addAnExistingMapMenu,
+            this.toolStripSeparator4,
+            this.addIncludeMenu,
+            this.toolStripSeparator1,
+            this.runMenu,
+            this.buildReleaseMenu});
+            this.gameToolStripMenuItem.Name = "gameToolStripMenuItem";
+            this.gameToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
+            this.gameToolStripMenuItem.Text = "Game";
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(235, 6);
+            // 
+            // addANewMapMenu
+            // 
+            this.addANewMapMenu.Name = "addANewMapMenu";
+            this.addANewMapMenu.Size = new System.Drawing.Size(238, 22);
+            this.addANewMapMenu.Text = "Add a new map";
+            // 
+            // addANewMapFromAnImageMenu
+            // 
+            this.addANewMapFromAnImageMenu.Name = "addANewMapFromAnImageMenu";
+            this.addANewMapFromAnImageMenu.Size = new System.Drawing.Size(238, 22);
+            this.addANewMapFromAnImageMenu.Text = "Add a new map from an image";
+            // 
+            // addAnExistingMapMenu
+            // 
+            this.addAnExistingMapMenu.Name = "addAnExistingMapMenu";
+            this.addAnExistingMapMenu.Size = new System.Drawing.Size(238, 22);
+            this.addAnExistingMapMenu.Text = "Add an existing map";
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(235, 6);
+            // 
+            // addIncludeMenu
+            // 
+            this.addIncludeMenu.Name = "addIncludeMenu";
+            this.addIncludeMenu.Size = new System.Drawing.Size(238, 22);
+            this.addIncludeMenu.Text = "Add Include";
+            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(111, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(235, 6);
             // 
-            // toolStripSeparator2
+            // runMenu
             // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(111, 6);
+            this.runMenu.Name = "runMenu";
+            this.runMenu.Size = new System.Drawing.Size(238, 22);
+            this.runMenu.Text = "Run";
+            // 
+            // buildReleaseMenu
+            // 
+            this.buildReleaseMenu.Name = "buildReleaseMenu";
+            this.buildReleaseMenu.Size = new System.Drawing.Size(238, 22);
+            this.buildReleaseMenu.Text = "Build Release";
+            // 
+            // settingsToolStripMenuItem
+            // 
+            this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.settingsMenu});
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.settingsToolStripMenuItem.Text = "Settings";
+            // 
+            // settingsMenu
+            // 
+            this.settingsMenu.Name = "settingsMenu";
+            this.settingsMenu.Size = new System.Drawing.Size(116, 22);
+            this.settingsMenu.Text = "Settings";
             // 
             // contextMenuMap
             // 
@@ -263,17 +335,16 @@
             this.treeViewMaps.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeViewMaps_NodeMouseDoubleClick);
             this.treeViewMaps.MouseClick += new System.Windows.Forms.MouseEventHandler(this.treeViewMaps_MouseClick);
             // 
-            // button2
+            // runButton
             // 
-            this.button2.Image = global::BLEditor.Properties.Resources.application_run;
-            this.button2.Location = new System.Drawing.Point(128, 388);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 29;
-            this.button2.Text = "Run";
-            this.button2.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.runButton.Image = global::BLEditor.Properties.Resources.application_run;
+            this.runButton.Location = new System.Drawing.Point(128, 388);
+            this.runButton.Name = "runButton";
+            this.runButton.Size = new System.Drawing.Size(75, 23);
+            this.runButton.TabIndex = 29;
+            this.runButton.Text = "Run";
+            this.runButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.runButton.UseVisualStyleBackColor = true;
             // 
             // firstMapNumericUpDown
             // 
@@ -290,60 +361,6 @@
             this.label1.Size = new System.Drawing.Size(53, 13);
             this.label1.TabIndex = 31;
             this.label1.Text = "First Map:";
-            // 
-            // gameToolStripMenuItem
-            // 
-            this.gameToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.settingsToolStripMenuItem,
-            this.toolStripSeparator3,
-            this.addANewMapMenu,
-            this.addANewMapFromAnImageMenu,
-            this.addAnExistingMapMenu,
-            this.toolStripSeparator4,
-            this.addIncludeMenu});
-            this.gameToolStripMenuItem.Name = "gameToolStripMenuItem";
-            this.gameToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
-            this.gameToolStripMenuItem.Text = "Game";
-            // 
-            // addIncludeMenu
-            // 
-            this.addIncludeMenu.Name = "addIncludeMenu";
-            this.addIncludeMenu.Size = new System.Drawing.Size(238, 22);
-            this.addIncludeMenu.Text = "Add Include";
-            // 
-            // settingsToolStripMenuItem
-            // 
-            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
-            this.settingsToolStripMenuItem.Text = "Settings";
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(235, 6);
-            // 
-            // addANewMapMenu
-            // 
-            this.addANewMapMenu.Name = "addANewMapMenu";
-            this.addANewMapMenu.Size = new System.Drawing.Size(238, 22);
-            this.addANewMapMenu.Text = "Add a new map";
-            // 
-            // addANewMapFromAnImageMenu
-            // 
-            this.addANewMapFromAnImageMenu.Name = "addANewMapFromAnImageMenu";
-            this.addANewMapFromAnImageMenu.Size = new System.Drawing.Size(238, 22);
-            this.addANewMapFromAnImageMenu.Text = "Add a new map from an image";
-            // 
-            // addAnExistingMapMenu
-            // 
-            this.addAnExistingMapMenu.Name = "addAnExistingMapMenu";
-            this.addAnExistingMapMenu.Size = new System.Drawing.Size(238, 22);
-            this.addAnExistingMapMenu.Text = "Add an existing map";
-            // 
-            // toolStripSeparator4
-            // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(235, 6);
             // 
             // buttonEditFnt
             // 
@@ -374,7 +391,7 @@
             this.ClientSize = new System.Drawing.Size(1283, 501);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.firstMapNumericUpDown);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.runButton);
             this.Controls.Add(this.treeViewMaps);
             this.Controls.Add(this.buttonEditFnt);
             this.Controls.Add(this.dliList);
@@ -411,7 +428,6 @@
         private System.Windows.Forms.ToolStripMenuItem saveMenu;
         private System.Windows.Forms.ToolStripMenuItem loadMenu;
         private System.Windows.Forms.ToolStripMenuItem saveAsMenu;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem newMenu;
         private System.Windows.Forms.ContextMenuStrip contextMenuMap;
         private System.Windows.Forms.ToolStripMenuItem renameMenu;
@@ -422,21 +438,24 @@
         private System.Windows.Forms.ToolStripMenuItem importBitmapIntoFontMenu;
         private System.Windows.Forms.ToolStripMenuItem copyFromFontMenu;
         private System.Windows.Forms.TreeView treeViewMaps;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.Button runButton;
         private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem CopyCharMenu;
         private System.Windows.Forms.ToolStripMenuItem importFromBitmapMenu;
         private System.Windows.Forms.NumericUpDown firstMapNumericUpDown;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolStripMenuItem gameToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem addANewMapMenu;
         private System.Windows.Forms.ToolStripMenuItem addANewMapFromAnImageMenu;
         private System.Windows.Forms.ToolStripMenuItem addAnExistingMapMenu;
         private System.Windows.Forms.ToolStripMenuItem addIncludeMenu;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem runMenu;
+        private System.Windows.Forms.ToolStripMenuItem buildReleaseMenu;
+        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem settingsMenu;
     }
 }
 

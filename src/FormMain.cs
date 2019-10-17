@@ -38,14 +38,20 @@ namespace BLEditor
                 flpMap.Controls.Add(tile);
             }
 
-            this.newMenu.Click += (s, e) => { newMapSet(); };
-            this.loadMenu.Click += (s, e) => { load(); };
-            this.saveMenu.Click += (s, e) => { MapSet.SSave(mapSet); };
-            this.saveAsMenu.Click += (s, e) => { MapSet.SSaveAs(mapSet); };
-            this.addANewMapFromAnImageMenu.Click += (s, e) => { addANewMapFromAnImage(); };
-            this.addANewMapMenu.Click += (s, e) => { addANewMap(); };
-            this.addAnExistingMapMenu.Click += (s, e) => { addAExistingMap(); };
-            this.addIncludeMenu.Click += (s, e) => { AddInclude(); };
+            newMenu.Click += (s, e) => { newMapSet(); };
+            loadMenu.Click += (s, e) => { load(); };
+            saveMenu.Click += (s, e) => { MapSet.SSave(mapSet); };
+            saveAsMenu.Click += (s, e) => { MapSet.SSaveAs(mapSet); };
+            addANewMapFromAnImageMenu.Click += (s, e) => { addANewMapFromAnImage(); };
+            addANewMapMenu.Click += (s, e) => { addANewMap(); };
+            addAnExistingMapMenu.Click += (s, e) => { addAExistingMap(); };
+            addIncludeMenu.Click += (s, e) => { AddInclude(); };
+            settingsMenu.Click += (s, e) => { Setting(); };
+            runMenu.Click += (s, e) => { Run(); };
+            buildReleaseMenu.Click += (s, e) => { BuildRelease(); };
+
+            runButton.Click += (s, e) => { Run(); };
+
             treeViewMaps.MouseDown += (sender, args) => treeViewMaps_MouseDown(args);
 
             renameMenu.Click += (s, e) => { RenameMap(s); };
@@ -55,9 +61,10 @@ namespace BLEditor
             importBitmapIntoFontMenu.Click += (s, e) => { importBitmapIntoCurrentFont(); };
             editFontMenu.Click += (s, e) => { editCurrentFont(); };
             copyFromFontMenu.Click += (s, e) => { CopyCurrentFont(); };
-            this.CopyCharMenu.Click += (s, e) => { CopyChar(); };
+            CopyCharMenu.Click += (s, e) => { CopyChar(); };
         }
 
+      
         private void AddInclude()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -436,7 +443,7 @@ namespace BLEditor
                         }
                     }
 
-                    FormBitmapToMap formBitmapToMap = new FormBitmapToMap(this.mapSet,img, openFileDialog1.FileName);
+                    FormBitmapToMap formBitmapToMap = new FormBitmapToMap(mapSet,img, openFileDialog1.FileName);
                     var result = formBitmapToMap.ShowDialog();
                     if (result == DialogResult.OK)
                     {
@@ -481,7 +488,7 @@ namespace BLEditor
 
                             CharacterSet characterSet = mapSet.CharSets.First(set => set.UID == map.FontID);
 
-                            FormBitmapToMap formBitmapToMap = new FormBitmapToMap(this.mapSet, img, openFileDialog1.FileName,characterSet);
+                            FormBitmapToMap formBitmapToMap = new FormBitmapToMap(mapSet, img, openFileDialog1.FileName,characterSet);
                             var result = formBitmapToMap.ShowDialog();
                             if (result == DialogResult.OK)
                             {
@@ -851,15 +858,21 @@ namespace BLEditor
             enableCollapseExpand = true;
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void Run()
         {
             if (MapSet.SSave(mapSet))
             {
-                FormRunMADS.Compile(mapSet, true, this.firstMapNumericUpDown.Value) ;
+                FormRunMADS.Compile(mapSet, true, firstMapNumericUpDown.Value) ;
             }
         }
-
-        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void BuildRelease()
+        {
+            if (MapSet.SSave(mapSet))
+            {
+                FormRunMADS.BuidRelease(mapSet);
+            }
+        }
+        private void Setting()
         {
             FormSettings formSettings = new FormSettings();
             if (formSettings.ShowDialog() == DialogResult.OK)
