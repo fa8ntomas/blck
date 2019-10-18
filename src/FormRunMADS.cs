@@ -103,7 +103,7 @@ namespace BLEditor
                 String EmulatorCommandLine = Properties.Settings.Default["EmulatorCommandLine"].ToString();
                 if (File.Exists(ExomizerFullPath))
                 {
-                    var arguments = $"sfx sys -B -n \"{GetXEXFullPath()}\" -t 168 -o \"{GetPackedXEXFullPath()}\"";
+                    var arguments = $"sfx sys -n \"{GetXEXFullPath()}\" -B -Di_ram_enter=0xff -Di_ram_exit=0xff -Di_table_addr=0x400 -t 168 -o \"{GetPackedXEXFullPath()}\"";
                     AddLine($"{Environment.NewLine}** {arguments} **{Environment.NewLine}", Color.Red);
 
                     var processResult = await ProcessAsyncHelper.RunProcessAsync(ExomizerFullPath, arguments, -1, p_OutputDataReceived, p_ErrorDataReceived);
