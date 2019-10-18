@@ -88,34 +88,9 @@ namespace BLEditor
             Segments.RemoveAll(x =>  x.startAddress == startAddress && x.endAddress== endAddress);
         }
 
-
-        public void CreateDLISegment(MapSet mapset)
+        public ushort GetMaxAdr()
         {
-            if (mapset.Maps.Count> 0x0F4C- 0x0F38)
-            {
-                throw new ArgumentException();
-            }
-
-            byte[] dlilow = new byte[mapset.Maps.Count];
-            byte[] dlihigh = new byte[mapset.Maps.Count];
-
-            for (int i = 0; i < mapset.Maps.Count; i++)
-            {
-                foreach (var dli in mapset.Maps[i].DLIS)
-                {
-                    if (dli.IntLine > 0 && dli.IntLine < 9)
-                    {
-                        dlilow[i] = (byte)(dlilow[i] + (1 << (dli.IntLine - 1)));
-                    }
-                    else if (dli.IntLine >= 9)
-                    {
-                        dlihigh[i] = (byte)(dlihigh[i] + (1 << (dli.IntLine - 9)));
-                    }
-                }
-            }
-
-            AddSegment(0x0F38, dlilow);
-            AddSegment(0x0F4C, dlihigh);          
+            return Segments.Max(segment => segment.endAddress);
         }
 
         public void Print()
