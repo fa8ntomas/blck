@@ -61,6 +61,7 @@ namespace BLEditor
 
             AddLine($"{Environment.NewLine}**Generating {GetXEXFullPath()} **{Environment.NewLine}", Color.Red);
 
+
             var arguments = $"-i:\"{Path.GetDirectoryName(generatedSourceFile)}\" \"{generatedSourceFile}\" -o:\"{GetXEXFullPath()}\" -d:BLCK_TIXPM";
 
             AddLine(arguments, Color.Red);

@@ -21,7 +21,10 @@ namespace BLEditor
             using (StreamWriter file = new StreamWriter(fileName, false, isoLatin1Encoding))
             {
                 asm.AddIcl(file,asmBaseLineFullPath);
-
+                foreach(String include in mapset.Includes)
+                {
+                    asm.AddIcl(file, include);
+                }
                 file.WriteLine("\t.align $800,0");
                 file.WriteLine($"MAPCOUNT equ {mapset.Maps.Count - 1}");
                 file.WriteLine($"MAPSTART equ {firstmap}");
