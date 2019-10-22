@@ -11,25 +11,25 @@ namespace BLEditor
 {
     class ASM
     {
-        const int DataWidth = 4;
+        private const int DataWidth = 4;
         private static readonly Encoding isoLatin1Encoding = Encoding.GetEncoding("ISO-8859-1");
+        private const String BOL = "\t";
 
-        public static void export(String fileName, string asmBaseLineFullPath,  MapSet mapset, decimal firstmap=0)
+        public static void Export(String fileName, string asmBaseLineFullPath,  MapSet mapset)
         {
             ASM asm = new ASM();
 
             using (StreamWriter file = new StreamWriter(fileName, false, isoLatin1Encoding))
             {
                 asm.AddIcl(file,asmBaseLineFullPath);
+
                 foreach(String include in mapset.Includes)
                 {
                     asm.AddIcl(file, include);
                 }
-                file.WriteLine("\t.align $800,0");
-                file.WriteLine($"MAPCOUNT equ {mapset.Maps.Count - 1}");
-                file.WriteLine($"MAPSTART equ {firstmap}");
-                file.WriteLine();
 
+                asm.AddAlign(file, 0x800);
+              
                 asm.ExportFOE(file, mapset);
                 asm.ExportBruceStart(file, mapset);
                 asm.ExportSpawnPositions(file, mapset);
@@ -45,10 +45,13 @@ namespace BLEditor
                 asm.ExportDLIs(file, mapset);
                 asm.ExportRLE(file, mapset);
 
-                file.WriteLine("\torg $02E0");
-                file.WriteLine("\t.word L0418");
-
+                asm.AddRunAd(file, "L0418");
             }
+        }
+
+        private void AddAlign(StreamWriter file, UInt16 align)
+        {
+            file.WriteLine($"{BOL}.align ${align.ToString("X4")},0");
         }
 
         private void ExportExit1(StreamWriter file, MapSet mapset)
@@ -81,8 +84,9 @@ namespace BLEditor
 
         private void ExportFonts(StreamWriter file, MapSet mapset)
         {
-            file.WriteLine("\t.align $400,0   ; Useless I hope");
-
+            // Useless ?
+            AddAlign(file, 0x400);
+           
             for (int i = 0; i < mapset.CharSets.Count; i++)
             {
                 AddLabel(file, $"Font{i}");
@@ -107,7 +111,7 @@ namespace BLEditor
             {
                 AddLabel(file, $"Map{i}Init");
 
-                file.WriteLine($"\t.local LocalMap{i}Init");
+                file.WriteLine($"{BOL}.local LocalMap{i}Init");
  
  
                 if (String.IsNullOrWhiteSpace(mapset.Maps[i].InitRoutinePath))
@@ -115,8 +119,8 @@ namespace BLEditor
                     file.WriteLine("\trts");
                 } else
                 {
-                    file.WriteLine($"\t.use LocalMap{i}TileCollision");
-                    file.WriteLine($"\t.use LocalMap{i}Exec");
+                    file.WriteLine($"{BOL}.use LocalMap{i}TileCollision");
+                    file.WriteLine($"{BOL}.use LocalMap{i}Exec");
 
                     ExportLabels(file, mapset, i);
 
@@ -127,7 +131,7 @@ namespace BLEditor
 
                 AddLabel(file, $"Map{i}Exec");
 
-                file.WriteLine($"\t.local LocalMap{i}Exec");
+                file.WriteLine($"{BOL}.local LocalMap{i}Exec");
  
                 if (String.IsNullOrWhiteSpace(mapset.Maps[i].ExecRoutinePath))
                 {
@@ -135,8 +139,8 @@ namespace BLEditor
                 }
                 else
                 {
-                    file.WriteLine($"\t.use LocalMap{i}TileCollision");
-                    file.WriteLine($"\t.use LocalMap{i}Init");
+                    file.WriteLine($"{BOL}.use LocalMap{i}TileCollision");
+                    file.WriteLine($"{BOL}.use LocalMap{i}Init");
 
                     ExportLabels(file, mapset, i);
 
@@ -147,7 +151,7 @@ namespace BLEditor
 
                 AddLabel(file, $"Map{i}TileCollision");
 
-                file.WriteLine($"\t.local LocalMap{i}TileCollision");
+                file.WriteLine($"{BOL}.local LocalMap{i}TileCollision");
  
                 if (String.IsNullOrWhiteSpace(mapset.Maps[i].TileCollisionRoutinePath))
                 {
@@ -155,8 +159,8 @@ namespace BLEditor
                 }
                 else
                 {
-                    file.WriteLine($"\t.use LocalMap{i}Exec");
-                    file.WriteLine($"\t.use LocalMap{i}Init");
+                    file.WriteLine($"{BOL}.use LocalMap{i}Exec");
+                    file.WriteLine($"{BOL}.use LocalMap{i}Init");
 
                     ExportLabels(file, mapset, i);
 
@@ -173,7 +177,7 @@ namespace BLEditor
             {
                 if (mapset.Maps[i].FontID == mapset.CharSets[j].UID)
                 {
-                    file.WriteLine($"\tCurrentFontAdr = Font{j}");
+                    file.WriteLine($"{BOL}CurrentFontAdr = Font{j}");
                     break;
                 }
             }
@@ -181,10 +185,10 @@ namespace BLEditor
             DLI[] dlis = mapset.Maps[i].DLIS;
             for (int j = 0; j < dlis.Length; j++)
             {
-                file.WriteLine($"\tCurrentDli{j}Adr = Map{i}Dli{j}");
+                file.WriteLine($"{BOL}CurrentDli{j}Adr = Map{i}Dli{j}");
             }
-         //   file.WriteLine($"\tCurrentPlayerLampsCounts=PlayerMap{i}LampsCounts");
-            file.WriteLine($"\tCurrentPlayerLamps=Map{i}Lamps");
+         //   file.WriteLine($"{bof}CurrentPlayerLampsCounts=PlayerMap{i}LampsCounts");
+            file.WriteLine($"{BOL}CurrentPlayerLamps=Map{i}Lamps");
         }
 
         private void ExportFOE(StreamWriter file, MapSet mapset)
@@ -243,19 +247,19 @@ namespace BLEditor
 
                 AddLabel(file, $"Map{i}Dli");
 
-                file.WriteLine($"\tpha");
-                file.WriteLine($"\tlda MapFont");
-                file.WriteLine($"\tsta WSYNC");
-                file.WriteLine($"\tsta CHBASE");
+                file.WriteLine($"{BOL}pha");
+                file.WriteLine($"{BOL}lda MapFont");
+                file.WriteLine($"{BOL}sta WSYNC");
+                file.WriteLine($"{BOL}sta CHBASE");
 
                 String firstDliLabel = $"Map{i}Dli0";
 
-                file.WriteLine($"\tlda #<{firstDliLabel}");
-                file.WriteLine($"\tsta VDSLST");
-                file.WriteLine($"\tlda #>{firstDliLabel}");
-                file.WriteLine($"\tsta VDSLST+1");
-                file.WriteLine($"\tpla");
-                file.WriteLine($"\trti");
+                file.WriteLine($"{BOL}lda #<{firstDliLabel}");
+                file.WriteLine($"{BOL}sta VDSLST");
+                file.WriteLine($"{BOL}lda #>{firstDliLabel}");
+                file.WriteLine($"{BOL}sta VDSLST+1");
+                file.WriteLine($"{BOL}pla");
+                file.WriteLine($"{BOL}rti");
 
                 for (int j=0; j<dlis.Length; j++)
                 {
@@ -269,74 +273,74 @@ namespace BLEditor
             Dictionary<RbgPFColors.PlayFieldColor, byte> colorsDelta = dli.AtariPFColors.Delta(previousDli?.AtariPFColors);
             colorsDelta.Remove(RbgPFColors.PlayFieldColor.COLPF3);  // Always Black;
 
-            colorsDelta = sortColors(colorsDelta, dli.OrderValue);
+            colorsDelta = SortColors(colorsDelta, dli.OrderValue);
 
             String currentLabel = $"Map{mapIndex}Dli{dliIndex}";
 
             AddLabel(file, currentLabel);
 
-            file.WriteLine($"\tpha");
+            file.WriteLine($"{BOL}pha");
 
             switch (colorsDelta.Count)
             {
                 case 1:
-                    file.WriteLine($"\tlda #{colorsDelta.Values.ElementAt(0)}");
-                    file.WriteLine($"\tsta WSYNC");
-                    file.WriteLine($"\tsta {colorsDelta.Keys.ElementAt(0)}");
+                    file.WriteLine($"{BOL}lda #{colorsDelta.Values.ElementAt(0)}");
+                    file.WriteLine($"{BOL}sta WSYNC");
+                    file.WriteLine($"{BOL}sta {colorsDelta.Keys.ElementAt(0)}");
                     break;
 
                 case 2:
-                    file.WriteLine($"\tstx {currentLabel}X");
-                    file.WriteLine($"\tlda #{colorsDelta.Values.ElementAt(0)}");
-                    file.WriteLine($"\tldx #{colorsDelta.Values.ElementAt(1)}");
-                    file.WriteLine($"\tsta WSYNC");
-                    file.WriteLine($"\tsta {colorsDelta.Keys.ElementAt(0)}");
-                    file.WriteLine($"\tstx {colorsDelta.Keys.ElementAt(1)}");
-                    file.WriteLine($"\t{currentLabel}X equ *+1");
-                    file.WriteLine($"\tldx #$FF");
+                    file.WriteLine($"{BOL}stx {currentLabel}X");
+                    file.WriteLine($"{BOL}lda #{colorsDelta.Values.ElementAt(0)}");
+                    file.WriteLine($"{BOL}ldx #{colorsDelta.Values.ElementAt(1)}");
+                    file.WriteLine($"{BOL}sta WSYNC");
+                    file.WriteLine($"{BOL}sta {colorsDelta.Keys.ElementAt(0)}");
+                    file.WriteLine($"{BOL}stx {colorsDelta.Keys.ElementAt(1)}");
+                    file.WriteLine($"{BOL}{currentLabel}X equ *+1");
+                    file.WriteLine($"{BOL}ldx #$FF");
                     break;
 
                 case 3:
-                    file.WriteLine($"\tstx {currentLabel}X");
-                    file.WriteLine($"\tlda #{colorsDelta.Values.ElementAt(0)}");
-                    file.WriteLine($"\tldx #{colorsDelta.Values.ElementAt(1)}");
-                    file.WriteLine($"\tsta WSYNC");
-                    file.WriteLine($"\tsta {colorsDelta.Keys.ElementAt(0)}");
-                    file.WriteLine($"\tstx {colorsDelta.Keys.ElementAt(1)}");
-                    file.WriteLine($"\tlda #{colorsDelta.Values.ElementAt(2)}");
-                    file.WriteLine($"\tsta {colorsDelta.Keys.ElementAt(2)}");
-                    file.WriteLine($"\t{currentLabel}X equ *+1");
-                    file.WriteLine($"\tldx #$FF");
+                    file.WriteLine($"{BOL}stx {currentLabel}X");
+                    file.WriteLine($"{BOL}lda #{colorsDelta.Values.ElementAt(0)}");
+                    file.WriteLine($"{BOL}ldx #{colorsDelta.Values.ElementAt(1)}");
+                    file.WriteLine($"{BOL}sta WSYNC");
+                    file.WriteLine($"{BOL}sta {colorsDelta.Keys.ElementAt(0)}");
+                    file.WriteLine($"{BOL}stx {colorsDelta.Keys.ElementAt(1)}");
+                    file.WriteLine($"{BOL}lda #{colorsDelta.Values.ElementAt(2)}");
+                    file.WriteLine($"{BOL}sta {colorsDelta.Keys.ElementAt(2)}");
+                    file.WriteLine($"{BOL}{currentLabel}X equ *+1");
+                    file.WriteLine($"{BOL}ldx #$FF");
                     break;
 
                 case 4:
-                    file.WriteLine($"\tstx {currentLabel}X");
-                    file.WriteLine($"\tlda #{colorsDelta.Values.ElementAt(0)}");
-                    file.WriteLine($"\tldx #{colorsDelta.Values.ElementAt(1)}");
-                    file.WriteLine($"\tsta WSYNC");
-                    file.WriteLine($"\tsta {colorsDelta.Keys.ElementAt(0)}");
-                    file.WriteLine($"\tstx {colorsDelta.Keys.ElementAt(1)}");
-                    file.WriteLine($"\tlda #{colorsDelta.Values.ElementAt(2)}");
-                    file.WriteLine($"\tsta {colorsDelta.Keys.ElementAt(2)}");
-                    file.WriteLine($"\tlda #{colorsDelta.Values.ElementAt(3)}");
-                    file.WriteLine($"\tsta {colorsDelta.Keys.ElementAt(3)}");
-                    file.WriteLine($"\t{currentLabel}X equ *+1");
-                    file.WriteLine($"\tldx #$FF");
+                    file.WriteLine($"{BOL}stx {currentLabel}X");
+                    file.WriteLine($"{BOL}lda #{colorsDelta.Values.ElementAt(0)}");
+                    file.WriteLine($"{BOL}ldx #{colorsDelta.Values.ElementAt(1)}");
+                    file.WriteLine($"{BOL}sta WSYNC");
+                    file.WriteLine($"{BOL}sta {colorsDelta.Keys.ElementAt(0)}");
+                    file.WriteLine($"{BOL}stx {colorsDelta.Keys.ElementAt(1)}");
+                    file.WriteLine($"{BOL}lda #{colorsDelta.Values.ElementAt(2)}");
+                    file.WriteLine($"{BOL}sta {colorsDelta.Keys.ElementAt(2)}");
+                    file.WriteLine($"{BOL}lda #{colorsDelta.Values.ElementAt(3)}");
+                    file.WriteLine($"{BOL}sta {colorsDelta.Keys.ElementAt(3)}");
+                    file.WriteLine($"{BOL}{currentLabel}X equ *+1");
+                    file.WriteLine($"{BOL}ldx #$FF");
                     break;
             }
 
             String nextLabel = lastDLI?"LastDLI":$"Map{mapIndex}Dli{dliIndex+1}";
                 
             
-            file.WriteLine($"\tlda #<{nextLabel}");
-            file.WriteLine($"\tsta VDSLST");
-            file.WriteLine($"\tlda #>{nextLabel}");
-            file.WriteLine($"\tsta VDSLST+1");
-            file.WriteLine($"\tpla");
-            file.WriteLine($"\trti");
+            file.WriteLine($"{BOL}lda #<{nextLabel}");
+            file.WriteLine($"{BOL}sta VDSLST");
+            file.WriteLine($"{BOL}lda #>{nextLabel}");
+            file.WriteLine($"{BOL}sta VDSLST+1");
+            file.WriteLine($"{BOL}pla");
+            file.WriteLine($"{BOL}rti");
         }
 
-        private Dictionary<RbgPFColors.PlayFieldColor, byte> sortColors(Dictionary<RbgPFColors.PlayFieldColor, byte> colorsDelta, object orderValue)
+        private Dictionary<RbgPFColors.PlayFieldColor, byte> SortColors(Dictionary<RbgPFColors.PlayFieldColor, byte> colorsDelta, object orderValue)
         {
             Dictionary<RbgPFColors.PlayFieldColor, byte> result = new Dictionary<RbgPFColors.PlayFieldColor, byte>();
 
@@ -407,18 +411,18 @@ namespace BLEditor
             switch (ColorDetection)
             {
                 case Map.TypeColorDetection.None:
-                    file.WriteLine($"\tclc");
-                    file.WriteLine($"\trts");
+                    file.WriteLine($"{BOL}clc");
+                    file.WriteLine($"{BOL}rts");
                     break;
 
                 case Map.TypeColorDetection.Outside:
-                    file.WriteLine($"\tjsr @+1");
-                    file.WriteLine($"\tbcs @+");
-                    file.WriteLine($"\tsec");
-                    file.WriteLine($"\trts");
-                    file.WriteLine($"@\tclc");
-                    file.WriteLine($"\trts");
-                    file.WriteLine($"@; test inside");
+                    file.WriteLine($"{BOL}jsr @+1");
+                    file.WriteLine($"{BOL}bcs @+");
+                    file.WriteLine($"{BOL}sec");
+                    file.WriteLine($"{BOL}rts");
+                    file.WriteLine($"@{BOL}clc");
+                    file.WriteLine($"{BOL}rts");
+                    file.WriteLine($"@{BOL}; test inside");
 
                     for (int i = 0; i < DectectionRect.Count; i++)
                     {
@@ -427,7 +431,7 @@ namespace BLEditor
                         ExportRect(file, mapIndex, rect, flag);
                     }
 
-                    file.WriteLine($"\trts");
+                    file.WriteLine($"{BOL}rts");
                     break;
 
                 case Map.TypeColorDetection.Inside:
@@ -436,12 +440,12 @@ namespace BLEditor
                         Map.ZoneColorDetection flag = colpf2DetectionFlags[i];
                         ExportRect(file, mapIndex, rect, flag);
                     }
-                    file.WriteLine($"\trts");
+                    file.WriteLine($"{BOL}rts");
                     break;
 
                 default:
-                    file.WriteLine($"\tsec");
-                    file.WriteLine($"\trts");
+                    file.WriteLine($"{BOL}sec");
+                    file.WriteLine($"{BOL}rts");
                     break;
             }
         }
@@ -452,14 +456,14 @@ namespace BLEditor
             {
 
                 case Map.ZoneColorDetection.Flag0:
-                    file.WriteLine($"\tlda PlayerMap{mapIndex}LampsCounts");
-                    file.WriteLine($"\tand #CONTEXTFLAG0MASK");
-                    file.WriteLine($"\tbeq @+");
+                    file.WriteLine($"{BOL}lda PlayerMap{mapIndex}LampsCounts");
+                    file.WriteLine($"{BOL}and #CONTEXTFLAG0MASK");
+                    file.WriteLine($"{BOL}beq @+");
                     break;
                 case Map.ZoneColorDetection.Flag1:
-                    file.WriteLine($"\tlda PlayerMap{mapIndex}LampsCounts");
-                    file.WriteLine($"\tand #CONTEXTFLAG1MASK");
-                    file.WriteLine($"\tbeq @+");
+                    file.WriteLine($"{BOL}lda PlayerMap{mapIndex}LampsCounts");
+                    file.WriteLine($"{BOL}and #CONTEXTFLAG1MASK");
+                    file.WriteLine($"{BOL}beq @+");
 
                     break;
             }
@@ -468,20 +472,20 @@ namespace BLEditor
             byte xmin = (byte)(Math.Ceiling(rect.Left) + 48);
             byte ymax = (byte)((Math.Floor(rect.Bottom) + 13 ) * 2);
             byte ymin = (byte)((Math.Ceiling(rect.Top) + 13 ) * 2);
-            file.WriteLine($"\ttxa");
-            file.WriteLine($"\tclc");
-            file.WriteLine($"\tadc #{255 - xmax}");
-            file.WriteLine($"\tadc #{xmax - xmin + 1}");
-            file.WriteLine($"\tbcc @+");
-            file.WriteLine($"\t;{xmin} < X < {xmax}");
-            file.WriteLine($"\ttya");
-            file.WriteLine($"\tclc");
-            file.WriteLine($"\tadc #{255 - ymax}");
-            file.WriteLine($"\tadc #{ymax - ymin + 1}");
-            file.WriteLine($"\tbcc @+");
-            file.WriteLine($"\t;{ymin} < Y < {ymax}");
-            file.WriteLine($"\trts;  Hit : Carry Set");
-            file.WriteLine($"@; Carry Clear");
+            file.WriteLine($"{BOL}txa");
+            file.WriteLine($"{BOL}clc");
+            file.WriteLine($"{BOL}adc #{255 - xmax}");
+            file.WriteLine($"{BOL}adc #{xmax - xmin + 1}");
+            file.WriteLine($"{BOL}bcc @+");
+            file.WriteLine($"{BOL};{xmin} < X < {xmax}");
+            file.WriteLine($"{BOL}tya");
+            file.WriteLine($"{BOL}clc");
+            file.WriteLine($"{BOL}adc #{255 - ymax}");
+            file.WriteLine($"{BOL}adc #{ymax - ymin + 1}");
+            file.WriteLine($"{BOL}bcc @+");
+            file.WriteLine($"{BOL};{ymin} < Y < {ymax}");
+            file.WriteLine($"{BOL}rts;  Hit : Carry Set");
+            file.WriteLine($"@{BOL}; Carry Clear");
         }
 
         private void ExportLamps(StreamWriter file, MapSet mapset)
@@ -556,14 +560,19 @@ namespace BLEditor
 
         private void AddIns(StreamWriter file, string path)
         {
-            file.WriteLine($"\tins '{path}'");
+            file.WriteLine($"{BOL}ins '{path}'");
         }
 
         private void AddIcl(StreamWriter file, string path)
         {
-            file.WriteLine($"\ticl '{path}'");
+            file.WriteLine($"{BOL}icl '{path}'");
         }
 
+        private void AddRunAd(StreamWriter file, string label)
+        {
+            file.WriteLine("\torg $02E0");
+            file.WriteLine($"{BOL}.word {label}");
+        }
         private void AddLabel(StreamWriter file, String label)
         {
             file.WriteLine($"{label}:");

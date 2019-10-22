@@ -527,8 +527,10 @@ namespace BLEditor
 
         private static Map CreateEmptyMap()
         {
-            Map result = new Map();
-            result.Name = "";
+            Map result = new Map
+            {
+                Name = ""
+            };
             return result;
         }
 
@@ -584,11 +586,10 @@ namespace BLEditor
         private static byte[] DecodeRLE(byte[] inData)
         {
             List<byte> output = new List<byte>();
-            int value = 0;
             int i = 0;
             while (i < inData.Length)
             {
-                value = inData[i];
+                int value = inData[i];
                 if (value == 128)
                 {
                     return output.ToArray();
@@ -690,7 +691,7 @@ namespace BLEditor
             return outBytes;
         }
 
-        private Dictionary<int, int> colorRange = new Dictionary<int, int>();
+        private readonly Dictionary<int, int> colorRange = new Dictionary<int, int>();
 
         private void CreateDLIMapIndex()
         {

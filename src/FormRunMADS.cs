@@ -38,7 +38,7 @@ namespace BLEditor
             this.Shown += (s, e) => { GenerateRelease(); };
         }
 
-        private string MADSFullPath;
+        private readonly string MADSFullPath;
         private string AsmBaseLineFullPath;
         private MapSet Mapset;
         private bool runEmulator;
@@ -57,15 +57,19 @@ namespace BLEditor
         {
             String generatedSourceFile = Path.Combine(new FileInfo(Mapset.Path).Directory.FullName, "maps.asm");
 
-            ASM.export(generatedSourceFile, AsmBaseLineFullPath, Mapset, firstmap);
+            ASM.Export(generatedSourceFile, AsmBaseLineFullPath, Mapset);
 
             AddLine($"{Environment.NewLine}**Generating {GetXEXFullPath()} **{Environment.NewLine}", Color.Red);
 
-
-            var arguments = $"-i:\"{Path.GetDirectoryName(generatedSourceFile)}\" \"{generatedSourceFile}\" -o:\"{GetXEXFullPath()}\" -d:BLCK_TIXPM";
+            String arguments = $"-i:\"{Path.GetDirectoryName(generatedSourceFile)}\" \"{generatedSourceFile}\" -o:\"{GetXEXFullPath()}\" -d:BLCK_TIXPM -d:MAPCOUNT={Mapset.Maps.Count - 1}";
+            
+            if (firstmap > 0)
+            {
+                arguments += $" -d:MAPSTART='{firstmap}'";
+            }
 
             AddLine(arguments, Color.Red);
-            var processResult = await ProcessAsyncHelper.RunProcessAsync(MADSFullPath, arguments, -1, p_OutputDataReceived, p_ErrorDataReceived);
+            var processResult = await ProcessAsyncHelper.RunProcessAsync(MADSFullPath, arguments, -1, P_OutputDataReceived, p_ErrorDataReceived);
 
             // Mads Exit codes
             // 3 = bad parameters, assembling not started
@@ -109,7 +113,7 @@ namespace BLEditor
                     var arguments = $"sfx sys -x3 \"{GetXEXFullPath()}\" -Di_table_addr={maxAdr} -t 168 -o \"{GetPackedXEXFullPath()}\"";
                     AddLine($"{Environment.NewLine}** {arguments} **{Environment.NewLine}", Color.Red);
 
-                    var processResult = await ProcessAsyncHelper.RunProcessAsync(ExomizerFullPath, arguments, -1, p_OutputDataReceived, p_ErrorDataReceived);
+                    var processResult = await ProcessAsyncHelper.RunProcessAsync(ExomizerFullPath, arguments, -1, P_OutputDataReceived, p_ErrorDataReceived);
 
                   //  DialogResult = DialogResult.OK;
                 }
@@ -118,10 +122,9 @@ namespace BLEditor
         }
         void p_ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
-            Process p = sender as Process;
-            if (p == null)
+            if (!(sender is Process p))
             {
-                 return;
+                return;
             }
 
             if (e.Data != null)
@@ -133,10 +136,9 @@ namespace BLEditor
 
 
 
-        void p_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        void P_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
-            Process p = sender as Process;
-            if (p == null)
+            if (!(sender is Process p))
             {
                 return;
             }
@@ -222,7 +224,8 @@ namespace BLEditor
             String ExomizerFullPath = "";
             if (!CheckExomizerPath(ref ExomizerFullPath)) return;
 
-            new FormRunMADS(mapSet, MADSFullPath, AssemblyFullPath, ExomizerFullPath).ShowDialog();
+            FormRunMADS formRunMADS = new FormRunMADS(mapSet, MADSFullPath, AssemblyFullPath, ExomizerFullPath);
+            _ = formRunMADS.ShowDialog();
 
         }
     }

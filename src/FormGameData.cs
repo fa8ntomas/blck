@@ -15,6 +15,8 @@ namespace BLEditor
         public FormGameData()
         {
             InitializeComponent();
+
+            SpritesSetComboBox.SelectedIndex = 0;
         }
     }
 }

@@ -86,7 +86,7 @@ namespace BLEditor
                     used = Maps[j].FontID == CharSets[i].UID;
                 }
 
-                if (!used)
+                if (!used && !CharSets[i].KeepEvenUseless)
                 {
                     uselessCharset = true;
                 } else

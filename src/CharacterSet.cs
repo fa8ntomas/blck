@@ -13,9 +13,10 @@ namespace BLEditor
     public class CharacterSet
     {
        
-        private CharacterSet(String uid=null)
+        private CharacterSet(String uid=null, bool KeepEvenUseless=false)
         {
-              UID = GuidHelper.parse(uid) ?? Guid.NewGuid();
+            UID = GuidHelper.parse(uid) ?? Guid.NewGuid();
+            this.KeepEvenUseless = KeepEvenUseless;
         }
         
         public static CharacterSet CreateFromData(byte[] fnt)
@@ -33,7 +34,8 @@ namespace BLEditor
         }
 
         public byte[] Data { get; set; }
-        public Guid UID { get; private set; }
+        public Guid UID { get; }
+        public bool KeepEvenUseless { get; }
         public String Path { get; set; }
 
         private void LoadData(String path)
@@ -44,7 +46,7 @@ namespace BLEditor
  
         public static CharacterSet Load(MapSet mapSet, XElement mapElemept)
         {
-            CharacterSet result = new CharacterSet(mapElemept.Attribute("uid")?.Value);
+            CharacterSet result = new CharacterSet(mapElemept.Attribute("uid")?.Value, mapElemept.Attribute("keep")!=null);
 
         
             String Path = mapElemept.Attribute("path")?.Value;
@@ -84,6 +86,12 @@ namespace BLEditor
             XElement result = new XElement("font");
             result.Add(new XAttribute("uid", UID.ToString()));
             result.Add(new XAttribute("path", System.IO.Path.Combine(PathHelper.RelativePath(System.IO.Path.GetDirectoryName(Path), System.IO.Path.GetDirectoryName(MapSetSaveFileName)), System.IO.Path.GetFileName(Path))));
+ 
+            if (KeepEvenUseless)
+            {
+                result.Add(new XAttribute("keep", "keep"));
+            }
+
             return result;
         }
 
