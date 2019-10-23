@@ -12,11 +12,11 @@ namespace BLEditor
 {
     public partial class FormGameData : Form
     {
-        public FormGameData()
+        public FormGameData(MapSet mapSet)
         {
             InitializeComponent();
 
-            SpritesSetComboBox.SelectedIndex = 0;
+            SpritesSetComboBox.SelectedIndex = (int)mapSet.SpriteSet;
         }
     }
 }

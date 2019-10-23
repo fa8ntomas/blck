@@ -32,8 +32,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.SpritesSetComboBox = new System.Windows.Forms.ComboBox();
-            this.listBox1 = new System.Windows.Forms.ListBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -79,25 +77,6 @@
             this.SpritesSetComboBox.Size = new System.Drawing.Size(82, 21);
             this.SpritesSetComboBox.TabIndex = 3;
             // 
-            // listBox1
-            // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(72, 68);
-            this.listBox1.Margin = new System.Windows.Forms.Padding(2);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(190, 108);
-            this.listBox1.TabIndex = 4;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 68);
-            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(43, 13);
-            this.label3.TabIndex = 5;
-            this.label3.Text = "Defines";
-            // 
             // button1
             // 
             this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
@@ -125,8 +104,6 @@
             this.ClientSize = new System.Drawing.Size(395, 227);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.button2);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.listBox1);
             this.Controls.Add(this.SpritesSetComboBox);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -145,10 +122,8 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox SpritesSetComboBox;
-        private System.Windows.Forms.ListBox listBox1;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
+        public System.Windows.Forms.ComboBox SpritesSetComboBox;
     }
 }

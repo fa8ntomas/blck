@@ -21,15 +21,20 @@ namespace BLEditor
 
             using (StreamWriter file = new StreamWriter(fileName, false, isoLatin1Encoding))
             {
+                asm.AddSet(file, "BLCK_STARTADR", "L0418");
+                asm.AddSet(file, "BLCK_MAPCOUNT", (UInt16)(mapset.Maps.Count - 1));
+               
+                if (mapset.SpriteSet == MapSet.SpriteSetEnum.TIX) { 
+                    asm.AddDef(file, "BLCK_TIXPM");
+                }
+
                 asm.AddIcl(file,asmBaseLineFullPath);
 
                 foreach(String include in mapset.Includes)
                 {
                     asm.AddIcl(file, include);
                 }
-
-                asm.AddAlign(file, 0x800);
-              
+ 
                 asm.ExportFOE(file, mapset);
                 asm.ExportBruceStart(file, mapset);
                 asm.ExportSpawnPositions(file, mapset);
@@ -45,8 +50,20 @@ namespace BLEditor
                 asm.ExportDLIs(file, mapset);
                 asm.ExportRLE(file, mapset);
 
-                asm.AddRunAd(file, "L0418");
+                asm.AddRunAd(file, "BLCK_STARTADR");
             }
+        }
+        private void AddDef(StreamWriter file, string label)
+        {
+            file.WriteLine($".def {label}");
+        }
+        private void AddSet(StreamWriter file, string v1, String v2)
+        {
+            file.WriteLine($"{BOL}{v1} set {v2}");
+        }
+        private void AddSet(StreamWriter file, string v1, UInt16 v2)
+        {
+            file.WriteLine($"{BOL}{v1} set ${v2.ToString("X4")}");
         }
 
         private void AddAlign(StreamWriter file, UInt16 align)

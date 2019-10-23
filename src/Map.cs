@@ -745,13 +745,13 @@ namespace BLEditor
         public Guid? Exit4MapID { get; set; } = null;
         public byte Exit4X { get; set; } = 0;
         public byte Exit4Y { get; set; } = 0;
-        public TypeColorDetection Colpf0Detection  = TypeColorDetection.None;
+        public TypeColorDetection Colpf0Detection  = TypeColorDetection.Always;
         public List<Rectangle> Colpf0DetectionRects = new List<Rectangle>();
         public List<ZoneColorDetection> Colpf0DetectionFlags = new List<ZoneColorDetection>();
-        public TypeColorDetection Colpf2Detection = TypeColorDetection.None;
+        public TypeColorDetection Colpf2Detection = TypeColorDetection.Always;
         public List<Rectangle> Colpf2DetectionRects = new List<Rectangle>();
         public List<ZoneColorDetection> Colpf2DetectionFlags = new List<ZoneColorDetection>();
-        public TypeColorDetection Colpf3Detection  = TypeColorDetection.None;
+        public TypeColorDetection Colpf3Detection  = TypeColorDetection.Always;
         public List<Rectangle> Colpf3DetectionRects = new List<Rectangle>();
         public List<ZoneColorDetection> Colpf3DetectionFlags = new List<ZoneColorDetection>();
 

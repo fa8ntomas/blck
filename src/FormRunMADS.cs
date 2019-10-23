@@ -61,7 +61,7 @@ namespace BLEditor
 
             AddLine($"{Environment.NewLine}**Generating {GetXEXFullPath()} **{Environment.NewLine}", Color.Red);
 
-            String arguments = $"-i:\"{Path.GetDirectoryName(generatedSourceFile)}\" \"{generatedSourceFile}\" -o:\"{GetXEXFullPath()}\" -d:BLCK_TIXPM -d:MAPCOUNT={Mapset.Maps.Count - 1}";
+            String arguments = $"-i:\"{Path.GetDirectoryName(generatedSourceFile)}\" \"{generatedSourceFile}\" -o:\"{GetXEXFullPath()}\"";
             
             if (firstmap > 0)
             {

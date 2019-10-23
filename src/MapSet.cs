@@ -14,6 +14,11 @@ namespace BLEditor
 {
     public class MapSet
     {
+        public enum SpriteSetEnum
+        {
+            Original = 0,
+            TIX = 1
+        };
         public event EventHandler Changed;
         public event EventHandler MapNameChanged;
         public event EventHandler OnDLISChanged;
@@ -53,7 +58,14 @@ namespace BLEditor
         public ReadOnlyCollection<Map> Maps { get { return maps.AsReadOnly(); } }
 
         public String Path { get; set; }
-    
+
+        SpriteSetEnum spriteSet = SpriteSetEnum.Original;
+        public SpriteSetEnum SpriteSet
+        {
+            get { return spriteSet; }
+            set { SetField(ref spriteSet, value); }
+        }
+
         private List<String> includes = new List<String>();
         public ReadOnlyCollection<String> Includes { get { return includes.AsReadOnly(); } }
 

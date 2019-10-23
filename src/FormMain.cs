@@ -635,10 +635,10 @@ namespace BLEditor
                 {
                     case TypeNode.GameData:
                         {
-                            FormGameData d = new FormGameData();
+                            FormGameData d = new FormGameData(mapSet);
                             if (d.ShowDialog() == DialogResult.OK)
                             {
-
+                                mapSet.SpriteSet = (MapSet.SpriteSetEnum)d.SpritesSetComboBox.SelectedIndex;
                             }
                         }; break;
 
