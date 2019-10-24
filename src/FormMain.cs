@@ -15,10 +15,10 @@ namespace BLEditor
         Bitmap[] tileArray;
         byte[] chars;
         bool mouseD = false;
-        MapSet mapSet = new MapSet();
+        readonly MapSet mapSet = new MapSet();
 
         List<byte> extraMapBytes = new List<byte>();
-        public enum TypeNode { GameData, Fonts, FontFile, Includes, IncludeFile, Map, MapInit, MapExec, MapTileCollision, MapData, CColpf0, CColpf2, CColpf3 };
+        public enum TypeNode { GameData, Fonts, FontFile, Includes, IncludeFile, Map, MapInit, MapExec, MapTileCollision, MapData, MapCColpf0, MapCColpf2, MapCColpf3 };
 
         public pbx1()
         {
@@ -99,9 +99,9 @@ namespace BLEditor
                     case TypeNode.MapExec:
                     case TypeNode.MapTileCollision:
                     case TypeNode.MapData:
-                    case TypeNode.CColpf0:
-                    case TypeNode.CColpf2:
-                    case TypeNode.CColpf3:
+                    case TypeNode.MapCColpf0:
+                    case TypeNode.MapCColpf2:
+                    case TypeNode.MapCColpf3:
                         contextMenuMap.Tag = GetMap(node_here);
                         contextMenuMap.Show(treeViewMaps, new Point(e.X, e.Y));
                         break;
@@ -319,17 +319,17 @@ namespace BLEditor
 
                     TreeNode ccolpf0 = new TreeNode("Colpf0 Collision")
                     {
-                        Tag = TypeNode.CColpf0
+                        Tag = TypeNode.MapCColpf0
                     };
 
                     TreeNode ccolpf2 = new TreeNode("Colpf2 Collision")
                     {
-                        Tag = TypeNode.CColpf2
+                        Tag = TypeNode.MapCColpf2
                     };
 
                     TreeNode ccolpf3 = new TreeNode("Colpf3 Collision")
                     {
-                        Tag = TypeNode.CColpf3
+                        Tag = TypeNode.MapCColpf3
                     };
 
                     TreeNode[] array = new TreeNode[] { initNode, execNode, tcollisionNode, dataNode, ccolpf0, ccolpf2, ccolpf3 };
@@ -616,7 +616,7 @@ namespace BLEditor
                                 //map.FontID = formBitmapToMap.ReturnCharactedSet.UID;
                                 characterSet.Data = (byte[])formBitmapToMap.ReturnCharactedSet.Data.Clone();
                                 map.MapData = formBitmapToMap.ReturnMap.MapData;
-                                if (DisplayedMap == map) {
+                                if (Object.Equals(DisplayedMap, map)) {
                                     DisplayMap(map);
                                 }
                             }
@@ -890,7 +890,7 @@ namespace BLEditor
                             }
                         }; break;
 
-                    case TypeNode.CColpf0:
+                    case TypeNode.MapCColpf0:
                         {
                             Map map = GetMap(e.Node);
                             FormColision fedit = new FormColision(map, map.Colpf0Detection, map.Colpf0DetectionRects, map.Colpf0DetectionFlags);
@@ -906,7 +906,7 @@ namespace BLEditor
                             }
                         }; break;
 
-                    case TypeNode.CColpf2:
+                    case TypeNode.MapCColpf2:
                         {
                             Map map = GetMap(e.Node);
                             FormColision fedit = new FormColision(map, map.Colpf2Detection, map.Colpf2DetectionRects, map.Colpf2DetectionFlags);
@@ -922,7 +922,7 @@ namespace BLEditor
                             }
                         }; break;
 
-                    case TypeNode.CColpf3:
+                    case TypeNode.MapCColpf3:
                         {
                             Map map = GetMap(e.Node);
                             FormColision fedit = new FormColision(map, map.Colpf3Detection, map.Colpf3DetectionRects, map.Colpf3DetectionFlags);
