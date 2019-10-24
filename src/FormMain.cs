@@ -18,14 +18,15 @@ namespace BLEditor
         MapSet mapSet = new MapSet();
 
         List<byte> extraMapBytes = new List<byte>();
+        public enum TypeNode { GameData, Fonts, FontFile, Includes, IncludeFile, Map, MapInit, MapExec, MapTileCollision, MapData, CColpf0, CColpf2, CColpf3 };
 
         public pbx1()
         {
             InitializeComponent();
 
-            mapSet.StrutureTreeChanged += MapSetStrutureTreeChanged;
-            mapSet.OnDLISChanged += mapSet_OnDLISChanged;
-            mapSet.MapNameChanged += (s, e) => { MapNameChanged((MapNameChangedEventArgs)e); };
+            mapSet.StrutureTreeChanged += (s, e) => MapSetStrutureTreeChanged();
+            mapSet.OnDLISChanged += (s, e) => mapSet_OnDLISChanged();
+            mapSet.MapNameChanged += (s, e) => MapNameChanged(e as MapNameChangedEventArgs); 
 
             for (int i = 0; i < 440; i++)//Populate Map Tiles
             {
@@ -38,30 +39,29 @@ namespace BLEditor
                 flpMap.Controls.Add(tile);
             }
 
-            newMenu.Click += (s, e) => { NewMapSet(); };
-            loadMenu.Click += (s, e) => { load(); };
-            saveMenu.Click += (s, e) => { MapSet.SSave(mapSet); };
-            saveAsMenu.Click += (s, e) => { MapSet.SSaveAs(mapSet); };
-            addANewMapFromAnImageMenu.Click += (s, e) => { AddANewMapFromAnImage(); };
-            addANewMapMenu.Click += (s, e) => { addANewMap(); };
-            addAnExistingMapMenu.Click += (s, e) => { addAExistingMap(); };
-            addIncludeMenu.Click += (s, e) => { AddInclude(); };
-            settingsMenu.Click += (s, e) => { Setting(); };
-            runMenu.Click += (s, e) => { Run(); };
-            buildReleaseMenu.Click += (s, e) => { BuildRelease(); };
+            newMenu.Click += (s, e) => NewMapSet();
+            loadMenu.Click += (s, e) =>  load(); 
+            saveMenu.Click += (s, e) => MapSet.SSave(mapSet); 
+            saveAsMenu.Click += (s, e) => MapSet.SSaveAs(mapSet); 
+            addANewMapFromAnImageMenu.Click += (s, e) =>  AddANewMapFromAnImage(); 
+            addANewMapMenu.Click += (s, e) =>  AddNewMap(); 
+            addAnExistingMapMenu.Click += (s, e) => AddExistingMap(); 
+            addIncludeMenu.Click += (s, e) =>  AddInclude(); 
+            settingsMenu.Click += (s, e) => Setting(); 
+            runMenu.Click += (s, e) => Run(); 
+            buildReleaseMenu.Click += (s, e) => BuildRelease(); 
 
-            runButton.Click += (s, e) => { Run(); };
+            runButton.Click += (s, e) =>  Run(); 
 
             treeViewMaps.MouseDown += (sender, args) => treeViewMaps_MouseDown(args);
 
-            renameMenu.Click += (s, e) => { RenameMap(s); };
-            deleteMenu.Click += (s, e) => { DeleteMap(s); };
-            importFromBitmapMenu.Click += (s, e) => { ImportMap(s); };
-
-            importBitmapIntoFontMenu.Click += (s, e) => { ImportBitmapIntoCurrentFont(s); };
-            editFontMenu.Click += (s, e) => { EditCurrentFont(s); };
-            copyFromFontMenu.Click += (s, e) => { CopyCurrentFont(s); };
-            CopyCharMenu.Click += (s, e) => { CopyChar(s); };
+            renameMenu.Click += (s, e) =>  RenameMap(s); 
+            deleteMenu.Click += (s, e) =>  DeleteMap(s);
+            importFromBitmapMenu.Click += (s, e) => ImportMap(s);
+            importBitmapIntoFontMenu.Click += (s, e) => ImportBitmapIntoCurrentFont(s);
+            editFontMenu.Click += (s, e) =>  EditCurrentFont(s); 
+            copyFromFontMenu.Click += (s, e) => CopyCurrentFont(s); 
+            CopyCharMenu.Click += (s, e) => CopyChar(s); 
         }
 
 
@@ -200,13 +200,13 @@ namespace BLEditor
                 }
             }
         }
-        private void mapSet_OnDLISChanged(object sender, EventArgs e)
+        private void mapSet_OnDLISChanged()
         {
              DisplayMap(DisplayedMap);
             
         }
 
-        private void MapSetStrutureTreeChanged(object sender, EventArgs e)
+        private void MapSetStrutureTreeChanged()
         {
             if (DisplayedMap != null && !mapSet.Maps.Contains(DisplayedMap))
             {
@@ -221,6 +221,8 @@ namespace BLEditor
                 dliList.Map = null;
                 DisplayedMap = null;
             }
+
+            // GAMEDATA
 
             TreeNode gameDataNode = treeViewMaps.Nodes.Cast<TreeNode>().Where(a => a.Tag is TypeNode typeNode && typeNode == TypeNode.GameData).FirstOrDefault();
             if (gameDataNode == null)
@@ -336,8 +338,6 @@ namespace BLEditor
                 }
             }
         }
-
-        public enum TypeNode { GameData, Fonts, FontFile, Includes, IncludeFile, Map, MapInit, MapExec, MapTileCollision, MapData, CColpf0, CColpf2, CColpf3 };
 
         private void MapNameChanged(MapNameChangedEventArgs e)
         {
@@ -678,7 +678,7 @@ namespace BLEditor
             mapSet.New();
         }
 
-        private void addAExistingMap()
+        private void AddExistingMap()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
@@ -702,7 +702,7 @@ namespace BLEditor
             }
         }
 
-        private void addANewMap()
+        private void AddNewMap()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
