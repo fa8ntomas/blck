@@ -16,7 +16,7 @@ namespace BLEditor
     {
         private byte[] fnt;
         
-        public FormFntEdit(CharacterSet characterSet, DLI[] dLIS)
+        public FormFntEdit(CharacterSet characterSet, DLI[] dLIS=null)
         {
         
             InitializeComponent();

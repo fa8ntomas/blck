@@ -11,7 +11,12 @@ namespace BLEditor
 {
     static class PathHelper
     {
-        public static string RelativePath(this string candidate, string other)
+        public static string RelativizePath(string parent, string filename)
+        {
+            return System.IO.Path.Combine(PathHelper.RelativePath(System.IO.Path.GetDirectoryName(filename), System.IO.Path.GetDirectoryName(parent)), System.IO.Path.GetFileName(filename));
+        }
+
+        public static string RelativePath( string candidate, string other)
         {
             if (String.IsNullOrWhiteSpace(candidate))
             {

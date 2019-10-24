@@ -23,9 +23,9 @@ namespace BLEditor
         {
             InitializeComponent();
 
-            mapSet.Changed += mapSet_Changed;
-            mapSet.OnDLISChanged +=  mapSet_OnDLISChanged;
-            mapSet.MapNameChanged += (s, e) => { mapSet_MapNameChanged((MapNameChangedEventArgs)e); };
+            mapSet.StrutureTreeChanged += MapSetStrutureTreeChanged;
+            mapSet.OnDLISChanged += mapSet_OnDLISChanged;
+            mapSet.MapNameChanged += (s, e) => { MapNameChanged((MapNameChangedEventArgs)e); };
 
             for (int i = 0; i < 440; i++)//Populate Map Tiles
             {
@@ -38,11 +38,11 @@ namespace BLEditor
                 flpMap.Controls.Add(tile);
             }
 
-            newMenu.Click += (s, e) => { newMapSet(); };
+            newMenu.Click += (s, e) => { NewMapSet(); };
             loadMenu.Click += (s, e) => { load(); };
             saveMenu.Click += (s, e) => { MapSet.SSave(mapSet); };
             saveAsMenu.Click += (s, e) => { MapSet.SSaveAs(mapSet); };
-            addANewMapFromAnImageMenu.Click += (s, e) => { addANewMapFromAnImage(); };
+            addANewMapFromAnImageMenu.Click += (s, e) => { AddANewMapFromAnImage(); };
             addANewMapMenu.Click += (s, e) => { addANewMap(); };
             addAnExistingMapMenu.Click += (s, e) => { addAExistingMap(); };
             addIncludeMenu.Click += (s, e) => { AddInclude(); };
@@ -58,42 +58,63 @@ namespace BLEditor
             deleteMenu.Click += (s, e) => { DeleteMap(s); };
             importFromBitmapMenu.Click += (s, e) => { ImportMap(s); };
 
-            importBitmapIntoFontMenu.Click += (s, e) => { importBitmapIntoCurrentFont(); };
-            editFontMenu.Click += (s, e) => { editCurrentFont(); };
-            copyFromFontMenu.Click += (s, e) => { CopyCurrentFont(); };
-            CopyCharMenu.Click += (s, e) => { CopyChar(); };
+            importBitmapIntoFontMenu.Click += (s, e) => { ImportBitmapIntoCurrentFont(s); };
+            editFontMenu.Click += (s, e) => { EditCurrentFont(s); };
+            copyFromFontMenu.Click += (s, e) => { CopyCurrentFont(s); };
+            CopyCharMenu.Click += (s, e) => { CopyChar(s); };
         }
 
-      
+
         private void AddInclude()
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-
-            openFileDialog.Filter = "Assembly|*.asm";
-            openFileDialog.Title = "Add include";
-            openFileDialog.ShowDialog();
-            if (openFileDialog.FileName != "")
+            using (OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                mapSet.AddInclude(openFileDialog.FileName);
+                Filter = "Assembly|*.asm",
+                Title = "Add include"
+            })
+            {
+                openFileDialog.ShowDialog();
+
+                if (!String.IsNullOrWhiteSpace(openFileDialog.FileName))
+                {
+                    mapSet.AddInclude(openFileDialog.FileName);
+                }
             }
         }
         private void treeViewMaps_MouseDown(MouseEventArgs e)
         {
-            // Make sure this is the right button.
             if (e.Button != MouseButtons.Right) return;
 
-            // Select this node.
             TreeNode node_here = treeViewMaps.GetNodeAt(e.X, e.Y);
             treeViewMaps.SelectedNode = node_here;
 
-            // See if we got a node.
             if (node_here == null) return;
 
-            contextMenuMap.Tag = GetMap(node_here);
-            contextMenuMap.Show(treeViewMaps, new Point(e.X, e.Y));
+            if (node_here.Tag is TypeNode typeNode)
+            {
+                switch (typeNode)
+                {
+                    case TypeNode.Map:
+                    case TypeNode.MapInit:
+                    case TypeNode.MapExec:
+                    case TypeNode.MapTileCollision:
+                    case TypeNode.MapData:
+                    case TypeNode.CColpf0:
+                    case TypeNode.CColpf2:
+                    case TypeNode.CColpf3:
+                        contextMenuMap.Tag = GetMap(node_here);
+                        contextMenuMap.Show(treeViewMaps, new Point(e.X, e.Y));
+                        break;
+                    case TypeNode.FontFile:
+                        FontTreeNode fontTreeNode = (FontTreeNode)node_here;
+                        contextMenuFont.Tag = fontTreeNode.CharacterSet;
+                        contextMenuFont.Show(treeViewMaps, new Point(e.X, e.Y));
+                        break;
+                }
+            }
         }
 
-      
+
         private Map GetMap(TreeNode Node)
         {
             if (Node != null && Node.Parent == null)
@@ -108,148 +129,233 @@ namespace BLEditor
             return null;
         }
 
-        private void CopyCurrentFont()
+        private void CopyCurrentFont(object sender)
         {
-            if (CurrentMap() != null)
+            CharacterSet characterSet = null;
+
+            if (sender is ToolStripItem item && item.Owner is ContextMenuStrip owner && owner.Tag is CharacterSet contextCharacterSet)
             {
-                CharacterSet characterSet = mapSet.CharSets.First(set => set.UID == CurrentMap().FontID);
-                OpenFileDialog openFileDialog = new OpenFileDialog();
-
-                openFileDialog.Filter = "Font|*.fnt";
-                openFileDialog.Title = "Load font to import";
-                openFileDialog.ShowDialog();
-                if (openFileDialog.FileName != "")
-                {
-                    CharacterSet characterSetFrom = mapSet.CharSets.FirstOrDefault(set => set.Path == openFileDialog.FileName);
-                    if (characterSetFrom == null)
-                    {
-                        characterSetFrom = CharacterSet.CreateFromFileName(openFileDialog.FileName);
-                     }
-
-                    FormFntToFnt formFntToFnt = new FormFntToFnt(characterSet, CurrentMap().DLIS, characterSetFrom);
-
-                    if (formFntToFnt.ShowDialog() == DialogResult.OK)
-                    {
-                      characterSet.Data = formFntToFnt.ReturnFontData;
-                          PopulateMap(CurrentMap());
-                    }
-                  
-                }
-               
+                characterSet = contextCharacterSet;
+            } else if (DisplayedMap != null)
+            {
+                characterSet = mapSet.CharSets.First(set => set.UID == DisplayedMap.FontID);
             }
-        }
-        private void CopyChar()
-        {
-            if (CurrentMap() != null)
+
+            if (characterSet != null)
             {
-                CharacterSet characterSet = mapSet.CharSets.First(set => set.UID == CurrentMap().FontID);
-                OpenFileDialog openFileDialog = new OpenFileDialog();
+                using (OpenFileDialog openFileDialog = new OpenFileDialog
+                {
+                    Filter = "Font|*.fnt",
+                    Title = "Load font to import"
+                })
+                {
+                    openFileDialog.ShowDialog();
 
-             
-                    FormFntToFnt formFntToFnt = new FormFntToFnt(characterSet, CurrentMap().DLIS, characterSet);
-
-                    if (formFntToFnt.ShowDialog() == DialogResult.OK)
+                    if (!String.IsNullOrWhiteSpace(openFileDialog.FileName))
                     {
-                        characterSet.Data = formFntToFnt.ReturnFontData;
-                        PopulateMap(CurrentMap());
+                        CharacterSet characterSetFrom = mapSet.CharSets.FirstOrDefault(set => set.Path == openFileDialog.FileName);
+                        if (characterSetFrom == null)
+                        {
+                            characterSetFrom = CharacterSet.CreateFromFileName(openFileDialog.FileName);
+                        }
+
+                        using (FormFntToFnt formFntToFnt = new FormFntToFnt(characterSet, DisplayedMap?.DLIS, characterSetFrom))
+                        {
+                            if (formFntToFnt.ShowDialog() == DialogResult.OK)
+                            {
+                                characterSet.Data = formFntToFnt.ReturnFontData;
+                                DisplayMap(DisplayedMap);
+                            }
+                        }
                     }
+                }
+            }
 
-               
+        }
+        private void CopyChar(object sender)
+        {
+            CharacterSet characterSet = null;
 
+            if (sender is ToolStripItem item && item.Owner is ContextMenuStrip owner && owner.Tag is CharacterSet contextCharacterSet)
+            {
+                characterSet = contextCharacterSet;
+            }
+            else if (DisplayedMap != null)
+            {
+                characterSet = mapSet.CharSets.First(set => set.UID == DisplayedMap.FontID);
+            }
+
+            if (characterSet != null)
+            {
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                {
+                    using (FormFntToFnt formFntToFnt = new FormFntToFnt(characterSet, DisplayedMap?.DLIS, characterSet))
+                    {
+                        if (formFntToFnt.ShowDialog() == DialogResult.OK)
+                        {
+                            characterSet.Data = formFntToFnt.ReturnFontData;
+                            DisplayMap(DisplayedMap);
+                        }
+                    }
+                }
             }
         }
         private void mapSet_OnDLISChanged(object sender, EventArgs e)
         {
-            Debug.Write("mapSet_OnDLISChanged");
-            if (CurrentMap() != null)
-            {
-                PopulateMap(CurrentMap());
-            }
+             DisplayMap(DisplayedMap);
+            
         }
 
-        private void mapSet_Changed(object sender, EventArgs e)
+        private void MapSetStrutureTreeChanged(object sender, EventArgs e)
         {
-            flpTiles.Controls.Clear();
-
-            for (int i = 0; i < 440; i++)
+            if (DisplayedMap != null && !mapSet.Maps.Contains(DisplayedMap))
             {
-                (flpMap.Controls[i] as Tile).Text = null;
-                (flpMap.Controls[i] as Tile).Image = null;
+                flpTiles.Controls.Clear();
+
+                for (int i = 0; i < 440; i++)
+                {
+                    (flpMap.Controls[i] as Tile).Text = null;
+                    (flpMap.Controls[i] as Tile).Image = null;
+                }
+
+                dliList.Map = null;
+                DisplayedMap = null;
             }
 
-            dliList.Map = null;
-
-    
-            treeViewMaps.Nodes.Clear();
-
-            TreeNode gameDataNode = new TreeNode("Game Data");
-            gameDataNode.Tag = TypeNode.GameData;
-            treeViewMaps.Nodes.Add(gameDataNode);
-     
-            if (mapSet.Includes.Count > 0)
+            TreeNode gameDataNode = treeViewMaps.Nodes.Cast<TreeNode>().Where(a => a.Tag is TypeNode typeNode && typeNode == TypeNode.GameData).FirstOrDefault();
+            if (gameDataNode == null)
             {
-                TreeNode gameIncludeNode = new TreeNode("Includes");
-                gameIncludeNode.Tag = TypeNode.GameData;
-                treeViewMaps.Nodes.Add(gameIncludeNode);
-
-                foreach (String include in mapSet.Includes)
+                gameDataNode = new TreeNode("Game Data")
                 {
-                    TreeNode gameIncludeFileNode = new TreeNode(include);
-                    gameIncludeFileNode.Tag = TypeNode.IncludeFile;
-                    gameIncludeNode.Nodes.Add(gameIncludeFileNode);
+                    Tag = TypeNode.GameData
+                };
+                treeViewMaps.Nodes.Add(gameDataNode);
+            }
+
+            // INCLUDES
+
+            TreeNode gameIncludesNode = treeViewMaps.Nodes.Cast<TreeNode>().Where(a => a.Tag is TypeNode typeNode && typeNode == TypeNode.Includes).FirstOrDefault();
+            if (gameIncludesNode == null) {
+                gameIncludesNode = new TreeNode("Includes")
+                {
+                    Tag = TypeNode.Includes
+                };
+                treeViewMaps.Nodes.Add(gameIncludesNode);
+            }
+
+            foreach (IncludeTreeNode node in gameIncludesNode.Nodes.Cast<IncludeTreeNode>().Where(a => !mapSet.Includes.Contains(a.Path)))
+            {
+                gameIncludesNode.Nodes.Remove(node);
+            }
+
+            foreach (String include in mapSet.Includes)
+            {
+                IncludeTreeNode gameIncludeNode = gameIncludesNode.Nodes.Cast<IncludeTreeNode>().Where(a => a.Path == include).FirstOrDefault();
+                if (gameIncludeNode == null)
+                {
+                    gameIncludesNode.Nodes.Add(new IncludeTreeNode(mapSet, include));
                 }
+            }
+
+            // FONTS
+
+            TreeNode fontsNode = treeViewMaps.Nodes.Cast<TreeNode>().Where(a => a.Tag is TypeNode typeNode && typeNode == TypeNode.Fonts).FirstOrDefault();
+            if (fontsNode == null) { 
+                fontsNode = new TreeNode("Fonts")
+                {
+                    Tag = TypeNode.Fonts
+                };
+
+                treeViewMaps.Nodes.Add(fontsNode);
+            }
+
+            foreach (FontTreeNode node in fontsNode.Nodes.OfType<FontTreeNode>().Where(a => !mapSet.CharSets.Contains(a.CharacterSet)))
+            {
+                fontsNode.Nodes.Remove(node);
+            }
+
+            foreach (var charset in mapSet.CharSets)
+            {
+                FontTreeNode fontFileNode = fontsNode.Nodes.OfType<FontTreeNode>().Where(a => a.CharacterSet.Equals(charset)).FirstOrDefault();
+                if (fontFileNode == null)
+                {                 
+                    fontsNode.Nodes.Add(new FontTreeNode(mapSet, charset));
+                }
+             }
+
+            // MAPS 
+
+            foreach (MapTreeNode node in treeViewMaps.Nodes.OfType<MapTreeNode>().Where(a => !mapSet.Maps.Contains(a.Map)))
+            {
+                treeViewMaps.Nodes.Remove(node);
             }
 
             foreach (Map map in mapSet.Maps)
             {
-                TreeNode dataNode = new TreeNode("Map Data");
-                dataNode.Tag = TypeNode.MapData;
+                MapTreeNode mapNode = treeViewMaps.Nodes.OfType<MapTreeNode>().Where(a => a.Map.Equals(map)).FirstOrDefault();
+                if (mapNode == null)
+                {
+                    TreeNode dataNode = new TreeNode("Map Data")
+                    {
+                        Tag = TypeNode.MapData
+                    };
 
-                TreeNode initNode = new TreeNode("Init routine");
-                initNode.Tag = TypeNode.MapInit;
+                    TreeNode initNode = new TreeNode("Init routine")
+                    {
+                        Tag = TypeNode.MapInit
+                    };
 
-                TreeNode execNode = new TreeNode("Exec routine");
-                execNode.Tag = TypeNode.MapExec;
+                    TreeNode execNode = new TreeNode("Exec routine")
+                    {
+                        Tag = TypeNode.MapExec
+                    };
 
-                TreeNode tcollisionNode = new TreeNode("Tite Collision routine");
-                tcollisionNode.Tag = TypeNode.MapTileCollision;
-             
-                TreeNode ccolpf0 = new TreeNode("Colpf0 Collision");
-                ccolpf0.Tag = TypeNode.CColpf0;
+                    TreeNode tcollisionNode = new TreeNode("Tite Collision routine")
+                    {
+                        Tag = TypeNode.MapTileCollision
+                    };
 
-                TreeNode ccolpf2 = new TreeNode("Colpf2 Collision");
-                ccolpf2.Tag = TypeNode.CColpf2;
+                    TreeNode ccolpf0 = new TreeNode("Colpf0 Collision")
+                    {
+                        Tag = TypeNode.CColpf0
+                    };
 
-                TreeNode ccolpf3 = new TreeNode("Colpf3 Collision");
-                ccolpf3.Tag = TypeNode.CColpf3;
+                    TreeNode ccolpf2 = new TreeNode("Colpf2 Collision")
+                    {
+                        Tag = TypeNode.CColpf2
+                    };
 
-                TreeNode[] array = new TreeNode[] { initNode, execNode, tcollisionNode, dataNode, ccolpf0, ccolpf2, ccolpf3 };
-             
-                MapTreeNode treeNode = new MapTreeNode(map, array);
-                treeNode.Tag= TypeNode.Map;
-                treeViewMaps.Nodes.Add(treeNode);
+                    TreeNode ccolpf3 = new TreeNode("Colpf3 Collision")
+                    {
+                        Tag = TypeNode.CColpf3
+                    };
+
+                    TreeNode[] array = new TreeNode[] { initNode, execNode, tcollisionNode, dataNode, ccolpf0, ccolpf2, ccolpf3 };
+
+                    treeViewMaps.Nodes.Add(new MapTreeNode(map, array));
+                }
             }
         }
 
-        public enum TypeNode { GameData, Includes, IncludeFile, Map, MapInit, MapExec, MapTileCollision, MapData, CColpf0, CColpf2, CColpf3 };
+        public enum TypeNode { GameData, Fonts, FontFile, Includes, IncludeFile, Map, MapInit, MapExec, MapTileCollision, MapData, CColpf0, CColpf2, CColpf3 };
 
-        private void mapSet_MapNameChanged(MapNameChangedEventArgs e)
+        private void MapNameChanged(MapNameChangedEventArgs e)
         {
-          
-            var result = treeViewMaps.Nodes.OfType<MapTreeNode>()
-                            .FirstOrDefault(node => node.Map == e.Map);
+
+            MapTreeNode result = treeViewMaps.Nodes.OfType<MapTreeNode>()
+                            .FirstOrDefault(node => node.Map.Equals(e.Map));
 
             result.Text = e.NewName;
-      }
-  
+        }
+
         private void Lm_MouseClick(object sender, MouseEventArgs e)
         {
             if (!string.IsNullOrEmpty(lblSelected.Text))
             {
                 (sender as Tile).Text = lblSelected.Text;
-                Map currentMap = CurrentMap();
+                Map currentMap = DisplayedMap;
                 int selectedNumber = int.Parse(lblSelected.Text, System.Globalization.NumberStyles.HexNumber);
-                if (currentMap!=null)
+                if (currentMap != null)
                 {
                     int tileNum = Convert.ToInt32((sender as Tile).Name);
                     RbgPFColors currentColors = currentMap.GetColors(tileNum);
@@ -270,11 +376,11 @@ namespace BLEditor
             {
                 (sender as Tile).Text = lblSelected.Text;
                 int selectedNumber = int.Parse(lblSelected.Text, System.Globalization.NumberStyles.HexNumber);
-                Map currentMap = CurrentMap();
+                Map currentMap = DisplayedMap;
                 if (currentMap != null)
                 {
                     int tileNum = Convert.ToInt32((sender as Tile).Name);
-                   RbgPFColors currentColors = currentMap.GetColors(tileNum);
+                    RbgPFColors currentColors = currentMap.GetColors(tileNum);
                     currentMap.MapData[tileNum] = (byte)selectedNumber;
                     Tile newTile = new Tile(selectedNumber, (flpTiles.Controls[selectedNumber] as Tile).tbytes, currentColors);
                     (sender as Tile).Image = newTile.CreateBitmap(4, 16, 32);
@@ -328,9 +434,9 @@ namespace BLEditor
                     count++;
                 }
                 Tile tile;
-                if (CurrentMap() != null && CurrentMap().DLIS.Length == 1)
+                if (DisplayedMap != null && DisplayedMap.DLIS.Length == 1)
                 {
-                    tile = new Tile(i, chars, CurrentMap().DLIS[0].AtariPFColors.ToBLColor());
+                    tile = new Tile(i, chars, DisplayedMap.DLIS[0].AtariPFColors.ToBLColor());
                 }
                 else
                 {
@@ -363,14 +469,17 @@ namespace BLEditor
             return pathASplit.Last();
         }
 
-        private void PopulateMap(Map inMap)
+        private void DisplayMap(Map inMap)
         {
+            DisplayedMap = inMap;
+
             dliList.Map = inMap;
 
             byte[] bytes = mapSet.CharSets.First(set => set.UID == inMap.FontID).Data;
             flpTiles.Controls.Clear();
             CreateTiles(bytes);
             PopulateLabels();
+
             buttonEditFnt.Enabled = true;
 
             for (int i = 0; i < Math.Min(inMap.MapData.Length, 440); i++)
@@ -382,7 +491,7 @@ namespace BLEditor
                     tile.Tag = new ToolTip();
                 }
 
-                (tile.Tag as ToolTip).SetToolTip(tile, inMap.MapData[i].ToString("X2")+ " ["+(i%40).ToString("X2")+"," + (i / 40+2).ToString("X2") + "]");
+                (tile.Tag as ToolTip).SetToolTip(tile, inMap.MapData[i].ToString("X2") + " [" + (i % 40).ToString("X2") + "," + (i / 40 + 2).ToString("X2") + "]");
 
                 tile.Text = inMap.MapData[i].ToString("X2");
                 tile.Image = LookUpDLIColor(flpTiles.Controls[inMap.MapData[i]] as Tile, i, inMap);
@@ -401,28 +510,36 @@ namespace BLEditor
             return changeTile.CreateBitmap(4, 16, 32);
         }
 
-        private void editCurrentFont()
+        private void EditCurrentFont(object sender)
         {
-            if (CurrentMap() != null)
+            CharacterSet characterSet = null;
+
+            if (sender is ToolStripItem item && item.Owner is ContextMenuStrip owner && owner.Tag is CharacterSet contextCharacterSet)
             {
-                CharacterSet characterSet = mapSet.CharSets.First(set => set.UID == CurrentMap().FontID);
+                characterSet = contextCharacterSet;
+            }
+            else if (DisplayedMap != null)
+            {
+                characterSet = mapSet.CharSets.First(set => set.UID == DisplayedMap.FontID);
+            }
 
-                FormFntEdit fontEditForm = new FormFntEdit(characterSet, CurrentMap().DLIS);
-
-                if (fontEditForm.ShowDialog() == DialogResult.OK)
+            if (characterSet != null)
+            {
+                using (FormFntEdit fontEditForm = new FormFntEdit(characterSet, DisplayedMap?.DLIS))
                 {
-                    characterSet.Data = fontEditForm.ReturnFontData;
-                    PopulateMap(CurrentMap());
+                    if (fontEditForm.ShowDialog() == DialogResult.OK)
+                    {
+                        characterSet.Data = fontEditForm.ReturnFontData;
+                        DisplayMap(DisplayedMap);
+                    }
                 }
             }
         }
-       
-        private Map CurrentMap()
-        {
-            return GetMap(treeViewMaps.SelectedNode);
-        }
 
-        private void addANewMapFromAnImage()
+
+        Map DisplayedMap { get; set; }
+
+        private void AddANewMapFromAnImage()
         {
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
@@ -443,12 +560,15 @@ namespace BLEditor
                         }
                     }
 
-                    FormBitmapToMap formBitmapToMap = new FormBitmapToMap(mapSet,img, openFileDialog1.FileName);
-                    var result = formBitmapToMap.ShowDialog();
-                    if (result == DialogResult.OK)
+                    using (FormBitmapToMap formBitmapToMap = new FormBitmapToMap(mapSet, img, openFileDialog1.FileName))
                     {
-                        mapSet.AddCharSet(formBitmapToMap.ReturnCharactedSet);
-                        mapSet.AddMap(formBitmapToMap.ReturnMap);
+                        var result = formBitmapToMap.ShowDialog();
+                        if (result == DialogResult.OK)
+                        {
+                            mapSet.AddCharSet(formBitmapToMap.ReturnCharactedSet);
+                            mapSet.AddMap(formBitmapToMap.ReturnMap);
+
+                        }
                     }
                 }
                 else
@@ -488,7 +608,7 @@ namespace BLEditor
 
                             CharacterSet characterSet = mapSet.CharSets.First(set => set.UID == map.FontID);
 
-                            FormBitmapToMap formBitmapToMap = new FormBitmapToMap(mapSet, img, openFileDialog1.FileName,characterSet);
+                            FormBitmapToMap formBitmapToMap = new FormBitmapToMap(mapSet, img, openFileDialog1.FileName, characterSet);
                             var result = formBitmapToMap.ShowDialog();
                             if (result == DialogResult.OK)
                             {
@@ -496,8 +616,8 @@ namespace BLEditor
                                 //map.FontID = formBitmapToMap.ReturnCharactedSet.UID;
                                 characterSet.Data = (byte[])formBitmapToMap.ReturnCharactedSet.Data.Clone();
                                 map.MapData = formBitmapToMap.ReturnMap.MapData;
-                                if ( CurrentMap() == map) {
-                                    PopulateMap(map);
+                                if (DisplayedMap == map) {
+                                    DisplayMap(map);
                                 }
                             }
                         }
@@ -509,51 +629,70 @@ namespace BLEditor
                 }
             }
         }
-        private void importBitmapIntoCurrentFont()
+        private void ImportBitmapIntoCurrentFont(object sender)
         {
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            CharacterSet characterSet = null;
+
+            if (sender is ToolStripItem item && item.Owner is ContextMenuStrip owner && owner.Tag is CharacterSet contextCharacterSet)
             {
-                CharacterSet characterSet = mapSet.CharSets.First(set => set.UID == CurrentMap().FontID);
+                characterSet = contextCharacterSet;
+            }
+            else if (DisplayedMap != null)
+            {
+                characterSet = mapSet.CharSets.First(set => set.UID == DisplayedMap.FontID);
+            }
 
-                Image image;
-                using (var bmpTemp = new Bitmap(openFileDialog1.FileName))
+            if (characterSet != null)
+            {
+                if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 {
-                    image = new Bitmap(bmpTemp);
-                }
 
-                if (ImageUtils.HasMoreThanFiveColors(image)){
-                     DialogResult result = MessageBox.Show("Image has more than five colors. Continue?", "Warning", MessageBoxButtons.YesNo);
-                    if (result == DialogResult.No)
+                    Image image;
+                    using (var bmpTemp = new Bitmap(openFileDialog1.FileName))
+                    {
+                        image = new Bitmap(bmpTemp);
+                    }
+
+                    if (ImageUtils.HasMoreThanFiveColors(image))
+                    {
+                        DialogResult result = MessageBox.Show("Image has more than five colors. Continue?", "Warning", MessageBoxButtons.YesNo);
+                        if (result == DialogResult.No)
                         {
-                        return;
+                            return;
                         }
                     }
 
-                FormBitmapToFnt formBitmapToFnt = new FormBitmapToFnt(image, characterSet, CurrentMap().DLIS);
-                if (formBitmapToFnt.ShowDialog() == DialogResult.OK)
-                {
-                    characterSet.Data = formBitmapToFnt.ReturnFontData;
-                    PopulateMap(CurrentMap());
+                    FormBitmapToFnt formBitmapToFnt = new FormBitmapToFnt(image, characterSet, DisplayedMap.DLIS);
+                    if (formBitmapToFnt.ShowDialog() == DialogResult.OK)
+                    {
+                        characterSet.Data = formBitmapToFnt.ReturnFontData;
+                        DisplayMap(DisplayedMap);
+                    }
                 }
             }
         }
+    
 
-        private void newMapSet()
+        private void NewMapSet()
         {
             mapSet.New();
         }
 
         private void addAExistingMap()
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Map|*.rle";
-            openFileDialog.Title = "Load map";
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Map|*.rle",
+                Title = "Load map"
+            };
             openFileDialog.ShowDialog();
             if (openFileDialog.FileName != "")
             {
-                OpenFileDialog openFileDialog2 = new OpenFileDialog();
-                openFileDialog2.Filter = "Font|*.fnt";
-                openFileDialog2.Title = "Load Font for "+ openFileDialog.FileName;
+                OpenFileDialog openFileDialog2 = new OpenFileDialog
+                {
+                    Filter = "Font|*.fnt",
+                    Title = "Load Font for " + openFileDialog.FileName
+                };
                 openFileDialog2.ShowDialog();
                 if (openFileDialog2.FileName != "")
                 {
@@ -565,9 +704,11 @@ namespace BLEditor
 
         private void addANewMap()
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Font|*.fnt";
-            openFileDialog.Title = "Load font for the new map";
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Font|*.fnt",
+                Title = "Load font for the new map"
+            };
             openFileDialog.ShowDialog();
             if (openFileDialog.FileName != "")
             {
@@ -577,9 +718,11 @@ namespace BLEditor
 
         private void load()
         {
-            OpenFileDialog saveFileDialog1 = new OpenFileDialog();
-            saveFileDialog1.Filter = "Mapset|*.xml";
-            saveFileDialog1.Title = "Load Mapset";
+            OpenFileDialog saveFileDialog1 = new OpenFileDialog
+            {
+                Filter = "Mapset|*.xml",
+                Title = "Load Mapset"
+            };
             saveFileDialog1.ShowDialog();
             if (saveFileDialog1.FileName != "")
             {
@@ -626,7 +769,7 @@ namespace BLEditor
 
         bool enableCollapseExpand = true;
 
-        private void treeViewMaps_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        private void NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             
             if (e.Node.Tag is TypeNode typeNode)
@@ -644,8 +787,10 @@ namespace BLEditor
 
                     case TypeNode.Map:
                         {
-                            Map map = GetMap(e.Node);
-                            PopulateMap(map);
+                            if (e.Node is MapTreeNode mapNode)
+                            {
+                                DisplayMap(mapNode.Map);
+                            }
                         }; break;
 
                     case TypeNode.MapData:
@@ -883,9 +1028,11 @@ namespace BLEditor
 
         private void exportToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            saveFileDialog1.Filter = "Mapset|*.xml";
-            saveFileDialog1.Title = "Save Mapset";
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog
+            {
+                Filter = "Mapset|*.xml",
+                Title = "Save Mapset"
+            };
             saveFileDialog1.ShowDialog();
 
             // If the file name is not an empty string open it for saving.  
@@ -894,8 +1041,6 @@ namespace BLEditor
                  mapSet.Export(saveFileDialog1.FileName);
             }
         }
-
-
 
     }
 }

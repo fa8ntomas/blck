@@ -10,7 +10,7 @@ using System.Xml.Linq;
 
 namespace BLEditor
 {
-    public class CharacterSet
+    public class CharacterSet : IEquatable<CharacterSet>
     {
        
         private CharacterSet(String uid=null, bool KeepEvenUseless=false)
@@ -95,6 +95,11 @@ namespace BLEditor
             return result;
         }
 
-  
+        public bool Equals(CharacterSet other) =>
+            String.Equals(UID, other.UID);
+   
+        public override bool Equals(object obj) =>
+                (obj is CharacterSet metrics) && Equals(metrics);
+
     }
 }

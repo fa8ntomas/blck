@@ -19,7 +19,7 @@ namespace BLEditor
             Original = 0,
             TIX = 1
         };
-        public event EventHandler Changed;
+        public event EventHandler StrutureTreeChanged;
         public event EventHandler MapNameChanged;
         public event EventHandler OnDLISChanged;
 
@@ -69,23 +69,35 @@ namespace BLEditor
         private List<String> includes = new List<String>();
         public ReadOnlyCollection<String> Includes { get { return includes.AsReadOnly(); } }
 
-        public void AddInclude(String include)
+        public void AddInclude(String include, bool sendChangedEvent = true)
         {
             if (!includes.Contains(include))
             {
                 includes.Add(include);
                 IsDirty = true;
-                Changed?.Invoke(this, null);
+                if (sendChangedEvent)
+                {
+                    StrutureTreeChanged?.Invoke(this, null);
+                }
             }
         }
 
-        public void AddCharSet(CharacterSet newCharSet)
+        public void AddCharSet(CharacterSet newCharSet, bool sendChangedEvent = true)
         {
-            charSets.Add(newCharSet);
+            if (!charSets.Contains(newCharSet))
+            {
+                charSets.Add(newCharSet);
+                
+                IsDirty = true;
+
+                if (sendChangedEvent)
+                {
+                    StrutureTreeChanged?.Invoke(this, null);
+                }
+            }
         }
 
-
-        private void RemoveUselessCharset()
+       /* private void RemoveUselessCharset()
         {
 
             List<CharacterSet> usedCharSets = new List<CharacterSet>();
@@ -113,7 +125,7 @@ namespace BLEditor
                 IsDirty = true;
                 this.charSets = usedCharSets;
             }
-        }
+        }*/
 
         public void AddMap(Map newMap, bool sendChangedEvent=true)
         {
@@ -121,7 +133,7 @@ namespace BLEditor
             newMap.OnDLISChanged += (s, e) => { OnDLISChanged?.Invoke(s, e); };
             if (sendChangedEvent)
             {
-                Changed?.Invoke(this, null);
+                StrutureTreeChanged?.Invoke(this, null);
             }
         }
 
@@ -131,8 +143,7 @@ namespace BLEditor
             if (characterSet == null)
             {
                 characterSet = CharacterSet.CreateFromFileName(fontFileName);
-                AddCharSet(characterSet);
-              
+                AddCharSet(characterSet,false);         
             }
 
             Map result = Map.CreateNewMap(this,characterSet);
@@ -145,7 +156,7 @@ namespace BLEditor
             if (characterSet == null)
             {
                 characterSet = CharacterSet.CreateFromFileName(fontFileName);
-                AddCharSet(characterSet);
+                AddCharSet(characterSet, false);
 
             }
 
@@ -163,8 +174,6 @@ namespace BLEditor
                 Path = fileName ?? Path;
 
                 XElement xmlTree1 = new XElement("bleditor");
-
-                RemoveUselessCharset();
 
                 foreach (CharacterSet characterSet in charSets)
                 {
@@ -267,7 +276,6 @@ namespace BLEditor
             }
         }
 
-   
 
         public void Load(String fileName)
         {
@@ -279,18 +287,16 @@ namespace BLEditor
 
             foreach (XElement node in xml.Elements("font"))
             {
-                CharacterSet characterSet = CharacterSet.Load(this, node);
-                AddCharSet(characterSet);
+                AddCharSet(CharacterSet.Load(this, node), false);
             }
 
             foreach (XElement node in xml.Elements("include"))
             {
-                AddInclude(node.Value);
+                AddInclude(node.Value, false);
             }
 
             foreach (XElement node in xml.Elements("map"))
             {
-
                 Map loadedMap = Map.Load(this, node);
 
                 AddMap(loadedMap, false);
@@ -305,7 +311,7 @@ namespace BLEditor
             IsNew = false;
             IsDirty = false;
 
-            Changed?.Invoke(this, null);
+            StrutureTreeChanged?.Invoke(this, null);
         }
 
         internal CharacterSet GetFont(Guid? FontID)
@@ -333,14 +339,16 @@ namespace BLEditor
         {
             IsDirty = false;
             IsNew = true;
+
             charSets.Clear();
-           
+            includes.Clear();
             maps.Clear();
 
             Path = null;
+
             if (sendChangedEvent)
             {
-                Changed?.Invoke(this, null);
+                StrutureTreeChanged?.Invoke(this, null);
             }
         }
 
@@ -359,10 +367,12 @@ namespace BLEditor
             }
         }
 
-        internal void DeleteMap(Map map)
+        internal void DeleteMap(Map map, bool sendChangedEvent = true)
         {
-            maps.Remove(map);
-            Changed?.Invoke(this, null);
+            if (maps.Remove(map) && sendChangedEvent)
+            {
+                StrutureTreeChanged?.Invoke(this, null);
+            }
         }      
     }
 }

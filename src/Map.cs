@@ -11,7 +11,7 @@ using System.Xml.Linq;
 
 namespace BLEditor
 {
-    public class Map
+    public class Map : IEquatable<Map>
     {
         public enum TypeColorDetection
         {
@@ -725,6 +725,11 @@ namespace BLEditor
             return null;
         }
 
+        public bool Equals(Map other) =>
+            String.Equals(UID, other.UID);
+
+        public override bool Equals(object obj) =>
+                (obj is Map map) && Equals(map);
 
         ///////////////////////////////////////////
 
@@ -787,10 +792,34 @@ namespace BLEditor
         public MapTreeNode(Map map, TreeNode[] array) : base(map.Name, array)
         {
             Map = map;
-
+            Tag = pbx1.TypeNode.Map;
         }
     }
 
+    public class FontTreeNode : TreeNode
+    {
+
+        public CharacterSet CharacterSet { get; set; }
+
+
+        public FontTreeNode(MapSet mapSet, CharacterSet CharacterSet ) : base(PathHelper.RelativizePath(mapSet.Path, CharacterSet.Path))
+        {
+            this.CharacterSet = CharacterSet;
+            Tag = pbx1.TypeNode.FontFile;
+        }
+    }
+
+    public class IncludeTreeNode : TreeNode
+    { 
+       public String Path { get; set; }
+
+
+        public IncludeTreeNode(MapSet mapSet, String path) : base(PathHelper.RelativizePath(mapSet.Path, path))
+        {
+            this.Path = path;
+            Tag = pbx1.TypeNode.IncludeFile;
+        }
+    }
     public class MapNameChangedEventArgs : EventArgs
     {
         public String OldName { get; private set; }
