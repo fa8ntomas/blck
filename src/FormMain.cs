@@ -40,13 +40,15 @@ namespace BLEditor
             }
 
             newMenu.Click += (s, e) => NewMapSet();
-            loadMenu.Click += (s, e) =>  load(); 
+            loadMenu.Click += (s, e) =>  Load(); 
             saveMenu.Click += (s, e) => MapSet.SSave(mapSet); 
             saveAsMenu.Click += (s, e) => MapSet.SSaveAs(mapSet); 
             addANewMapFromAnImageMenu.Click += (s, e) =>  AddANewMapFromAnImage(); 
             addANewMapMenu.Click += (s, e) =>  AddNewMap(); 
             addAnExistingMapMenu.Click += (s, e) => AddExistingMap(); 
-            addIncludeMenu.Click += (s, e) =>  AddInclude(); 
+            addIncludeMenu.Click += (s, e) =>  AddInclude();
+            addIncludeToolStripMenuItem.Click += (s, e) => AddInclude();
+            removeToolStripMenuItem.Click += (s, e) => RemoveInclude(s);
             settingsMenu.Click += (s, e) => Setting(); 
             runMenu.Click += (s, e) => Run(); 
             buildReleaseMenu.Click += (s, e) => BuildRelease(); 
@@ -61,9 +63,17 @@ namespace BLEditor
             importBitmapIntoFontMenu.Click += (s, e) => ImportBitmapIntoCurrentFont(s);
             editFontMenu.Click += (s, e) =>  EditCurrentFont(s); 
             copyFromFontMenu.Click += (s, e) => CopyCurrentFont(s); 
-            CopyCharMenu.Click += (s, e) => CopyChar(s); 
-        }
+            CopyCharMenu.Click += (s, e) => CopyChar(s);
 
+         }
+
+        private void RemoveInclude(object sender)
+        {
+            if (sender is ToolStripItem item && item.Owner is ContextMenuStrip owner && owner.Tag is String path)
+            {
+                mapSet.RemoveInclude(path);
+            }
+        }
 
         private void AddInclude()
         {
@@ -95,13 +105,6 @@ namespace BLEditor
                 switch (typeNode)
                 {
                     case TypeNode.Map:
-                    case TypeNode.MapInit:
-                    case TypeNode.MapExec:
-                    case TypeNode.MapTileCollision:
-                    case TypeNode.MapData:
-                    case TypeNode.MapCColpf0:
-                    case TypeNode.MapCColpf2:
-                    case TypeNode.MapCColpf3:
                         contextMenuMap.Tag = GetMap(node_here);
                         contextMenuMap.Show(treeViewMaps, new Point(e.X, e.Y));
                         break;
@@ -109,6 +112,19 @@ namespace BLEditor
                         FontTreeNode fontTreeNode = (FontTreeNode)node_here;
                         contextMenuFont.Tag = fontTreeNode.CharacterSet;
                         contextMenuFont.Show(treeViewMaps, new Point(e.X, e.Y));
+                        break;
+                    case TypeNode.Includes:
+                        removeToolStripMenuItem.Visible = false;
+                        contextMenuInclude.Show(treeViewMaps, new Point(e.X, e.Y));
+                        break;
+                     case TypeNode.IncludeFile:
+                        IncludeTreeNode  includeTreeNode = (IncludeTreeNode)node_here;
+                        removeToolStripMenuItem.Visible = true;
+                        contextMenuInclude.Tag = includeTreeNode.Path;
+                        contextMenuInclude.Show(treeViewMaps, new Point(e.X, e.Y));
+                        break;
+                    default:
+                        contextMenuOpen.Show(treeViewMaps, new Point(e.X, e.Y));
                         break;
                 }
             }
@@ -671,7 +687,6 @@ namespace BLEditor
                 }
             }
         }
-    
 
         private void NewMapSet()
         {
@@ -696,7 +711,6 @@ namespace BLEditor
                 openFileDialog2.ShowDialog();
                 if (openFileDialog2.FileName != "")
                 {
-
                     mapSet.AddMap(openFileDialog.FileName, openFileDialog2.FileName);
                 }
             }
@@ -716,7 +730,7 @@ namespace BLEditor
             }
         }
 
-        private void load()
+        private void Load()
         {
             OpenFileDialog saveFileDialog1 = new OpenFileDialog
             {

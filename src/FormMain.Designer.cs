@@ -31,9 +31,7 @@
             this.components = new System.ComponentModel.Container();
             this.flpTiles = new System.Windows.Forms.FlowLayoutPanel();
             this.lblSelected = new System.Windows.Forms.Label();
-            this.lblSelectName = new System.Windows.Forms.Label();
             this.flpMap = new System.Windows.Forms.FlowLayoutPanel();
-            this.cbxDliDisplay = new System.Windows.Forms.CheckBox();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -65,21 +63,31 @@
             this.importBitmapIntoFontMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.copyFromFontMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.treeViewMaps = new System.Windows.Forms.TreeView();
-            this.runButton = new System.Windows.Forms.Button();
-            this.firstMapNumericUpDown = new System.Windows.Forms.NumericUpDown();
-            this.label1 = new System.Windows.Forms.Label();
+            this.contextMenuInclude = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.addIncludeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuOpen = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.splitter1 = new System.Windows.Forms.Splitter();
             this.buttonEditFnt = new BLEditor.MenuButton();
             this.dliList = new BLEditor.DLIListUserControl();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.firstMapNumericUpDown = new System.Windows.Forms.NumericUpDown();
+            this.runButton = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.contextMenuMap.SuspendLayout();
             this.contextMenuFont.SuspendLayout();
+            this.contextMenuInclude.SuspendLayout();
+            this.contextMenuOpen.SuspendLayout();
+            this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.firstMapNumericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // flpTiles
             // 
             this.flpTiles.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.flpTiles.Location = new System.Drawing.Point(1424, 42);
+            this.flpTiles.Location = new System.Drawing.Point(1236, 8);
             this.flpTiles.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.flpTiles.Name = "flpTiles";
             this.flpTiles.Size = new System.Drawing.Size(866, 422);
@@ -90,43 +98,21 @@
             this.lblSelected.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.lblSelected.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lblSelected.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.lblSelected.Location = new System.Drawing.Point(1252, 366);
+            this.lblSelected.Location = new System.Drawing.Point(1066, 286);
             this.lblSelected.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblSelected.Name = "lblSelected";
             this.lblSelected.Size = new System.Drawing.Size(95, 196);
             this.lblSelected.TabIndex = 5;
             // 
-            // lblSelectName
-            // 
-            this.lblSelectName.AutoSize = true;
-            this.lblSelectName.Location = new System.Drawing.Point(987, 368);
-            this.lblSelectName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblSelectName.Name = "lblSelectName";
-            this.lblSelectName.Size = new System.Drawing.Size(100, 20);
-            this.lblSelectName.TabIndex = 6;
-            this.lblSelectName.Text = "Selected Tile";
-            // 
             // flpMap
             // 
             this.flpMap.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.flpMap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.flpMap.Location = new System.Drawing.Point(189, 43);
+            this.flpMap.Location = new System.Drawing.Point(4, 5);
             this.flpMap.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.flpMap.Name = "flpMap";
             this.flpMap.Size = new System.Drawing.Size(964, 542);
             this.flpMap.TabIndex = 7;
-            // 
-            // cbxDliDisplay
-            // 
-            this.cbxDliDisplay.AutoSize = true;
-            this.cbxDliDisplay.Enabled = false;
-            this.cbxDliDisplay.Location = new System.Drawing.Point(1166, 322);
-            this.cbxDliDisplay.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.cbxDliDisplay.Name = "cbxDliDisplay";
-            this.cbxDliDisplay.Size = new System.Drawing.Size(120, 24);
-            this.cbxDliDisplay.TabIndex = 8;
-            this.cbxDliDisplay.Text = "Display DLI\'s";
-            this.cbxDliDisplay.UseVisualStyleBackColor = true;
             // 
             // openFileDialog1
             // 
@@ -276,7 +262,7 @@
             this.deleteMenu,
             this.importFromBitmapMenu});
             this.contextMenuMap.Name = "contextMenuMap";
-            this.contextMenuMap.Size = new System.Drawing.Size(181, 92);
+            this.contextMenuMap.Size = new System.Drawing.Size(181, 70);
             // 
             // renameMenu
             // 
@@ -332,45 +318,57 @@
             // 
             // treeViewMaps
             // 
-            this.treeViewMaps.Location = new System.Drawing.Point(0, 43);
+            this.treeViewMaps.Dock = System.Windows.Forms.DockStyle.Left;
+            this.treeViewMaps.Location = new System.Drawing.Point(0, 25);
             this.treeViewMaps.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.treeViewMaps.Name = "treeViewMaps";
-            this.treeViewMaps.Size = new System.Drawing.Size(180, 726);
+            this.treeViewMaps.Size = new System.Drawing.Size(180, 746);
             this.treeViewMaps.TabIndex = 27;
             this.treeViewMaps.BeforeCollapse += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeViewMaps_BeforeCollapse);
             this.treeViewMaps.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeViewMaps_BeforeExpand);
             this.treeViewMaps.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.NodeMouseDoubleClick);
             this.treeViewMaps.MouseClick += new System.Windows.Forms.MouseEventHandler(this.treeViewMaps_MouseClick);
             // 
-            // runButton
+            // contextMenuInclude
             // 
-            this.runButton.Image = global::BLEditor.Properties.Resources.application_run;
-            this.runButton.Location = new System.Drawing.Point(192, 597);
-            this.runButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.runButton.Name = "runButton";
-            this.runButton.Size = new System.Drawing.Size(112, 35);
-            this.runButton.TabIndex = 29;
-            this.runButton.Text = "Run";
-            this.runButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.runButton.UseVisualStyleBackColor = true;
+            this.contextMenuInclude.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.removeToolStripMenuItem,
+            this.addIncludeToolStripMenuItem});
+            this.contextMenuInclude.Name = "contextMenuInclude";
+            this.contextMenuInclude.Size = new System.Drawing.Size(139, 48);
             // 
-            // firstMapNumericUpDown
+            // addIncludeToolStripMenuItem
             // 
-            this.firstMapNumericUpDown.Location = new System.Drawing.Point(428, 602);
-            this.firstMapNumericUpDown.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.firstMapNumericUpDown.Name = "firstMapNumericUpDown";
-            this.firstMapNumericUpDown.Size = new System.Drawing.Size(180, 26);
-            this.firstMapNumericUpDown.TabIndex = 30;
+            this.addIncludeToolStripMenuItem.Name = "addIncludeToolStripMenuItem";
+            this.addIncludeToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.addIncludeToolStripMenuItem.Text = "Add Include";
             // 
-            // label1
+            // removeToolStripMenuItem
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(339, 605);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(79, 20);
-            this.label1.TabIndex = 31;
-            this.label1.Text = "First Map:";
+            this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
+            this.removeToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.removeToolStripMenuItem.Text = "Remove";
+            // 
+            // contextMenuOpen
+            // 
+            this.contextMenuOpen.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openToolStripMenuItem});
+            this.contextMenuOpen.Name = "contextMenuOpen";
+            this.contextMenuOpen.Size = new System.Drawing.Size(104, 26);
+            // 
+            // openToolStripMenuItem
+            // 
+            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.openToolStripMenuItem.Text = "Open";
+            // 
+            // splitter1
+            // 
+            this.splitter1.Location = new System.Drawing.Point(180, 25);
+            this.splitter1.Name = "splitter1";
+            this.splitter1.Size = new System.Drawing.Size(3, 746);
+            this.splitter1.TabIndex = 34;
+            this.splitter1.TabStop = false;
             // 
             // buttonEditFnt
             // 
@@ -388,29 +386,68 @@
             // dliList
             // 
             this.dliList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.dliList.Location = new System.Drawing.Point(1166, 42);
+            this.dliList.Location = new System.Drawing.Point(978, 8);
             this.dliList.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
             this.dliList.Name = "dliList";
             this.dliList.Padding = new System.Windows.Forms.Padding(8, 8, 8, 8);
             this.dliList.Size = new System.Drawing.Size(248, 270);
             this.dliList.TabIndex = 24;
             // 
+            // panel1
+            // 
+            this.panel1.AutoScroll = true;
+            this.panel1.Controls.Add(this.label1);
+            this.panel1.Controls.Add(this.firstMapNumericUpDown);
+            this.panel1.Controls.Add(this.runButton);
+            this.panel1.Controls.Add(this.flpMap);
+            this.panel1.Controls.Add(this.dliList);
+            this.panel1.Controls.Add(this.flpTiles);
+            this.panel1.Controls.Add(this.lblSelected);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(183, 25);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(1741, 746);
+            this.panel1.TabIndex = 35;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(167, 576);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(79, 20);
+            this.label1.TabIndex = 34;
+            this.label1.Text = "First Map:";
+            // 
+            // firstMapNumericUpDown
+            // 
+            this.firstMapNumericUpDown.Location = new System.Drawing.Point(256, 573);
+            this.firstMapNumericUpDown.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.firstMapNumericUpDown.Name = "firstMapNumericUpDown";
+            this.firstMapNumericUpDown.Size = new System.Drawing.Size(180, 26);
+            this.firstMapNumericUpDown.TabIndex = 33;
+            // 
+            // runButton
+            // 
+            this.runButton.Image = global::BLEditor.Properties.Resources.application_run;
+            this.runButton.Location = new System.Drawing.Point(20, 568);
+            this.runButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.runButton.Name = "runButton";
+            this.runButton.Size = new System.Drawing.Size(112, 35);
+            this.runButton.TabIndex = 32;
+            this.runButton.Text = "Run";
+            this.runButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.runButton.UseVisualStyleBackColor = true;
+            // 
             // pbx1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1924, 771);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.firstMapNumericUpDown);
-            this.Controls.Add(this.runButton);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.splitter1);
             this.Controls.Add(this.treeViewMaps);
             this.Controls.Add(this.buttonEditFnt);
-            this.Controls.Add(this.dliList);
-            this.Controls.Add(this.cbxDliDisplay);
-            this.Controls.Add(this.flpMap);
-            this.Controls.Add(this.lblSelectName);
-            this.Controls.Add(this.lblSelected);
-            this.Controls.Add(this.flpTiles);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -420,6 +457,10 @@
             this.menuStrip1.PerformLayout();
             this.contextMenuMap.ResumeLayout(false);
             this.contextMenuFont.ResumeLayout(false);
+            this.contextMenuInclude.ResumeLayout(false);
+            this.contextMenuOpen.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.firstMapNumericUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -429,9 +470,7 @@
         #endregion
         private System.Windows.Forms.FlowLayoutPanel flpTiles;
         private System.Windows.Forms.Label lblSelected;
-        private System.Windows.Forms.Label lblSelectName;
         private System.Windows.Forms.FlowLayoutPanel flpMap;
-        private System.Windows.Forms.CheckBox cbxDliDisplay;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.MenuStrip menuStrip1;
@@ -450,12 +489,9 @@
         private System.Windows.Forms.ToolStripMenuItem importBitmapIntoFontMenu;
         private System.Windows.Forms.ToolStripMenuItem copyFromFontMenu;
         private System.Windows.Forms.TreeView treeViewMaps;
-        private System.Windows.Forms.Button runButton;
         private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem CopyCharMenu;
         private System.Windows.Forms.ToolStripMenuItem importFromBitmapMenu;
-        private System.Windows.Forms.NumericUpDown firstMapNumericUpDown;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolStripMenuItem gameToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem addANewMapMenu;
@@ -468,6 +504,16 @@
         private System.Windows.Forms.ToolStripMenuItem buildReleaseMenu;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingsMenu;
+        private System.Windows.Forms.ContextMenuStrip contextMenuInclude;
+        private System.Windows.Forms.ToolStripMenuItem removeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addIncludeToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip contextMenuOpen;
+        private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
+        private System.Windows.Forms.Splitter splitter1;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.NumericUpDown firstMapNumericUpDown;
+        private System.Windows.Forms.Button runButton;
     }
 }
 

@@ -82,6 +82,19 @@ namespace BLEditor
             }
         }
 
+        public void RemoveInclude(string include, bool sendChangedEvent = true)
+        {
+            if (includes.Contains(include))
+            {
+                includes.Remove(include);
+                IsDirty = true;
+                if (sendChangedEvent)
+                {
+                    StrutureTreeChanged?.Invoke(this, null);
+                }
+            }
+        }
+
         public void AddCharSet(CharacterSet newCharSet, bool sendChangedEvent = true)
         {
             if (!charSets.Contains(newCharSet))
@@ -97,35 +110,37 @@ namespace BLEditor
             }
         }
 
-       /* private void RemoveUselessCharset()
-        {
+   
 
-            List<CharacterSet> usedCharSets = new List<CharacterSet>();
-            bool uselessCharset = false;
-            for (int i = 0; i < CharSets.Count; i++)
-            {
-                bool used = false;
-                for (int j = 0; j < Maps.Count && !used; j++)
-                {
-                    used = Maps[j].FontID == CharSets[i].UID;
-                }
+        /* private void RemoveUselessCharset()
+         {
 
-                if (!used && !CharSets[i].KeepEvenUseless)
-                {
-                    uselessCharset = true;
-                } else
-                {
-                    usedCharSets.Add(CharSets[i]);
+             List<CharacterSet> usedCharSets = new List<CharacterSet>();
+             bool uselessCharset = false;
+             for (int i = 0; i < CharSets.Count; i++)
+             {
+                 bool used = false;
+                 for (int j = 0; j < Maps.Count && !used; j++)
+                 {
+                     used = Maps[j].FontID == CharSets[i].UID;
+                 }
 
-                }
-            }
+                 if (!used && !CharSets[i].KeepEvenUseless)
+                 {
+                     uselessCharset = true;
+                 } else
+                 {
+                     usedCharSets.Add(CharSets[i]);
 
-            if (uselessCharset)
-            {
-                IsDirty = true;
-                this.charSets = usedCharSets;
-            }
-        }*/
+                 }
+             }
+
+             if (uselessCharset)
+             {
+                 IsDirty = true;
+                 this.charSets = usedCharSets;
+             }
+         }*/
 
         public void AddMap(Map newMap, bool sendChangedEvent=true)
         {
