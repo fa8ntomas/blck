@@ -17,11 +17,11 @@ namespace BLEditor
       
         Map Map { get;  set; }
 
-        public FormColision(Map map, TypeColorDetection DetectionType, List<Rectangle> DetectionRects, List<ZoneColorDetection> DetectionFlags)
+        public FormColision(Map map, TypeColorDetection DetectionType, List<Rectangle> DetectionRects, List<ZoneColorDetection> DetectionFlags, String title)
         {
             InitializeComponent();
 
-            Console.WriteLine("**"+DetectionType.ToString() + (int)DetectionType);
+            Text = title ?? "Color Detection";
 
             Map = map;
             this.zoneCollisionUserControl1.Map = map;

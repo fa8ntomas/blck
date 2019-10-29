@@ -65,7 +65,8 @@ namespace BLEditor
             copyFromFontMenu.Click += (s, e) => CopyCurrentFont(s); 
             CopyCharMenu.Click += (s, e) => CopyChar(s);
 
-         }
+            openToolStripMenuItem.Click += (s, e) => { openEvent?.Invoke(s, e); };
+        }
 
         private void RemoveInclude(object sender)
         {
@@ -91,6 +92,11 @@ namespace BLEditor
                 }
             }
         }
+
+
+        event EventHandler openEvent;
+        
+
         private void treeViewMaps_MouseDown(MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Right) return;
@@ -117,16 +123,45 @@ namespace BLEditor
                         removeToolStripMenuItem.Visible = false;
                         contextMenuInclude.Show(treeViewMaps, new Point(e.X, e.Y));
                         break;
-                     case TypeNode.IncludeFile:
-                        IncludeTreeNode  includeTreeNode = (IncludeTreeNode)node_here;
+                    case TypeNode.IncludeFile:
+                        IncludeTreeNode includeTreeNode = (IncludeTreeNode)node_here;
                         removeToolStripMenuItem.Visible = true;
                         contextMenuInclude.Tag = includeTreeNode.Path;
                         contextMenuInclude.Show(treeViewMaps, new Point(e.X, e.Y));
                         break;
-                    default:
+                    case TypeNode.GameData:
+                        openEvent = (s, e1) => EditGameData();
                         contextMenuOpen.Show(treeViewMaps, new Point(e.X, e.Y));
                         break;
-                }
+                    case TypeNode.MapInit:
+                        openEvent = (s, e1) => EditInitMapCode(node_here, typeNode);
+                        contextMenuOpen.Show(treeViewMaps, new Point(e.X, e.Y));
+                        break;
+                    case TypeNode.MapExec:
+                        openEvent = (s, e1) => EditExecMapCode(node_here, typeNode);
+                        contextMenuOpen.Show(treeViewMaps, new Point(e.X, e.Y));
+                        break;
+                    case TypeNode.MapTileCollision:
+                        openEvent = (s, e1) => EditTileCollisionMapCode(node_here, typeNode);
+                        contextMenuOpen.Show(treeViewMaps, new Point(e.X, e.Y));
+                        break;
+                    case TypeNode.MapData:
+                        openEvent = (s, e1) => EditMapData(node_here);
+                        contextMenuOpen.Show(treeViewMaps, new Point(e.X, e.Y));
+                        break;
+                    case TypeNode.MapCColpf0:
+                        openEvent = (s, e1) => EditMapCColpf0(node_here);
+                        contextMenuOpen.Show(treeViewMaps, new Point(e.X, e.Y));
+                        break;
+                    case TypeNode.MapCColpf2:
+                        openEvent = (s, e1) => EditMapCColpf2(node_here);
+                        contextMenuOpen.Show(treeViewMaps, new Point(e.X, e.Y));
+                        break;
+                    case TypeNode.MapCColpf3:
+                        openEvent = (s, e1) => EditMapCColpf3(node_here);
+                        contextMenuOpen.Show(treeViewMaps, new Point(e.X, e.Y));
+                        break;
+                }      
             }
         }
 
@@ -792,204 +827,258 @@ namespace BLEditor
                 {
                     case TypeNode.GameData:
                         {
-                            FormGameData d = new FormGameData(mapSet);
-                            if (d.ShowDialog() == DialogResult.OK)
-                            {
-                                mapSet.SpriteSet = (MapSet.SpriteSetEnum)d.SpritesSetComboBox.SelectedIndex;
-                            }
+                            EditGameData();
                         }; break;
 
                     case TypeNode.Map:
                         {
-                            if (e.Node is MapTreeNode mapNode)
-                            {
-                                DisplayMap(mapNode.Map);
-                            }
+                            OpenMap(e.Node);
                         }; break;
 
                     case TypeNode.MapData:
                         {
-                            Map map = GetMap(e.Node);
-                            Form1 form1 = new Form1(map);
-                            if (form1.ShowDialog() == DialogResult.OK)
-                            {
-                                map.Foe = form1.checkBoxFoe.Checked;
-
-                                map.BruceStartX1 = Convert.ToByte(form1.numericUpDownBruceStartX1.Value);
-                                map.BruceStartY1 = Convert.ToByte(form1.numericUpDownBruceStartY1.Value);
-                                map.BruceStartX2 = Convert.ToByte(form1.numericUpDownBruceStartX2.Value);
-                                map.BruceStartY2 = Convert.ToByte(form1.numericUpDownBruceStartY2.Value);
-
-                                Guid mapId = (Guid)form1.comboBoxExit1Map.SelectedValue;
-                                if (mapId == Map.EMPTY.UID)
-                                {
-                                    map.Exit1MapID = null;
-                                }
-                                else
-                                {
-                                    map.Exit1MapID = mapId;
-                                }
-
-                                map.Exit1X = Convert.ToByte(form1.numericUpDownExit1X.Value);
-                                map.Exit1Y = Convert.ToByte(form1.numericUpDownExit1Y.Value);
-
-                                mapId = (Guid)form1.comboBoxExit2Map.SelectedValue;
-                                if (mapId == Map.EMPTY.UID)
-                                {
-                                    map.Exit2MapID = null;
-                                }
-                                else
-                                {
-                                    map.Exit2MapID = mapId;
-                                }
-                                map.Exit2X = Convert.ToByte(form1.numericUpDownExit2X.Value);
-                                map.Exit2Y = Convert.ToByte(form1.numericUpDownExit2Y.Value);
-
-                                mapId = (Guid)form1.comboBoxExit3Map.SelectedValue;
-                                if (mapId == Map.EMPTY.UID)
-                                {
-                                    map.Exit3MapID = null;
-                                }
-                                else
-                                {
-                                    map.Exit3MapID = mapId;
-                                }
-                                map.Exit3X = Convert.ToByte(form1.numericUpDownExit3X.Value);
-                                map.Exit3Y = Convert.ToByte(form1.numericUpDownExit3Y.Value);
-
-                                mapId = (Guid)form1.comboBoxExit4Map.SelectedValue;
-                                if (mapId == Map.EMPTY.UID)
-                                {
-                                    map.Exit4MapID = null;
-                                }
-                                else
-                                {
-                                    map.Exit4MapID = mapId;
-                                }
-
-                                map.Exit4X = Convert.ToByte(form1.numericUpDownExit4X.Value);
-                                map.Exit4Y = Convert.ToByte(form1.numericUpDownExit4Y.Value);
-
-                                map.NinjaEnterCount1 = Convert.ToByte(form1.numericUpDownNinjaEnterCount1.Value);
-                                map.NinjaEnterCount2 = Convert.ToByte(form1.numericUpDownNinjaEnterCount2.Value);
-
-                                map.YamoEnterCount1 = Convert.ToByte(form1.numericUpDownYamoEnterCount1.Value);
-                                map.YamoEnterCount2 = Convert.ToByte(form1.numericUpDownYamoEnterCount2.Value);
-
-                                if (form1.radioButtonYamoFavorA.Checked)
-                                {
-                                    map.YamoSpawnPosition = 1;
-                                }
-                                else if (form1.radioButtonYamoFavorB.Checked)
-                                {
-                                    map.YamoSpawnPosition = 2;
-                                }
-                                else
-                                {
-                                    map.YamoSpawnPosition = 0;
-                                }
-
-                                if (form1.radioButtonNinjaFavorA.Checked)
-                                {
-                                    map.NinjaSpawnPosition = 1;
-                                }
-                                else if (form1.radioButtonNinjaFavorB.Checked)
-                                {
-                                    map.NinjaSpawnPosition = 2;
-                                }
-                                else
-                                {
-                                    map.NinjaSpawnPosition = 0;
-                                }
-                            }
+                            EditMapData(e.Node);
                         }; break;
 
                     case TypeNode.MapCColpf0:
                         {
-                            Map map = GetMap(e.Node);
-                            FormColision fedit = new FormColision(map, map.Colpf0Detection, map.Colpf0DetectionRects, map.Colpf0DetectionFlags);
-                            if (fedit.ShowDialog() == DialogResult.OK)
-                            {
-                                map.Colpf0Detection = (Map.TypeColorDetection)fedit.comboBoxColorDetection.SelectedIndex;
-
-                                map.Colpf0DetectionRects.Clear();
-                                map.Colpf0DetectionRects.AddRange(fedit.zoneCollisionUserControl1.Zones);
-
-                                map.Colpf0DetectionFlags.Clear();
-                                map.Colpf0DetectionFlags.AddRange(fedit.zoneCollisionUserControl1.Flags);
-                            }
+                            EditMapCColpf0(e.Node);
                         }; break;
 
                     case TypeNode.MapCColpf2:
                         {
-                            Map map = GetMap(e.Node);
-                            FormColision fedit = new FormColision(map, map.Colpf2Detection, map.Colpf2DetectionRects, map.Colpf2DetectionFlags);
-                            if (fedit.ShowDialog() == DialogResult.OK)
-                            {
-                                map.Colpf2Detection = (Map.TypeColorDetection)fedit.comboBoxColorDetection.SelectedIndex;
-
-                                map.Colpf2DetectionRects.Clear();
-                                map.Colpf2DetectionRects.AddRange(fedit.zoneCollisionUserControl1.Zones);
-
-                                map.Colpf2DetectionFlags.Clear();
-                                map.Colpf2DetectionFlags.AddRange(fedit.zoneCollisionUserControl1.Flags);
-                            }
+                            EditMapCColpf2(e.Node);
                         }; break;
 
                     case TypeNode.MapCColpf3:
                         {
-                            Map map = GetMap(e.Node);
-                            FormColision fedit = new FormColision(map, map.Colpf3Detection, map.Colpf3DetectionRects, map.Colpf3DetectionFlags);
-                            if (fedit.ShowDialog() == DialogResult.OK)
-                            {
-                                map.Colpf3Detection = (Map.TypeColorDetection)fedit.comboBoxColorDetection.SelectedIndex;
-
-                                map.Colpf3DetectionRects.Clear();
-                                map.Colpf3DetectionRects.AddRange(fedit.zoneCollisionUserControl1.Zones);
-
-                                map.Colpf3DetectionFlags.Clear();
-                                map.Colpf3DetectionFlags.AddRange(fedit.zoneCollisionUserControl1.Flags);
-                            }
+                            EditMapCColpf3(e.Node);
                         }; break;
 
                     case TypeNode.MapInit:
                         {
-                            Map map = GetMap(e.Node);
-                            String code = (!String.IsNullOrEmpty(map.InitRoutine)) ? map.InitRoutine : $"\t\t; ** Map '{map.Name}' Init **\n\n\n\trts";
-                            FormASMEdit fedit = new FormASMEdit(map,typeNode, code, $"Init Routine for map {map.Name}");
-                            if (fedit.ShowDialog() == DialogResult.OK)
-                            {
-                                map.InitRoutine = fedit.scintilla1.Text;
-                            }
+                            EditInitMapCode(e.Node, typeNode);
                         };  break;
 
                     case TypeNode.MapExec:
                         {
-                            Map map = GetMap(e.Node);
-                            String code = (!String.IsNullOrEmpty(map.ExecRoutine)) ? map.ExecRoutine : $"\t\t; ** Map '{map.Name}' Exec **\n\n\n\trts";
-                            FormASMEdit fedit = new FormASMEdit(map, typeNode, code, $"Exec Routine for map {map.Name}");
-                            if (fedit.ShowDialog() == DialogResult.OK)
-                            {
-                                map.ExecRoutine = fedit.scintilla1.Text;
-                            }
+                            EditExecMapCode(e.Node, typeNode);
                         }; break;
 
                     case TypeNode.MapTileCollision:
                         {
-                            Map map = GetMap(e.Node);
-                            String code = (!String.IsNullOrEmpty(map.TileCollisionRoutine)) ? map.TileCollisionRoutine : $"\t\t; ** Map '{map.Name}' Tile Collision **\n\t\t; A = Title\n\t\t; X = Actor\n\n\t\trts";
-                            FormASMEdit fedit = new FormASMEdit(map, typeNode, code, $"Tile Collision Routine for map {map.Name}");
-                            if (fedit.ShowDialog() == DialogResult.OK)
-                            {
-                                map.TileCollisionRoutine = fedit.scintilla1.Text;
-                            }
+                            EditTileCollisionMapCode(e.Node, typeNode);
                         }; break;
                 }
             }
 
             enableCollapseExpand = true;
-        }  
-        
+        }
+
+        private void EditMapCColpf3(TreeNode node)
+        {
+            Map map = GetMap(node);
+            using (FormColision fedit = new FormColision(map, map.Colpf3Detection, map.Colpf3DetectionRects, map.Colpf3DetectionFlags, "Colpf3 detection"))
+            {
+                if (fedit.ShowDialog() == DialogResult.OK)
+                {
+                    map.Colpf3Detection = (Map.TypeColorDetection)fedit.comboBoxColorDetection.SelectedIndex;
+
+                    map.Colpf3DetectionRects.Clear();
+                    map.Colpf3DetectionRects.AddRange(fedit.zoneCollisionUserControl1.Zones);
+
+                    map.Colpf3DetectionFlags.Clear();
+                    map.Colpf3DetectionFlags.AddRange(fedit.zoneCollisionUserControl1.Flags);
+                }
+            }
+        }
+
+        private void EditMapCColpf2(TreeNode node)
+        {
+            Map map = GetMap(node);
+            using (FormColision fedit = new FormColision(map, map.Colpf2Detection, map.Colpf2DetectionRects, map.Colpf2DetectionFlags, "Colpf2 detection"))
+            {
+                if (fedit.ShowDialog() == DialogResult.OK)
+                {
+                    map.Colpf2Detection = (Map.TypeColorDetection)fedit.comboBoxColorDetection.SelectedIndex;
+
+                    map.Colpf2DetectionRects.Clear();
+                    map.Colpf2DetectionRects.AddRange(fedit.zoneCollisionUserControl1.Zones);
+
+                    map.Colpf2DetectionFlags.Clear();
+                    map.Colpf2DetectionFlags.AddRange(fedit.zoneCollisionUserControl1.Flags);
+                }
+            }
+        }
+
+        private void EditMapCColpf0(TreeNode node)
+        {
+            Map map = GetMap(node);
+            using (FormColision fedit = new FormColision(map, map.Colpf0Detection, map.Colpf0DetectionRects, map.Colpf0DetectionFlags, "Colpf0 detection"))
+            {
+                if (fedit.ShowDialog() == DialogResult.OK)
+                {
+                    map.Colpf0Detection = (Map.TypeColorDetection)fedit.comboBoxColorDetection.SelectedIndex;
+
+                    map.Colpf0DetectionRects.Clear();
+                    map.Colpf0DetectionRects.AddRange(fedit.zoneCollisionUserControl1.Zones);
+
+                    map.Colpf0DetectionFlags.Clear();
+                    map.Colpf0DetectionFlags.AddRange(fedit.zoneCollisionUserControl1.Flags);
+                }
+            }
+        }
+
+        private void EditMapData(TreeNode node)
+        {
+            Map map = GetMap(node);
+            using(Form1 form1 = new Form1(map)){
+                if (form1.ShowDialog() == DialogResult.OK)
+                {
+                    map.Foe = form1.checkBoxFoe.Checked;
+
+                    map.BruceStartX1 = Convert.ToByte(form1.numericUpDownBruceStartX1.Value);
+                    map.BruceStartY1 = Convert.ToByte(form1.numericUpDownBruceStartY1.Value);
+                    map.BruceStartX2 = Convert.ToByte(form1.numericUpDownBruceStartX2.Value);
+                    map.BruceStartY2 = Convert.ToByte(form1.numericUpDownBruceStartY2.Value);
+
+                    Guid mapId = (Guid)form1.comboBoxExit1Map.SelectedValue;
+                    if (mapId == Map.EMPTY.UID)
+                    {
+                        map.Exit1MapID = null;
+                    }
+                    else
+                    {
+                        map.Exit1MapID = mapId;
+                    }
+
+                    map.Exit1X = Convert.ToByte(form1.numericUpDownExit1X.Value);
+                    map.Exit1Y = Convert.ToByte(form1.numericUpDownExit1Y.Value);
+
+                    mapId = (Guid)form1.comboBoxExit2Map.SelectedValue;
+                    if (mapId == Map.EMPTY.UID)
+                    {
+                        map.Exit2MapID = null;
+                    }
+                    else
+                    {
+                        map.Exit2MapID = mapId;
+                    }
+                    map.Exit2X = Convert.ToByte(form1.numericUpDownExit2X.Value);
+                    map.Exit2Y = Convert.ToByte(form1.numericUpDownExit2Y.Value);
+
+                    mapId = (Guid)form1.comboBoxExit3Map.SelectedValue;
+                    if (mapId == Map.EMPTY.UID)
+                    {
+                        map.Exit3MapID = null;
+                    }
+                    else
+                    {
+                        map.Exit3MapID = mapId;
+                    }
+                    map.Exit3X = Convert.ToByte(form1.numericUpDownExit3X.Value);
+                    map.Exit3Y = Convert.ToByte(form1.numericUpDownExit3Y.Value);
+
+                    mapId = (Guid)form1.comboBoxExit4Map.SelectedValue;
+                    if (mapId == Map.EMPTY.UID)
+                    {
+                        map.Exit4MapID = null;
+                    }
+                    else
+                    {
+                        map.Exit4MapID = mapId;
+                    }
+
+                    map.Exit4X = Convert.ToByte(form1.numericUpDownExit4X.Value);
+                    map.Exit4Y = Convert.ToByte(form1.numericUpDownExit4Y.Value);
+
+                    map.NinjaEnterCount1 = Convert.ToByte(form1.numericUpDownNinjaEnterCount1.Value);
+                    map.NinjaEnterCount2 = Convert.ToByte(form1.numericUpDownNinjaEnterCount2.Value);
+
+                    map.YamoEnterCount1 = Convert.ToByte(form1.numericUpDownYamoEnterCount1.Value);
+                    map.YamoEnterCount2 = Convert.ToByte(form1.numericUpDownYamoEnterCount2.Value);
+
+                    if (form1.radioButtonYamoFavorA.Checked)
+                    {
+                        map.YamoSpawnPosition = 1;
+                    }
+                    else if (form1.radioButtonYamoFavorB.Checked)
+                    {
+                        map.YamoSpawnPosition = 2;
+                    }
+                    else
+                    {
+                        map.YamoSpawnPosition = 0;
+                    }
+
+                    if (form1.radioButtonNinjaFavorA.Checked)
+                    {
+                        map.NinjaSpawnPosition = 1;
+                    }
+                    else if (form1.radioButtonNinjaFavorB.Checked)
+                    {
+                        map.NinjaSpawnPosition = 2;
+                    }
+                    else
+                    {
+                        map.NinjaSpawnPosition = 0;
+                    }
+                }
+            }
+        }
+
+        private void OpenMap(TreeNode node)
+        {
+            if (node is MapTreeNode mapNode)
+            {
+                DisplayMap(mapNode.Map);
+            }
+        }
+
+        private void EditTileCollisionMapCode(TreeNode node, TypeNode typeNode)
+        {
+            Map map = GetMap(node);
+            String code = (!String.IsNullOrEmpty(map.TileCollisionRoutine)) ? map.TileCollisionRoutine : $"\t\t; ** Map '{map.Name}' Tile Collision **\n\t\t; A = Title\n\t\t; X = Actor\n\n\t\trts";
+            FormASMEdit fedit = new FormASMEdit(map, typeNode, code, $"Tile Collision Routine for map {map.Name}");
+            if (fedit.ShowDialog() == DialogResult.OK)
+            {
+                map.TileCollisionRoutine = fedit.scintilla1.Text;
+            }
+        }
+
+        private void EditExecMapCode(TreeNode node, TypeNode typeNode)
+        {
+            Map map = GetMap(node);
+            String code = (!String.IsNullOrEmpty(map.ExecRoutine)) ? map.ExecRoutine : $"\t\t; ** Map '{map.Name}' Exec **\n\n\n\trts";
+            FormASMEdit fedit = new FormASMEdit(map, typeNode, code, $"Exec Routine for map {map.Name}");
+            if (fedit.ShowDialog() == DialogResult.OK)
+            {
+                map.ExecRoutine = fedit.scintilla1.Text;
+            }
+        }
+
+        private void EditInitMapCode(TreeNode node, TypeNode typeNode)
+        {
+            Map map = GetMap(node);
+            String code = (!String.IsNullOrEmpty(map.InitRoutine)) ? map.InitRoutine : $"\t\t; ** Map '{map.Name}' Init **\n\n\n\trts";
+            FormASMEdit fedit = new FormASMEdit(map, typeNode, code, $"Init Routine for map {map.Name}");
+            if (fedit.ShowDialog() == DialogResult.OK)
+            {
+                map.InitRoutine = fedit.scintilla1.Text;
+            }
+        }
+
+        private void EditGameData()
+        {
+            using (FormGameData d = new FormGameData(mapSet))
+            {
+                if (d.ShowDialog() == DialogResult.OK)
+                {
+                    mapSet.SpriteSet = (MapSet.SpriteSetEnum)d.SpritesSetComboBox.SelectedIndex;
+                }
+            }
+        }
+
         private void treeViewMaps_BeforeExpand(object sender, TreeViewCancelEventArgs e)
         {
             Debug.WriteLine("treeViewMaps_BeforeExpand");

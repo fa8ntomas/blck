@@ -64,8 +64,8 @@
             this.copyFromFontMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.treeViewMaps = new System.Windows.Forms.TreeView();
             this.contextMenuInclude = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.addIncludeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addIncludeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuOpen = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitter1 = new System.Windows.Forms.Splitter();
@@ -87,10 +87,9 @@
             // flpTiles
             // 
             this.flpTiles.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.flpTiles.Location = new System.Drawing.Point(1236, 8);
-            this.flpTiles.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.flpTiles.Location = new System.Drawing.Point(824, 5);
             this.flpTiles.Name = "flpTiles";
-            this.flpTiles.Size = new System.Drawing.Size(866, 422);
+            this.flpTiles.Size = new System.Drawing.Size(578, 275);
             this.flpTiles.TabIndex = 4;
             // 
             // lblSelected
@@ -98,20 +97,18 @@
             this.lblSelected.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.lblSelected.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lblSelected.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.lblSelected.Location = new System.Drawing.Point(1066, 286);
-            this.lblSelected.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblSelected.Location = new System.Drawing.Point(711, 186);
             this.lblSelected.Name = "lblSelected";
-            this.lblSelected.Size = new System.Drawing.Size(95, 196);
+            this.lblSelected.Size = new System.Drawing.Size(64, 128);
             this.lblSelected.TabIndex = 5;
             // 
             // flpMap
             // 
             this.flpMap.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.flpMap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.flpMap.Location = new System.Drawing.Point(4, 5);
-            this.flpMap.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.flpMap.Location = new System.Drawing.Point(3, 3);
             this.flpMap.Name = "flpMap";
-            this.flpMap.Size = new System.Drawing.Size(964, 542);
+            this.flpMap.Size = new System.Drawing.Size(643, 353);
             this.flpMap.TabIndex = 7;
             // 
             // openFileDialog1
@@ -126,8 +123,7 @@
             this.settingsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Padding = new System.Windows.Forms.Padding(9, 3, 0, 3);
-            this.menuStrip1.Size = new System.Drawing.Size(1924, 25);
+            this.menuStrip1.Size = new System.Drawing.Size(1283, 24);
             this.menuStrip1.TabIndex = 10;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -140,7 +136,7 @@
             this.saveAsMenu,
             this.exportToolStripMenuItem});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(37, 19);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(37, 20);
             this.toolStripMenuItem1.Text = "File";
             // 
             // newMenu
@@ -187,7 +183,7 @@
             this.runMenu,
             this.buildReleaseMenu});
             this.gameToolStripMenuItem.Name = "gameToolStripMenuItem";
-            this.gameToolStripMenuItem.Size = new System.Drawing.Size(50, 19);
+            this.gameToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
             this.gameToolStripMenuItem.Text = "Game";
             // 
             // toolStripSeparator3
@@ -246,7 +242,7 @@
             this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.settingsMenu});
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 19);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.settingsToolStripMenuItem.Text = "Settings";
             // 
             // settingsMenu
@@ -319,10 +315,9 @@
             // treeViewMaps
             // 
             this.treeViewMaps.Dock = System.Windows.Forms.DockStyle.Left;
-            this.treeViewMaps.Location = new System.Drawing.Point(0, 25);
-            this.treeViewMaps.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.treeViewMaps.Location = new System.Drawing.Point(0, 24);
             this.treeViewMaps.Name = "treeViewMaps";
-            this.treeViewMaps.Size = new System.Drawing.Size(180, 746);
+            this.treeViewMaps.Size = new System.Drawing.Size(121, 477);
             this.treeViewMaps.TabIndex = 27;
             this.treeViewMaps.BeforeCollapse += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeViewMaps_BeforeCollapse);
             this.treeViewMaps.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeViewMaps_BeforeExpand);
@@ -337,48 +332,48 @@
             this.contextMenuInclude.Name = "contextMenuInclude";
             this.contextMenuInclude.Size = new System.Drawing.Size(139, 48);
             // 
-            // addIncludeToolStripMenuItem
-            // 
-            this.addIncludeToolStripMenuItem.Name = "addIncludeToolStripMenuItem";
-            this.addIncludeToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
-            this.addIncludeToolStripMenuItem.Text = "Add Include";
-            // 
             // removeToolStripMenuItem
             // 
             this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
             this.removeToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.removeToolStripMenuItem.Text = "Remove";
             // 
+            // addIncludeToolStripMenuItem
+            // 
+            this.addIncludeToolStripMenuItem.Name = "addIncludeToolStripMenuItem";
+            this.addIncludeToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.addIncludeToolStripMenuItem.Text = "Add Include";
+            // 
             // contextMenuOpen
             // 
             this.contextMenuOpen.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openToolStripMenuItem});
             this.contextMenuOpen.Name = "contextMenuOpen";
-            this.contextMenuOpen.Size = new System.Drawing.Size(104, 26);
+            this.contextMenuOpen.Size = new System.Drawing.Size(181, 48);
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openToolStripMenuItem.Text = "Open";
             // 
             // splitter1
             // 
-            this.splitter1.Location = new System.Drawing.Point(180, 25);
+            this.splitter1.Location = new System.Drawing.Point(121, 24);
+            this.splitter1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(3, 746);
+            this.splitter1.Size = new System.Drawing.Size(2, 477);
             this.splitter1.TabIndex = 34;
             this.splitter1.TabStop = false;
             // 
             // buttonEditFnt
             // 
             this.buttonEditFnt.Enabled = false;
-            this.buttonEditFnt.Location = new System.Drawing.Point(2134, 474);
-            this.buttonEditFnt.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonEditFnt.Location = new System.Drawing.Point(1423, 308);
             this.buttonEditFnt.Menu = this.contextMenuFont;
             this.buttonEditFnt.Name = "buttonEditFnt";
             this.buttonEditFnt.ShowMenuUnderCursor = false;
-            this.buttonEditFnt.Size = new System.Drawing.Size(158, 35);
+            this.buttonEditFnt.Size = new System.Drawing.Size(105, 23);
             this.buttonEditFnt.TabIndex = 26;
             this.buttonEditFnt.Text = "Font";
             this.buttonEditFnt.UseVisualStyleBackColor = true;
@@ -386,11 +381,11 @@
             // dliList
             // 
             this.dliList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.dliList.Location = new System.Drawing.Point(978, 8);
-            this.dliList.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
+            this.dliList.Location = new System.Drawing.Point(652, 5);
+            this.dliList.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.dliList.Name = "dliList";
-            this.dliList.Padding = new System.Windows.Forms.Padding(8, 8, 8, 8);
-            this.dliList.Size = new System.Drawing.Size(248, 270);
+            this.dliList.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.dliList.Size = new System.Drawing.Size(166, 176);
             this.dliList.TabIndex = 24;
             // 
             // panel1
@@ -404,36 +399,34 @@
             this.panel1.Controls.Add(this.flpTiles);
             this.panel1.Controls.Add(this.lblSelected);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(183, 25);
+            this.panel1.Location = new System.Drawing.Point(123, 24);
+            this.panel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1741, 746);
+            this.panel1.Size = new System.Drawing.Size(1160, 477);
             this.panel1.TabIndex = 35;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(167, 576);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(111, 374);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(79, 20);
+            this.label1.Size = new System.Drawing.Size(53, 13);
             this.label1.TabIndex = 34;
             this.label1.Text = "First Map:";
             // 
             // firstMapNumericUpDown
             // 
-            this.firstMapNumericUpDown.Location = new System.Drawing.Point(256, 573);
-            this.firstMapNumericUpDown.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.firstMapNumericUpDown.Location = new System.Drawing.Point(171, 372);
             this.firstMapNumericUpDown.Name = "firstMapNumericUpDown";
-            this.firstMapNumericUpDown.Size = new System.Drawing.Size(180, 26);
+            this.firstMapNumericUpDown.Size = new System.Drawing.Size(120, 20);
             this.firstMapNumericUpDown.TabIndex = 33;
             // 
             // runButton
             // 
             this.runButton.Image = global::BLEditor.Properties.Resources.application_run;
-            this.runButton.Location = new System.Drawing.Point(20, 568);
-            this.runButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.runButton.Location = new System.Drawing.Point(13, 369);
             this.runButton.Name = "runButton";
-            this.runButton.Size = new System.Drawing.Size(112, 35);
+            this.runButton.Size = new System.Drawing.Size(75, 23);
             this.runButton.TabIndex = 32;
             this.runButton.Text = "Run";
             this.runButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -441,16 +434,15 @@
             // 
             // pbx1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1924, 771);
+            this.ClientSize = new System.Drawing.Size(1283, 501);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.splitter1);
             this.Controls.Add(this.treeViewMaps);
             this.Controls.Add(this.buttonEditFnt);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "pbx1";
             this.Text = "Bruce Lee Construction Kit (BLCK)";
             this.menuStrip1.ResumeLayout(false);
