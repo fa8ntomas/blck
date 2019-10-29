@@ -20,6 +20,8 @@ namespace BLEditor
         List<byte> extraMapBytes = new List<byte>();
         public enum TypeNode { GameData, Fonts, FontFile, Includes, IncludeFile, Map, MapInit, MapExec, MapTileCollision, MapData, MapCColpf0, MapCColpf2, MapCColpf3 };
 
+        private Action openMenuAction;
+
         public pbx1()
         {
             InitializeComponent();
@@ -40,7 +42,7 @@ namespace BLEditor
             }
 
             newMenu.Click += (s, e) => NewMapSet();
-            loadMenu.Click += (s, e) =>  Load(); 
+            loadMenu.Click += (s, e) =>  LoadMapset(); 
             saveMenu.Click += (s, e) => MapSet.SSave(mapSet); 
             saveAsMenu.Click += (s, e) => MapSet.SSaveAs(mapSet); 
             addANewMapFromAnImageMenu.Click += (s, e) =>  AddANewMapFromAnImage(); 
@@ -65,7 +67,7 @@ namespace BLEditor
             copyFromFontMenu.Click += (s, e) => CopyCurrentFont(s); 
             CopyCharMenu.Click += (s, e) => CopyChar(s);
 
-            openToolStripMenuItem.Click += (s, e) => { openEvent?.Invoke(s, e); };
+            openToolStripMenuItem.Click += (s, e) => { openMenuAction?.Invoke(); };
         }
 
         private void RemoveInclude(object sender)
@@ -93,9 +95,7 @@ namespace BLEditor
             }
         }
 
-
-        event EventHandler openEvent;
-        
+  
 
         private void treeViewMaps_MouseDown(MouseEventArgs e)
         {
@@ -130,35 +130,35 @@ namespace BLEditor
                         contextMenuInclude.Show(treeViewMaps, new Point(e.X, e.Y));
                         break;
                     case TypeNode.GameData:
-                        openEvent = (s, e1) => EditGameData();
+                        openMenuAction = () => EditGameData();
                         contextMenuOpen.Show(treeViewMaps, new Point(e.X, e.Y));
                         break;
                     case TypeNode.MapInit:
-                        openEvent = (s, e1) => EditInitMapCode(node_here, typeNode);
+                        openMenuAction = () => EditInitMapCode(node_here);
                         contextMenuOpen.Show(treeViewMaps, new Point(e.X, e.Y));
                         break;
                     case TypeNode.MapExec:
-                        openEvent = (s, e1) => EditExecMapCode(node_here, typeNode);
+                        openMenuAction = () => EditExecMapCode(node_here);
                         contextMenuOpen.Show(treeViewMaps, new Point(e.X, e.Y));
                         break;
                     case TypeNode.MapTileCollision:
-                        openEvent = (s, e1) => EditTileCollisionMapCode(node_here, typeNode);
+                        openMenuAction = () => EditTileCollisionMapCode(node_here);
                         contextMenuOpen.Show(treeViewMaps, new Point(e.X, e.Y));
                         break;
                     case TypeNode.MapData:
-                        openEvent = (s, e1) => EditMapData(node_here);
+                        openMenuAction = () => EditMapData(node_here);
                         contextMenuOpen.Show(treeViewMaps, new Point(e.X, e.Y));
                         break;
                     case TypeNode.MapCColpf0:
-                        openEvent = (s, e1) => EditMapCColpf0(node_here);
+                        openMenuAction = () => EditMapCColpf0(node_here);
                         contextMenuOpen.Show(treeViewMaps, new Point(e.X, e.Y));
                         break;
                     case TypeNode.MapCColpf2:
-                        openEvent = (s, e1) => EditMapCColpf2(node_here);
+                        openMenuAction = () => EditMapCColpf2(node_here);
                         contextMenuOpen.Show(treeViewMaps, new Point(e.X, e.Y));
                         break;
                     case TypeNode.MapCColpf3:
-                        openEvent = (s, e1) => EditMapCColpf3(node_here);
+                        openMenuAction = () => EditMapCColpf3(node_here);
                         contextMenuOpen.Show(treeViewMaps, new Point(e.X, e.Y));
                         break;
                 }      
@@ -765,7 +765,7 @@ namespace BLEditor
             }
         }
 
-        private void Load()
+        private void LoadMapset()
         {
             OpenFileDialog saveFileDialog1 = new OpenFileDialog
             {
@@ -857,17 +857,17 @@ namespace BLEditor
 
                     case TypeNode.MapInit:
                         {
-                            EditInitMapCode(e.Node, typeNode);
+                            EditInitMapCode(e.Node);
                         };  break;
 
                     case TypeNode.MapExec:
                         {
-                            EditExecMapCode(e.Node, typeNode);
+                            EditExecMapCode(e.Node);
                         }; break;
 
                     case TypeNode.MapTileCollision:
                         {
-                            EditTileCollisionMapCode(e.Node, typeNode);
+                            EditTileCollisionMapCode(e.Node);
                         }; break;
                 }
             }
@@ -1035,33 +1035,33 @@ namespace BLEditor
             }
         }
 
-        private void EditTileCollisionMapCode(TreeNode node, TypeNode typeNode)
+        private void EditTileCollisionMapCode(TreeNode node)
         {
             Map map = GetMap(node);
             String code = (!String.IsNullOrEmpty(map.TileCollisionRoutine)) ? map.TileCollisionRoutine : $"\t\t; ** Map '{map.Name}' Tile Collision **\n\t\t; A = Title\n\t\t; X = Actor\n\n\t\trts";
-            FormASMEdit fedit = new FormASMEdit(map, typeNode, code, $"Tile Collision Routine for map {map.Name}");
+            FormASMEdit fedit = new FormASMEdit(map, TypeNode.MapTileCollision, code, $"Tile Collision Routine for map {map.Name}");
             if (fedit.ShowDialog() == DialogResult.OK)
             {
                 map.TileCollisionRoutine = fedit.scintilla1.Text;
             }
         }
 
-        private void EditExecMapCode(TreeNode node, TypeNode typeNode)
+        private void EditExecMapCode(TreeNode node)
         {
             Map map = GetMap(node);
             String code = (!String.IsNullOrEmpty(map.ExecRoutine)) ? map.ExecRoutine : $"\t\t; ** Map '{map.Name}' Exec **\n\n\n\trts";
-            FormASMEdit fedit = new FormASMEdit(map, typeNode, code, $"Exec Routine for map {map.Name}");
+            FormASMEdit fedit = new FormASMEdit(map, TypeNode.MapExec, code, $"Exec Routine for map {map.Name}");
             if (fedit.ShowDialog() == DialogResult.OK)
             {
                 map.ExecRoutine = fedit.scintilla1.Text;
             }
         }
 
-        private void EditInitMapCode(TreeNode node, TypeNode typeNode)
+        private void EditInitMapCode(TreeNode node)
         {
             Map map = GetMap(node);
             String code = (!String.IsNullOrEmpty(map.InitRoutine)) ? map.InitRoutine : $"\t\t; ** Map '{map.Name}' Init **\n\n\n\trts";
-            FormASMEdit fedit = new FormASMEdit(map, typeNode, code, $"Init Routine for map {map.Name}");
+            FormASMEdit fedit = new FormASMEdit(map, TypeNode.MapInit, code, $"Init Routine for map {map.Name}");
             if (fedit.ShowDialog() == DialogResult.OK)
             {
                 map.InitRoutine = fedit.scintilla1.Text;
