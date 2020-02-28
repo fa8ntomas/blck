@@ -71,7 +71,10 @@
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.buttonEditFnt = new BLEditor.MenuButton();
             this.dliList = new BLEditor.DLIListUserControl();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.picBxMap = new System.Windows.Forms.Panel();
+            this.picBxFont = new System.Windows.Forms.PictureBox();
+            this.picBxSelected = new System.Windows.Forms.PictureBox();
+            this.picBoxMap = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
             this.firstMapNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.runButton = new System.Windows.Forms.Button();
@@ -80,14 +83,17 @@
             this.contextMenuFont.SuspendLayout();
             this.contextMenuInclude.SuspendLayout();
             this.contextMenuOpen.SuspendLayout();
-            this.panel1.SuspendLayout();
+            this.picBxMap.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picBxFont)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBxSelected)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBoxMap)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.firstMapNumericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // flpTiles
             // 
             this.flpTiles.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.flpTiles.Location = new System.Drawing.Point(824, 5);
+            this.flpTiles.Location = new System.Drawing.Point(662, 398);
             this.flpTiles.Name = "flpTiles";
             this.flpTiles.Size = new System.Drawing.Size(578, 275);
             this.flpTiles.TabIndex = 4;
@@ -97,7 +103,7 @@
             this.lblSelected.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.lblSelected.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lblSelected.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.lblSelected.Location = new System.Drawing.Point(711, 186);
+            this.lblSelected.Location = new System.Drawing.Point(652, 186);
             this.lblSelected.Name = "lblSelected";
             this.lblSelected.Size = new System.Drawing.Size(64, 128);
             this.lblSelected.TabIndex = 5;
@@ -106,7 +112,7 @@
             // 
             this.flpMap.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.flpMap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.flpMap.Location = new System.Drawing.Point(3, 3);
+            this.flpMap.Location = new System.Drawing.Point(13, 398);
             this.flpMap.Name = "flpMap";
             this.flpMap.Size = new System.Drawing.Size(643, 353);
             this.flpMap.TabIndex = 7;
@@ -123,7 +129,7 @@
             this.settingsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1283, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1480, 24);
             this.menuStrip1.TabIndex = 10;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -142,31 +148,31 @@
             // newMenu
             // 
             this.newMenu.Name = "newMenu";
-            this.newMenu.Size = new System.Drawing.Size(114, 22);
+            this.newMenu.Size = new System.Drawing.Size(180, 22);
             this.newMenu.Text = "New";
             // 
             // loadMenu
             // 
             this.loadMenu.Name = "loadMenu";
-            this.loadMenu.Size = new System.Drawing.Size(114, 22);
+            this.loadMenu.Size = new System.Drawing.Size(180, 22);
             this.loadMenu.Text = "Load";
             // 
             // saveMenu
             // 
             this.saveMenu.Name = "saveMenu";
-            this.saveMenu.Size = new System.Drawing.Size(114, 22);
+            this.saveMenu.Size = new System.Drawing.Size(180, 22);
             this.saveMenu.Text = "Save";
             // 
             // saveAsMenu
             // 
             this.saveAsMenu.Name = "saveAsMenu";
-            this.saveAsMenu.Size = new System.Drawing.Size(114, 22);
+            this.saveAsMenu.Size = new System.Drawing.Size(180, 22);
             this.saveAsMenu.Text = "Save As";
             // 
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exportToolStripMenuItem.Text = "Export";
             this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
             // 
@@ -317,7 +323,7 @@
             this.treeViewMaps.Dock = System.Windows.Forms.DockStyle.Left;
             this.treeViewMaps.Location = new System.Drawing.Point(0, 24);
             this.treeViewMaps.Name = "treeViewMaps";
-            this.treeViewMaps.Size = new System.Drawing.Size(121, 477);
+            this.treeViewMaps.Size = new System.Drawing.Size(121, 573);
             this.treeViewMaps.TabIndex = 27;
             this.treeViewMaps.BeforeCollapse += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeViewMaps_BeforeCollapse);
             this.treeViewMaps.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeViewMaps_BeforeExpand);
@@ -349,20 +355,20 @@
             this.contextMenuOpen.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openToolStripMenuItem});
             this.contextMenuOpen.Name = "contextMenuOpen";
-            this.contextMenuOpen.Size = new System.Drawing.Size(181, 48);
+            this.contextMenuOpen.Size = new System.Drawing.Size(104, 26);
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.openToolStripMenuItem.Text = "Open";
             // 
             // splitter1
             // 
             this.splitter1.Location = new System.Drawing.Point(121, 24);
-            this.splitter1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.splitter1.Margin = new System.Windows.Forms.Padding(2);
             this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(2, 477);
+            this.splitter1.Size = new System.Drawing.Size(2, 573);
             this.splitter1.TabIndex = 34;
             this.splitter1.TabStop = false;
             // 
@@ -381,34 +387,61 @@
             // dliList
             // 
             this.dliList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.dliList.Location = new System.Drawing.Point(652, 5);
+            this.dliList.Location = new System.Drawing.Point(652, 3);
             this.dliList.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.dliList.Name = "dliList";
-            this.dliList.Padding = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.dliList.Padding = new System.Windows.Forms.Padding(5);
             this.dliList.Size = new System.Drawing.Size(166, 176);
             this.dliList.TabIndex = 24;
             // 
-            // panel1
+            // picBxMap
             // 
-            this.panel1.AutoScroll = true;
-            this.panel1.Controls.Add(this.label1);
-            this.panel1.Controls.Add(this.firstMapNumericUpDown);
-            this.panel1.Controls.Add(this.runButton);
-            this.panel1.Controls.Add(this.flpMap);
-            this.panel1.Controls.Add(this.dliList);
-            this.panel1.Controls.Add(this.flpTiles);
-            this.panel1.Controls.Add(this.lblSelected);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(123, 24);
-            this.panel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1160, 477);
-            this.panel1.TabIndex = 35;
+            this.picBxMap.AutoScroll = true;
+            this.picBxMap.Controls.Add(this.picBxFont);
+            this.picBxMap.Controls.Add(this.picBxSelected);
+            this.picBxMap.Controls.Add(this.picBoxMap);
+            this.picBxMap.Controls.Add(this.label1);
+            this.picBxMap.Controls.Add(this.firstMapNumericUpDown);
+            this.picBxMap.Controls.Add(this.runButton);
+            this.picBxMap.Controls.Add(this.flpMap);
+            this.picBxMap.Controls.Add(this.dliList);
+            this.picBxMap.Controls.Add(this.flpTiles);
+            this.picBxMap.Controls.Add(this.lblSelected);
+            this.picBxMap.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.picBxMap.Location = new System.Drawing.Point(123, 24);
+            this.picBxMap.Margin = new System.Windows.Forms.Padding(2);
+            this.picBxMap.Name = "picBxMap";
+            this.picBxMap.Size = new System.Drawing.Size(1357, 573);
+            this.picBxMap.TabIndex = 35;
+            // 
+            // picBxFont
+            // 
+            this.picBxFont.Location = new System.Drawing.Point(824, 3);
+            this.picBxFont.Name = "picBxFont";
+            this.picBxFont.Size = new System.Drawing.Size(512, 256);
+            this.picBxFont.TabIndex = 37;
+            this.picBxFont.TabStop = false;
+            // 
+            // picBxSelected
+            // 
+            this.picBxSelected.Location = new System.Drawing.Point(722, 186);
+            this.picBxSelected.Name = "picBxSelected";
+            this.picBxSelected.Size = new System.Drawing.Size(64, 128);
+            this.picBxSelected.TabIndex = 36;
+            this.picBxSelected.TabStop = false;
+            // 
+            // picBoxMap
+            // 
+            this.picBoxMap.Location = new System.Drawing.Point(5, 3);
+            this.picBoxMap.Name = "picBoxMap";
+            this.picBoxMap.Size = new System.Drawing.Size(640, 352);
+            this.picBoxMap.TabIndex = 35;
+            this.picBoxMap.TabStop = false;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(111, 374);
+            this.label1.Location = new System.Drawing.Point(86, 367);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(53, 13);
             this.label1.TabIndex = 34;
@@ -416,7 +449,7 @@
             // 
             // firstMapNumericUpDown
             // 
-            this.firstMapNumericUpDown.Location = new System.Drawing.Point(171, 372);
+            this.firstMapNumericUpDown.Location = new System.Drawing.Point(145, 365);
             this.firstMapNumericUpDown.Name = "firstMapNumericUpDown";
             this.firstMapNumericUpDown.Size = new System.Drawing.Size(120, 20);
             this.firstMapNumericUpDown.TabIndex = 33;
@@ -424,7 +457,7 @@
             // runButton
             // 
             this.runButton.Image = global::BLEditor.Properties.Resources.application_run;
-            this.runButton.Location = new System.Drawing.Point(13, 369);
+            this.runButton.Location = new System.Drawing.Point(5, 364);
             this.runButton.Name = "runButton";
             this.runButton.Size = new System.Drawing.Size(75, 23);
             this.runButton.TabIndex = 32;
@@ -436,8 +469,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1283, 501);
-            this.Controls.Add(this.panel1);
+            this.ClientSize = new System.Drawing.Size(1480, 597);
+            this.Controls.Add(this.picBxMap);
             this.Controls.Add(this.splitter1);
             this.Controls.Add(this.treeViewMaps);
             this.Controls.Add(this.buttonEditFnt);
@@ -451,8 +484,11 @@
             this.contextMenuFont.ResumeLayout(false);
             this.contextMenuInclude.ResumeLayout(false);
             this.contextMenuOpen.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            this.picBxMap.ResumeLayout(false);
+            this.picBxMap.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picBxFont)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBxSelected)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBoxMap)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.firstMapNumericUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -502,10 +538,13 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuOpen;
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
         private System.Windows.Forms.Splitter splitter1;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel picBxMap;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.NumericUpDown firstMapNumericUpDown;
         private System.Windows.Forms.Button runButton;
+        private System.Windows.Forms.PictureBox picBxFont;
+        private System.Windows.Forms.PictureBox picBxSelected;
+        private System.Windows.Forms.PictureBox picBoxMap;
     }
 }
 

@@ -2,21 +2,29 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Windows.Forms;
-using System.Xml;
-using static System.Windows.Forms.CheckedListBox;
 
 namespace BLEditor
 {
     public partial class pbx1 : Form
     {
+        Bitmap czBuffer;        //Control Z buffer
+        Bitmap mapBuffer;     //Map Buffer
+        Bitmap fontBuffer;     //Font buffer
+        int[,] mapArray = new int[40, 11];//Array behind mapscreen
+        int selectedFont = 0;//Selected font character
+        List<byte> byteList = new List<byte>();//For Saving
+        bool mouseDown = false;//Keep track of mouse button
+        Color[] pfColors = new Color[] { Color.Gray, Color.Red, Color.Blue, Color.White, Color.DarkGray };//Hard coded for now - need to hook them up to DLI
+        Rectangle lastRect;     //last rectangle selected
+        int[,] fontArray = new int[32, 8];//Array behind the font/character set
+
         Bitmap[] tileArray;
         byte[] chars;
         bool mouseD = false;
         readonly MapSet mapSet = new MapSet();
-
         List<byte> extraMapBytes = new List<byte>();
         public enum TypeNode { GameData, Fonts, FontFile, Includes, IncludeFile, Map, MapInit, MapExec, MapTileCollision, MapData, MapCColpf0, MapCColpf2, MapCColpf3 };
 
@@ -25,14 +33,14 @@ namespace BLEditor
         public pbx1()
         {
             InitializeComponent();
-
+            InitializeBLCK();
             mapSet.StrutureTreeChanged += (s, e) => MapSetStrutureTreeChanged();
             mapSet.OnDLISChanged += (s, e) => mapSet_OnDLISChanged();
             mapSet.MapNameChanged += (s, e) => MapNameChanged(e as MapNameChangedEventArgs); 
 
-            for (int i = 0; i < 440; i++)//Populate Map Tiles
+            for (int i = 0; i < 440; i++)//Populate Map Tiles - Get rid of this shit!
             {
-                Tile tile = new Tile(i);
+                Tile tile = new Tile(i);//Get rid of Tile class
                 tile.MouseDown += Lm_MouseDown;
                 tile.MouseUp += Lm_MouseUp;
                 tile.MouseEnter += Lm_MouseEnter;
@@ -471,11 +479,10 @@ namespace BLEditor
             lblSelected.Text = (sender as Tile).Text;
         }
 
-        private void CreateTiles(byte[] byteSet)//Map Tiles
+        private void CreateTiles(byte[] byteSet)//Font Tiles
         {
             int count = 0;
             tileArray = new Bitmap[256];
-
             for (int i = 0; i < 256; i++)
             {
                 chars = new byte[8];
@@ -525,8 +532,13 @@ namespace BLEditor
             DisplayedMap = inMap;
 
             dliList.Map = inMap;
-
             byte[] bytes = mapSet.CharSets.First(set => set.UID == inMap.FontID).Data;
+
+            RbgPFColors colorMap = inMap.DLIS[0].AtariPFColors.ToBLColor();//Get initial color list for map
+            SetCurrentColors(colorMap);//Set PFColor array to current colors
+            DisplayCharacterSet(bytes);//NEW CHARACTER SET
+            DisplayNewMap(inMap);//NEW MAP
+
             flpTiles.Controls.Clear();
             CreateTiles(bytes);
             PopulateLabels();
@@ -806,11 +818,7 @@ namespace BLEditor
                 if (owner != null && owner.Tag is Map)
                 {
                     Map map = owner.Tag as Map;
-                  //  InputBoxResult result = InputBox.Show("New name", "Change Name of the map", map.Name, null);
-                   // if (result.OK)
-                   // {
-                        mapSet.DeleteMap(map);
-                  //  }
+                    mapSet.DeleteMap(map);
                 }
             }
 
@@ -1143,6 +1151,279 @@ namespace BLEditor
             {
                  mapSet.Export(saveFileDialog1.FileName);
             }
+        }
+
+        /*--------------------------------------------------------------New Code to remove tiles-------------------------------------*/
+
+        private void InitializeBLCK()
+        {
+            mapBuffer = new Bitmap(640, 352);
+            //blMap = new Bitmap(640, 352); - Might not be needed
+            fontBuffer = new Bitmap(512, 256);
+            czBuffer = new Bitmap(640, 352);
+            this.KeyPreview = true;
+            this.KeyDown += Check_Keys;
+            picBoxMap.MouseClick += MapMouse_Click;
+            picBoxMap.MouseMove += MapMouse_Move;
+            picBoxMap.MouseDown += MapMouse_Down;
+            picBoxMap.MouseUp += MapMouse_Up;
+            picBxFont.MouseClick += FontMouse_Click;
+            picBxFont.MouseMove += FontMouse_Move;
+            picBxFont.Image = fontBuffer;
+            InitBitmaps();
+        }
+
+        //Initializes bitmaps and draws gray in the background
+        private void InitBitmaps()
+        {
+            picBoxMap.Image = SetPixels(mapBuffer);//blMap
+            mapBuffer = new Bitmap(mapBuffer);//blMap
+            picBxSelected.Image = SetPixels(new Bitmap(64, 128));
+            picBxFont.Image = SetPixels(new Bitmap(512, 256));
+            fontBuffer = picBxFont.Image as Bitmap;
+        }
+
+        //Sets pixels in a bitmap to gray
+        private Bitmap SetPixels(Bitmap bitInput)
+        {
+            for (int Xcount = 0; Xcount < bitInput.Width; Xcount++)
+            {
+                for (int Ycount = 0; Ycount < bitInput.Height; Ycount++)
+                {
+                    bitInput.SetPixel(Xcount, Ycount, Color.DarkGray);
+                }
+            }
+
+            return bitInput;
+        }
+
+        //Check for control-z keypress
+        private void Check_Keys(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Z && (e.Control))
+            {
+                picBoxMap.Image = czBuffer;
+                mapBuffer = new Bitmap(czBuffer);
+            }
+        }
+
+        //If mouse is up stop tracking Mouse_move
+        private void MapMouse_Up(object sender, MouseEventArgs e)
+        {
+            mouseDown = false;
+        }
+
+        //If mouse is down, can use variable below with mouse move to draw more than one tile at a time
+        //Also store current screen in a buffer in case Ctrl-Z is pressed
+        private void MapMouse_Down(object sender, MouseEventArgs e)
+        {
+            czBuffer = new Bitmap(mapBuffer);
+            mouseDown = true;
+
+        }
+
+        //Draws box around current location in Map and if mouse is down then adds tiles to map
+        private void MapMouse_Move(object sender, MouseEventArgs e)
+        {
+            DrawBox(e.Location.X, e.Location.Y, (sender as PictureBox));
+            if (mouseDown)
+            {
+                Bitmap temp = picBoxMap.Image as Bitmap;
+                PasteSelected((picBxSelected.Image as Bitmap), new Rectangle(0, 0, 64, 128), ref temp, CalculateBoxR(e.Location.X, e.Location.Y));
+                mapArray[e.Location.X / 16, e.Location.Y / 32] = selectedFont;
+            }
+        }
+
+        //Same as above but single mouse clicks
+        private void MapMouse_Click(object sender, MouseEventArgs e)
+        {
+            Bitmap temp = picBoxMap.Image as Bitmap;
+            PasteSelected((picBxSelected.Image as Bitmap), new Rectangle(0, 0, 64, 128), ref temp, CalculateBoxR(e.Location.X, e.Location.Y));
+            mapArray[e.Location.X / 16, e.Location.Y / 32] = selectedFont;
+        }
+
+        //Draw box where mouse is currently located in font box
+        private void FontMouse_Move(object sender, MouseEventArgs e)
+        {
+            DrawBox(e.Location.X, e.Location.Y, (sender as PictureBox));
+        }
+
+        //Selects a tile base on mouse location
+        private void FontMouse_Click(object sender, MouseEventArgs e)
+        {
+            Bitmap temp = fontBuffer.Clone(CalculateBoxR(e.Location.X, e.Location.Y), PixelFormat.Format32bppArgb);
+            picBxSelected.Image = new Bitmap(temp, new Size(temp.Width * 4, temp.Height * 4));
+            selectedFont = e.Y / 32 * 32 + e.X / 16;
+        }
+
+        //Draws a box at current mouse location
+        private void DrawBox(int x, int y, PictureBox pbx)
+        {
+            Pen pen;
+            Graphics g;
+
+            Rectangle rect = CalculateBoxR(x, y);
+            if (rect != lastRect)
+            {
+                picBxFont.Image = fontBuffer;
+                picBoxMap.Image = mapBuffer;
+            }
+            pen = new Pen(Color.LightGoldenrodYellow);
+            g = pbx.CreateGraphics();
+            g.DrawRectangle(pen, rect);
+            lastRect = rect;
+        }
+
+        //Calculates a Rectangle based on current mouse location
+        private Rectangle CalculateBoxR(int x, int y)
+        {
+            int newX = x / 16;
+            int newY = y / 32;
+
+            return new Rectangle(newX * 16, newY * 32, 16, 32);
+        }
+
+        //Converts the Map Array to a list of bytes for use with the RLE Encoder
+        private List<byte> ConvertMapArrayToListOfBytes()
+        {
+            List<byte> returnList = new List<byte>();
+            for (int y = 0; y < 11; y++)
+            {
+                for (int x = 0; x < 40; x++)
+                {
+                    returnList.Add(Convert.ToByte(mapArray[x, y]));
+                }
+            }
+
+            return returnList;
+        }
+
+        //Adds the currently selected tile to the map at the mouse location
+        public void PasteSelected(Bitmap srcBitmap, Rectangle srcRegion, ref Bitmap destBitmap, Rectangle destRegion)
+        {
+            using (Graphics g = Graphics.FromImage(destBitmap))
+            {
+                g.DrawImage(srcBitmap, destRegion, srcRegion, GraphicsUnit.Pixel);
+            }
+        }
+
+   /* For each byte in Antic Mode 4 & 5, you have 4 bit pairs - each bit pair accesses a color register
+   This function will calculate each bit pair value and put all four in an integer array*/
+        private int[] GetBitPairValuesFromByte(byte convertMe)
+        {
+            int[] returnArray = new int[4];
+
+            for (int i = 0; i < 4; i++)
+            {
+                returnArray[i] = (convertMe >> (6 - (i * 2)) & 0X03);
+            }
+
+            return returnArray;
+        }
+
+        private Color GetColorFromBitPairValue(int bitPairValue)
+        {
+            switch (bitPairValue)
+            {
+                case 0:
+                    return pfColors[0];//Colbak
+                case 1:
+                    return pfColors[1];//Colpf0
+                case 2:
+                    return pfColors[2];//Colpf1
+                case 3:
+                    return pfColors[3];//Colpf2
+                default:
+                    return pfColors[0];
+            }
+        }
+
+        //Displays the currently loaded character set
+        private Bitmap DisplayCharacterSet(byte[] characterSet)
+        {   /* Atari has 128 Characters, flip bit 7 to invert pfColor2 -> pfColor3. For a total of 256 Characters. 
+            8 Bytes per character. Need 32 characters per row. 128 * 8 = 1024 bytes per character set.
+            1024 bytes * 4 colors per bytes = 4096 color entries per map table.  */
+
+
+            for (int tblRows = 0; tblRows < 4; tblRows++)
+            {
+                for (int tblCols = 0; tblCols < 32; tblCols++)
+                {
+                    for (int row = 0; row < 8; row++)
+                    {
+                        int[] bvps = GetBitPairValuesFromByte(characterSet[row + tblCols * 8 + tblRows * 256]);
+
+                        for (int column = 0; column < 4; column++)
+                        {
+                            Color tmpColor = GetColorFromBitPairValue(bvps[column]);
+                            for (int y = 0; y < 4; y++)
+                            {
+                                for (int x = 0; x < 4; x++)
+                                {
+                                    fontBuffer.SetPixel(x + column * 4 + tblCols * 16, y + row * 4 + tblRows * 32, tmpColor);
+                                    if (tmpColor == pfColors[3])
+                                    {
+                                        fontBuffer.SetPixel(x + column * 4 + tblCols * 16, y + row * 4 + tblRows * 32 + 128, pfColors[4]);
+                                    }
+                                    else
+                                    {
+                                        fontBuffer.SetPixel(x + column * 4 + tblCols * 16, y + row * 4 + tblRows * 32 + 128, tmpColor);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return fontBuffer;
+        }
+
+        //Displays the new map when opened
+        private void DisplayNewMap(Map inMap)
+        {
+            Bitmap pbMap = picBoxMap.Image as Bitmap;
+            for (int i = 0; i < 440; i++)
+            {
+                SetCurrentColors(inMap.GetColors(i));
+                int[] fontArray = CalculateFontLocation(inMap.MapData[i]);
+                int[] mapLocArray = CalculateMapLocation(i);
+                PasteSelected(fontBuffer, new Rectangle(fontArray[0] * 16, fontArray[1] * 32, 16, 32), ref pbMap, new Rectangle(mapLocArray[0] * 16, mapLocArray[1] * 32, 16, 32));
+                mapArray[mapLocArray[0], mapLocArray[1]] = i;
+            }
+        }
+                
+
+        //Calculates what font location to get the picture data from
+        private int[] CalculateFontLocation(byte byteLocation)
+        {
+            int[] returnArray = new int[2];
+
+            returnArray[1] = (int)byteLocation / 32;
+            returnArray[0] = (int)byteLocation - returnArray[1] * 32;
+
+            return returnArray;
+        }
+
+        //Calculates what map location to store the font data to
+        private int[] CalculateMapLocation(int mapLocation)
+        {
+            int[] returnArray = new int[2];
+
+            returnArray[1] = mapLocation / 40;
+            returnArray[0] = mapLocation - returnArray[1] * 40;
+
+            return returnArray;
+        }
+
+        //Sets current colors based on DLI
+        private void SetCurrentColors(RbgPFColors currentDliColors)
+        {
+            pfColors[0] = currentDliColors.Colbk;
+            pfColors[1] = currentDliColors.Colpf0;
+            pfColors[2] = currentDliColors.Colpf1;
+            pfColors[3] = currentDliColors.Colpf2;
+            pfColors[4] = currentDliColors.Colpf3;
         }
 
     }
