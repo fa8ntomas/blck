@@ -97,7 +97,7 @@
             this.lblSelected.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.lblSelected.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lblSelected.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.lblSelected.Location = new System.Drawing.Point(652, 186);
+            this.lblSelected.Location = new System.Drawing.Point(654, 231);
             this.lblSelected.Name = "lblSelected";
             this.lblSelected.Size = new System.Drawing.Size(64, 128);
             this.lblSelected.TabIndex = 5;
