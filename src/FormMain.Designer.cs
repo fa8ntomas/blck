@@ -72,9 +72,6 @@
             this.buttonEditFnt = new BLEditor.MenuButton();
             this.dliList = new BLEditor.DLIListUserControl();
             this.picBxMap = new System.Windows.Forms.Panel();
-            this.picBxFont = new System.Windows.Forms.PictureBox();
-            this.picBxSelected = new System.Windows.Forms.PictureBox();
-            this.picBoxMap = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
             this.firstMapNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.runButton = new System.Windows.Forms.Button();
@@ -84,16 +81,13 @@
             this.contextMenuInclude.SuspendLayout();
             this.contextMenuOpen.SuspendLayout();
             this.picBxMap.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picBxFont)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picBxSelected)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picBoxMap)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.firstMapNumericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // flpTiles
             // 
             this.flpTiles.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.flpTiles.Location = new System.Drawing.Point(662, 398);
+            this.flpTiles.Location = new System.Drawing.Point(825, 3);
             this.flpTiles.Name = "flpTiles";
             this.flpTiles.Size = new System.Drawing.Size(578, 275);
             this.flpTiles.TabIndex = 4;
@@ -112,7 +106,7 @@
             // 
             this.flpMap.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.flpMap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.flpMap.Location = new System.Drawing.Point(13, 398);
+            this.flpMap.Location = new System.Drawing.Point(5, 6);
             this.flpMap.Name = "flpMap";
             this.flpMap.Size = new System.Drawing.Size(643, 353);
             this.flpMap.TabIndex = 7;
@@ -148,31 +142,31 @@
             // newMenu
             // 
             this.newMenu.Name = "newMenu";
-            this.newMenu.Size = new System.Drawing.Size(180, 22);
+            this.newMenu.Size = new System.Drawing.Size(114, 22);
             this.newMenu.Text = "New";
             // 
             // loadMenu
             // 
             this.loadMenu.Name = "loadMenu";
-            this.loadMenu.Size = new System.Drawing.Size(180, 22);
+            this.loadMenu.Size = new System.Drawing.Size(114, 22);
             this.loadMenu.Text = "Load";
             // 
             // saveMenu
             // 
             this.saveMenu.Name = "saveMenu";
-            this.saveMenu.Size = new System.Drawing.Size(180, 22);
+            this.saveMenu.Size = new System.Drawing.Size(114, 22);
             this.saveMenu.Text = "Save";
             // 
             // saveAsMenu
             // 
             this.saveAsMenu.Name = "saveAsMenu";
-            this.saveAsMenu.Size = new System.Drawing.Size(180, 22);
+            this.saveAsMenu.Size = new System.Drawing.Size(114, 22);
             this.saveAsMenu.Text = "Save As";
             // 
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.exportToolStripMenuItem.Text = "Export";
             this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
             // 
@@ -397,9 +391,6 @@
             // picBxMap
             // 
             this.picBxMap.AutoScroll = true;
-            this.picBxMap.Controls.Add(this.picBxFont);
-            this.picBxMap.Controls.Add(this.picBxSelected);
-            this.picBxMap.Controls.Add(this.picBoxMap);
             this.picBxMap.Controls.Add(this.label1);
             this.picBxMap.Controls.Add(this.firstMapNumericUpDown);
             this.picBxMap.Controls.Add(this.runButton);
@@ -413,30 +404,6 @@
             this.picBxMap.Name = "picBxMap";
             this.picBxMap.Size = new System.Drawing.Size(1357, 573);
             this.picBxMap.TabIndex = 35;
-            // 
-            // picBxFont
-            // 
-            this.picBxFont.Location = new System.Drawing.Point(824, 3);
-            this.picBxFont.Name = "picBxFont";
-            this.picBxFont.Size = new System.Drawing.Size(512, 256);
-            this.picBxFont.TabIndex = 37;
-            this.picBxFont.TabStop = false;
-            // 
-            // picBxSelected
-            // 
-            this.picBxSelected.Location = new System.Drawing.Point(722, 186);
-            this.picBxSelected.Name = "picBxSelected";
-            this.picBxSelected.Size = new System.Drawing.Size(64, 128);
-            this.picBxSelected.TabIndex = 36;
-            this.picBxSelected.TabStop = false;
-            // 
-            // picBoxMap
-            // 
-            this.picBoxMap.Location = new System.Drawing.Point(5, 3);
-            this.picBoxMap.Name = "picBoxMap";
-            this.picBoxMap.Size = new System.Drawing.Size(640, 352);
-            this.picBoxMap.TabIndex = 35;
-            this.picBoxMap.TabStop = false;
             // 
             // label1
             // 
@@ -486,9 +453,6 @@
             this.contextMenuOpen.ResumeLayout(false);
             this.picBxMap.ResumeLayout(false);
             this.picBxMap.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picBxFont)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picBxSelected)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picBoxMap)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.firstMapNumericUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -542,9 +506,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.NumericUpDown firstMapNumericUpDown;
         private System.Windows.Forms.Button runButton;
-        private System.Windows.Forms.PictureBox picBxFont;
-        private System.Windows.Forms.PictureBox picBxSelected;
-        private System.Windows.Forms.PictureBox picBoxMap;
     }
 }
 
