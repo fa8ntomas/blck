@@ -25,7 +25,7 @@ namespace BLEditor
             mapSet.OnDLISChanged += (s, e) => mapSet_OnDLISChanged();
             mapSet.MapNameChanged += (s, e) => MapNameChanged(e as MapNameChangedEventArgs); 
 
-            for (int i = 0; i < 440; i++)
+            for (int i = 0; i < 440; i++)//Remove Tiles
             {
                 Tile tile = new Tile(i);
                 tile.MouseDown += Lm_MouseDown;
