@@ -134,7 +134,7 @@ namespace BLEditor
         private bool showGrid = true;
         Bitmap tempBitmap;
 
-        private RbgPFColors _RbgPFColors;
+        private RbgPFColors _RbgPFColors=new RbgPFColors();
         private RbgPFColors RbgPFColors
         {
             get { return _RbgPFColors; }
@@ -267,18 +267,13 @@ namespace BLEditor
 
         private void setGlyph(byte[] glyph)
         {
-            if (glyph == null)
-            {
-                return;
-            }
-
             Graphics g = Graphics.FromImage(tempBitmap);
 
             g.Clear(Color.White);
-    
+
             for (int i = 0; i < 8; i++)
             {
-                byte b = glyph[i];
+                byte b = (glyph == null) ? (byte)0 : glyph[i];
                 for (int j = 0; j < 4; j++)
                 {
                     Color pfColor = GetColorFromValue(GetValueFromByte(j, b), CellType.High.Equals(cellType));

@@ -38,7 +38,7 @@ namespace BLEditor
 
         public MapSet MapSet { get; private set; }
 
-        public DLI[] dlis;
+        private DLI[] dlis;
         public DLI[] DLIS
         {
             get { return dlis; }
@@ -57,6 +57,150 @@ namespace BLEditor
             set { SetField(ref mapData, value); }
         }
 
+        internal byte GetMapDataByte(Point point)
+        {
+            if (mapRectangle.Contains(point))
+            {
+                return mapData[point.X + 40 * point.Y];
+            }
+            else
+            {
+                throw new ArgumentException();
+            }
+        }
+
+        public bool ClearMapData(Rectangle toClear)
+        {
+            toClear.Intersect(mapRectangle);
+            
+            bool updated = false;
+
+            if (!toClear.IsEmpty)
+            {
+                for (int row = toClear.Y; row < toClear.Bottom; row++)
+                {
+                    for (int col = toClear.X; col < toClear.Right; col++)
+                    {
+                        if (mapData[col + 40 * row] != 0)
+                        {
+                            mapData[col + 40 * row] = 0;
+                            updated = true;
+                        }
+                    }
+                }
+            }
+
+            if (updated)
+            {
+                isDirty = true;
+            }
+
+            return updated;
+        }
+
+        private static Rectangle mapRectangle = new Rectangle(0, 0, 40, 11);
+
+        internal bool Intersect(Point tilePosition)
+        {
+            return mapRectangle.Contains(tilePosition);
+        }
+
+        public bool SetMapDataByte(Point point, byte b)
+        {
+            bool updated = false;
+
+            if (mapRectangle.Contains(point) && mapData[point.X + 40 * point.Y] != b) {
+                mapData[point.X + 40 * point.Y] = b;
+                updated = true;
+            }
+
+            if (updated)
+            {
+                isDirty = true;
+            }
+
+            return updated;
+        }
+
+        public bool SetMapDataBytes(Point point, MapClipboardData data)
+        {
+            Rectangle dataRec = new Rectangle(point, data.Size);
+            Rectangle updateRectangle = Rectangle.Intersect(mapRectangle, dataRec);
+
+            bool updated = false;
+
+            if (!updateRectangle.IsEmpty)
+            {
+                int yoffset = dataRec.Y<0? -dataRec.Y:0;
+                for (int y = 0; y < updateRectangle.Height; y++)
+                {
+                    int xoffset = dataRec.X <0?- dataRec.X:0;
+                    for (int x = 0; x < updateRectangle.Width; x++)
+                    {
+                        byte toPut = data.Bytes[(y + yoffset)* data.Size.Width+ xoffset +x ];
+
+                        int byteIndex = x + updateRectangle.X + 40 * (y + updateRectangle.Y);
+                        if (mapData[byteIndex] != toPut)
+                        {
+                            mapData[byteIndex] = toPut;
+                            updated = true;
+                        }
+                    }
+                }
+            }
+
+            if (updated)
+            {
+                isDirty = true;
+            }
+
+            return updated;
+        }
+        // Creates a new type.
+        [Serializable]
+        public class MapClipboardData
+        {
+
+            // Creates a default constructor for the class.
+            public MapClipboardData(Size _size, byte[] _bytes) { Size = _size; Bytes = _bytes; }
+
+            public Size Size { get ; set; }
+            public byte[] Bytes { get; set; }
+        }
+
+        // Creates a new data format.
+        readonly static DataFormats.Format myFormat = DataFormats.GetFormat("BLCK-MAP");
+        public bool CopyDataToClipboard(Rectangle toCopy)
+        {
+            Rectangle b = new Rectangle(0, 0, 40, 11);
+            toCopy = Rectangle.Intersect(toCopy, b);
+            bool copied = false;
+
+            if (!toCopy.IsEmpty)
+            {         
+                List<byte> bytesToCopy = new List<byte>();
+                for (int row = toCopy.Y; row < toCopy.Bottom; row++)
+                {
+                    for (int col = toCopy.X; col < toCopy.Right; col++)
+                    {
+                        bytesToCopy.Add(mapData[col + 40 * row]);
+                    }
+                }
+
+                MapClipboardData myObject = new MapClipboardData(toCopy.Size, bytesToCopy.ToArray());
+                DataObject myDataObject = new DataObject(myFormat.Name, myObject);
+                Clipboard.SetDataObject(myDataObject);
+                
+                copied = true;
+            }
+
+            return copied;
+        }
+
+        public MapClipboardData GetMapClipboardData()
+        {
+           return (MapClipboardData)Clipboard.GetDataObject().GetData(myFormat.Name);
+        }
 
         string name;
         public string Name
@@ -296,6 +440,7 @@ namespace BLEditor
             return XElementColpfDectection;
         }
 
+    
         public void SetSaved()
         {
             IsDirty = false;
@@ -393,6 +538,7 @@ namespace BLEditor
             return map;
         }
 
+      
         private static void ImportTextFile(XElement mapElemept, string tagName, string mapSetPath, Action<string,string> setValue)
         {
             if (mapElemept.Elements(tagName).Any())

@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace BLEditor
+namespace BLEditor.Controls
 {
     public partial class DLIListUserControl : UserControl
     {
@@ -16,11 +16,22 @@ namespace BLEditor
         {
             InitializeComponent();
 
-            buttonNew.Click += (s, e) => { AddDLI(); };
-            buttonRemove.Click += (s, e) => { RemoveDLI(dlis.SelectedIndex); };
+           
+            toolStrip1.Renderer = new MyToolStripSystemRenderer();
+
+            buttonNew2.Click += (s, e) => { AddDLI(); };
+            buttonRemove2.Click += (s, e) => { RemoveDLI(dlis.SelectedIndex); };
+            buttonEdit2.Click += (s, e) =>
+            {
+                if (dlis.SelectedIndex >= 0)
+                {
+                    EditDli(dlis.SelectedIndex);
+                }
+            };
         }
 
-     
+
+
         private Palette palette = Palette.GetDefaultPalette();
 
         public Map _Map;
@@ -41,7 +52,7 @@ namespace BLEditor
 
             }
 
-            buttonNew.Enabled = dlis.Items.Count>0;
+            buttonNew2.Enabled = dlis.Items.Count > 0;
         }
 
         private void dlis_DrawItem(object sender, DrawItemEventArgs e)
@@ -49,7 +60,7 @@ namespace BLEditor
             e.DrawBackground();
 
             if (e.Index >= 0)
-            {  
+            {
                 DLIListEntry DLIListEntry = ((DLIListEntry)dlis.Items[e.Index]);
 
                 e.Graphics.DrawString(DLIListEntry.ToString(), e.Font, Brushes.Black, e.Bounds, StringFormat.GenericDefault);
@@ -63,7 +74,7 @@ namespace BLEditor
                 AtariPFColors DliColors = DLIListEntry.dli.AtariPFColors;
 
                 byte[] colorValues = { DliColors.Colbk, DliColors.Colpf3, DliColors.Colpf2, DliColors.Colpf1, DliColors.Colpf0 };
-       
+
                 foreach (byte colorValue in colorValues)
                 {
                     using (Brush brush = new SolidBrush(palette.GetColorFromAtariColorValue(colorValue)))
@@ -73,13 +84,13 @@ namespace BLEditor
                         rect.X += rect.Width + 2;
                     }
                 }
-            } 
+            }
         }
 
         private void dlis_SelectedIndexChanged(object sender, EventArgs e)
         {
-            buttonRemove.Enabled = dlis.SelectedIndex >= 0;
-            buttonEdit.Enabled = dlis.SelectedIndex >= 0;
+            buttonRemove2.Enabled = dlis.SelectedIndex >= 0;
+            buttonEdit2.Enabled = dlis.SelectedIndex >= 0;
         }
 
         private void dlis_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -90,13 +101,7 @@ namespace BLEditor
                 EditDli(index);
             }
         }
-        private void button1_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (dlis.SelectedIndex >= 0)
-            {
-                EditDli(dlis.SelectedIndex);
-            }
-        }
+
 
         private void EditDli(int index)
         {
@@ -114,7 +119,7 @@ namespace BLEditor
 
         private void AddDLI()
         {
-            DLI dli  = null;
+            DLI dli = null;
 
             if (this.dlis.SelectedIndex != -1)
             {

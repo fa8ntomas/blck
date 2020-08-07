@@ -1,4 +1,6 @@
-﻿namespace BLEditor
+﻿using BLEditor.Controls;
+
+namespace BLEditor
 {
     partial class FormFntToFnt
     {
@@ -30,8 +32,8 @@
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.charSetUserControl1 = new BLEditor.CharSetUserControl();
-            this.charSetUserControl2 = new BLEditor.CharSetUserControl();
+            this.charSetUserControl1 = new BLEditor.Controls.CharSetUserControl();
+            this.charSetUserControl2 = new BLEditor.Controls.CharSetUserControl();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();

@@ -12,6 +12,7 @@
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -24,7 +25,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -48,11 +48,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="ScintillaNET, Version=3.6.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\jacobslusser.ScintillaNET.3.6.3\lib\net40\ScintillaNET.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -61,8 +64,16 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Component1.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Component1.Designer.cs">
+      <DependentUpon>Component1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MyToolStripSystemRenderer.cs" />
     <Compile Include="FormGameData.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -75,6 +86,37 @@
     <Compile Include="FormZoneCollisionData.Designer.cs">
       <DependentUpon>FormZoneCollisionData.cs</DependentUpon>
     </Compile>
+    <Compile Include="MapEditUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MapEditUserControl.Designer.cs">
+      <DependentUpon>MapEditUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MultiPagePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MultiPagePanel.Designer.cs">
+      <DependentUpon>MultiPagePanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MapEditPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MapEditPanel.Designer.cs">
+      <DependentUpon>MapEditPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CodeEditPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CodeEditPanel.Designer.cs">
+      <DependentUpon>CodeEditPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FntEditPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FntEditPanel.Designer.cs">
+      <DependentUpon>FntEditPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="size.cs" />
     <Compile Include="ZoneCollisionUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -147,10 +189,10 @@
     </Compile>
     <Compile Include="RbgPFColors.cs" />
     <Compile Include="CharacterSet.cs" />
-    <Compile Include="CharSetUserControl.cs">
+    <Compile Include="Controls\CharSetUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="CharSetUserControl.designer.cs">
+    <Compile Include="Controls\CharSetUserControl.designer.cs">
       <DependentUpon>CharSetUserControl.cs</DependentUpon>
     </Compile>
     <Compile Include="AtariPFColors.cs" />
@@ -210,15 +252,18 @@
     <Compile Include="Tile.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="DLIListUserControl.cs">
+    <Compile Include="Controls\DLIListUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="DLIListUserControl.Designer.cs">
+    <Compile Include="Controls\DLIListUserControl.Designer.cs">
       <DependentUpon>DLIListUserControl.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="CharSetUserControl.resx">
+    <EmbeddedResource Include="Controls\CharSetUserControl.resx">
       <DependentUpon>CharSetUserControl.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CodeEditPanel.resx">
+      <DependentUpon>CodeEditPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ColorsPickerUserControl.resx">
       <DependentUpon>ColorsPickerUserControl.cs</DependentUpon>
@@ -272,6 +317,9 @@
     <EmbeddedResource Include="InputBox.resx">
       <DependentUpon>InputBox.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="MapEditPanel.resx">
+      <DependentUpon>MapEditPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PictureGridUserControl.resx">
       <DependentUpon>PictureGridUserControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -280,8 +328,17 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="DLIListUserControl.resx">
+    <EmbeddedResource Include="Controls\DLIListUserControl.resx">
       <DependentUpon>DLIListUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MapEditUserControl.resx">
+      <DependentUpon>MapEditUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MultiPagePanel.resx">
+      <DependentUpon>MultiPagePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FntEditPanel.resx">
+      <DependentUpon>FntEditPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ZoneCollisionUserControl.resx">
       <DependentUpon>ZoneCollisionUserControl.cs</DependentUpon>
@@ -357,6 +414,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\stamp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\layer-select.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

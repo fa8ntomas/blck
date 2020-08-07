@@ -1,4 +1,6 @@
-﻿namespace BLEditor
+﻿using BLEditor.Controls;
+
+namespace BLEditor
 {
     partial class FormBitmapToFnt
     {
@@ -30,7 +32,7 @@
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.pictureGrid1 = new BLEditor.PictureGrid();
-            this.charSetUserControl1 = new BLEditor.CharSetUserControl();
+            this.charSetUserControl1 = new BLEditor.Controls.CharSetUserControl();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.buttonOK = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();

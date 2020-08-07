@@ -9,18 +9,26 @@ namespace BLEditor
 {
     public partial class pbx1 : Form
     {
-        Bitmap[] tileArray;
+      /*  Bitmap[] tileArray;
         byte[] chars;
-        bool mouseD = false;
+        bool mouseD = false;*/
         readonly MapSet mapSet = new MapSet();
         List<byte> extraMapBytes = new List<byte>();
-        public enum TypeNode { GameData, Fonts, FontFile, Includes, IncludeFile, Map, MapInit, MapExec, MapTileCollision, MapData, MapCColpf0, MapCColpf2, MapCColpf3 };
+        public enum TypeNode { GameData, Fonts, FontFile, Includes, IncludeFile, Map, MapInit, MapExec, MapTileCollision, MapData, MapCColpf0, MapCColpf2, MapCColpf3, MapTiles };
 
         private Action openMenuAction;
+        private MapEditPanel mapPanel;
+        private CodeEditPanel codePanel;
+        private FntEditPanel fntPanel;
 
         public pbx1()
         {
             InitializeComponent();
+
+            mapPanel = new MapEditPanel();
+            codePanel = new CodeEditPanel();
+            fntPanel = new FntEditPanel();
+
             mapSet.StrutureTreeChanged += (s, e) => MapSetStrutureTreeChanged();
             mapSet.OnDLISChanged += (s, e) => mapSet_OnDLISChanged();
             mapSet.MapNameChanged += (s, e) => MapNameChanged(e as MapNameChangedEventArgs); 
@@ -33,7 +41,6 @@ namespace BLEditor
                 tile.MouseEnter += Lm_MouseEnter;
                 tile.MouseMove += Lm_MouseMove;
                 tile.MouseClick += Lm_MouseClick;
-                flpMap.Controls.Add(tile);
             }
 
             newMenu.Click += (s, e) => NewMapSet();
@@ -50,7 +57,7 @@ namespace BLEditor
             runMenu.Click += (s, e) => Run(); 
             buildReleaseMenu.Click += (s, e) => BuildRelease(); 
 
-            runButton.Click += (s, e) =>  Run(); 
+            //runButton.Click += (s, e) =>  Run(); 
 
             treeViewMaps.MouseDown += (sender, args) => treeViewMaps_MouseDown(args);
 
@@ -256,15 +263,7 @@ namespace BLEditor
         {
             if (DisplayedMap != null && !mapSet.Maps.Contains(DisplayedMap))
             {
-                flpTiles.Controls.Clear();
-
-                for (int i = 0; i < 440; i++)
-                {
-                    (flpMap.Controls[i] as Tile).Text = null;
-                    (flpMap.Controls[i] as Tile).Image = null;
-                }
-
-                dliList.Map = null;
+               
                 DisplayedMap = null;
             }
 
@@ -343,11 +342,15 @@ namespace BLEditor
                 MapTreeNode mapNode = treeViewMaps.Nodes.OfType<MapTreeNode>().Where(a => a.Map.Equals(map)).FirstOrDefault();
                 if (mapNode == null)
                 {
+                    TreeNode tilesNode = new TreeNode("Tiles")
+                    {
+                        Tag = TypeNode.MapTiles
+                    };
+                    
                     TreeNode dataNode = new TreeNode("Map Data")
                     {
                         Tag = TypeNode.MapData
                     };
-
                     TreeNode initNode = new TreeNode("Init routine")
                     {
                         Tag = TypeNode.MapInit
@@ -378,7 +381,7 @@ namespace BLEditor
                         Tag = TypeNode.MapCColpf3
                     };
 
-                    TreeNode[] array = new TreeNode[] { initNode, execNode, tcollisionNode, dataNode, ccolpf0, ccolpf2, ccolpf3 };
+                    TreeNode[] array = new TreeNode[] { tilesNode, initNode, execNode, tcollisionNode, dataNode, ccolpf0, ccolpf2, ccolpf3 };
 
                     treeViewMaps.Nodes.Add(new MapTreeNode(map, array));
                 }
@@ -396,7 +399,7 @@ namespace BLEditor
 
         private void Lm_MouseClick(object sender, MouseEventArgs e)
         {
-            if (!string.IsNullOrEmpty(lblSelected.Text))
+           /* if (!string.IsNullOrEmpty(lblSelected.Text))
             {
                 (sender as Tile).Text = lblSelected.Text;
                 Map currentMap = DisplayedMap;
@@ -413,12 +416,12 @@ namespace BLEditor
                 {
                     (sender as Tile).Image = (flpTiles.Controls[selectedNumber] as Tile).Image;
                 }
-            }
+            }*/
         }
 
         private void Lm_MouseEnter(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(lblSelected.Text) && mouseD)
+        /*    if (!string.IsNullOrEmpty(lblSelected.Text) && mouseD)
             {
                 (sender as Tile).Text = lblSelected.Text;
                 int selectedNumber = int.Parse(lblSelected.Text, System.Globalization.NumberStyles.HexNumber);
@@ -435,78 +438,38 @@ namespace BLEditor
                 {
                     (sender as Tile).Image = (flpTiles.Controls[selectedNumber] as Tile).Image;
                 }
-            }
+            }*/
         }
 
         private void Lm_MouseUp(object sender, MouseEventArgs e)
         {
-            mouseD = false;
+         //   mouseD = false;
         }
 
         private void Lm_MouseDown(object sender, MouseEventArgs e)
         {
-            mouseD = true;
+          //  mouseD = true;
         }
 
         private void Lm_MouseMove(object sender, MouseEventArgs e)
         {
-            if (e.Button != MouseButtons.None)
+          /*  if (e.Button != MouseButtons.None)
             {
                 Control control = (Control)sender;
 
                 if (control.Capture)
                     control.Capture = false;
-            }
+            }*/
         }
 
         private void L_Click(object sender, System.EventArgs e)
         {
-            Bitmap newSize = (sender as Tile).CreateBitmap(16, 64, 128);
+         /*   Bitmap newSize = (sender as Tile).CreateBitmap(16, 64, 128);
             lblSelected.Image = newSize;
-            lblSelected.Text = (sender as Tile).Text;
+            lblSelected.Text = (sender as Tile).Text;*/
         }
 
-        private void CreateTiles(byte[] byteSet)
-        {
-            int count = 0;
-            tileArray = new Bitmap[256];
-            for (int i = 0; i < 256; i++)
-            {
-                chars = new byte[8];
-                for (int j = 0; j < 8; j++)
-                {
-                    chars[j] = byteSet[count];
-                    count++;
-                }
-                Tile tile;
-                if (DisplayedMap != null && DisplayedMap.DLIS.Length == 1)
-                {
-                    tile = new Tile(i, chars, DisplayedMap.DLIS[0].AtariPFColors.ToBLColor());
-                }
-                else
-                {
-                    tile = new Tile(i, chars, new RbgPFColors());
-                }
-                tileArray[i] = tile.TMap;
-                flpTiles.Controls.Add(tile);
-                tile.Click += L_Click;
-                if (count >= 1024)
-                {
-                    count = 0;
-                }
-            }
-        }
-
-        private void PopulateLabels()
-        {
-            int count = 0;
-            foreach (Tile tile in flpTiles.Controls)
-            {
-                tile.Image = tileArray[count];
-                count++;
-            }
-            count = 0;
-        }
+    
 
         private string GetProperName(string path)
         {
@@ -516,39 +479,29 @@ namespace BLEditor
 
         private void DisplayMap(Map inMap)
         {
-            DisplayedMap = inMap;
-
-            dliList.Map = inMap;
-            byte[] bytes = mapSet.CharSets.First(set => set.UID == inMap.FontID).Data;
-
-            RbgPFColors colorMap = inMap.DLIS[0].AtariPFColors.ToBLColor();
-
-            flpTiles.Controls.Clear();
-            CreateTiles(bytes);
-            PopulateLabels();
-
-            buttonEditFnt.Enabled = true;
-
-            for (int i = 0; i < Math.Min(inMap.MapData.Length, 440); i++)
+            if (inMap != null)
             {
-                Tile tile = flpMap.Controls[i] as Tile;
+                DisplayedMap = inMap;
 
-                if (tile.Tag == null)
+                //dliList.Map = inMap;
+                CharacterSet charset = mapSet.CharSets.First(set => set.UID == inMap.FontID);
+                byte[] fntBytes = charset.Data;
+
+                RbgPFColors colorMap = inMap.DLIS[0].AtariPFColors.ToBLColor();
+
+
+        //        buttonEditFnt.Enabled = true;
+
+                extraMapBytes.Clear();
+                for (int i = 440; i < inMap.MapData.Length; i++)
                 {
-                    tile.Tag = new ToolTip();
+                    extraMapBytes.Add(inMap.MapData[i]);
                 }
 
-                (tile.Tag as ToolTip).SetToolTip(tile, inMap.MapData[i].ToString("X2") + " [" + (i % 40).ToString("X2") + "," + (i / 40 + 2).ToString("X2") + "]");
-
-                tile.Text = inMap.MapData[i].ToString("X2");
-                tile.Image = LookUpDLIColor(flpTiles.Controls[inMap.MapData[i]] as Tile, i, inMap);
+                //mapEditUserControl.LoadMap(inMap, charset);
+                mapPanel.LoadMap(inMap, charset);
+                this.multiPagePanel.CurrentPage = mapPanel;
             }
-            extraMapBytes.Clear();
-            for (int i = 440; i < inMap.MapData.Length; i++)
-            {
-                extraMapBytes.Add(inMap.MapData[i]);
-            }
-
         }
 
         private Image LookUpDLIColor(Tile changeTile, int i, Map inMap)
@@ -565,6 +518,10 @@ namespace BLEditor
             {
                 characterSet = contextCharacterSet;
             }
+            else if (sender is FontTreeNode fontTreeNode && fontTreeNode.CharacterSet is CharacterSet fontTreeNodeCharacterSet)
+            {
+                characterSet = fontTreeNodeCharacterSet;
+            }
             else if (DisplayedMap != null)
             {
                 characterSet = mapSet.CharSets.First(set => set.UID == DisplayedMap.FontID);
@@ -572,14 +529,17 @@ namespace BLEditor
 
             if (characterSet != null)
             {
-                using (FormFntEdit fontEditForm = new FormFntEdit(characterSet, DisplayedMap?.DLIS))
+                fntPanel.PreLoad(characterSet, DisplayedMap?.DLIS);
+                multiPagePanel.CurrentPage = fntPanel;
+
+             /*   using (FormFntEdit fontEditForm = new FormFntEdit(characterSet, DisplayedMap?.DLIS))
                 {
                     if (fontEditForm.ShowDialog() == DialogResult.OK)
                     {
                         characterSet.Data = fontEditForm.ReturnFontData;
                         DisplayMap(DisplayedMap);
                     }
-                }
+                }*/
             }
         }
 
@@ -808,7 +768,7 @@ namespace BLEditor
 
         }
 
-        bool enableCollapseExpand = true;
+     //   bool enableCollapseExpand = true;
 
         private void NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
@@ -817,14 +777,19 @@ namespace BLEditor
             {
                 switch (typeNode)
                 {
+                    case TypeNode.FontFile:
+                        {
+                            EditCurrentFont(e.Node);
+                        }; break;
+
                     case TypeNode.GameData:
                         {
                             EditGameData();
                         }; break;
 
-                    case TypeNode.Map:
+                    case TypeNode.MapTiles:
                         {
-                            OpenMap(e.Node);
+                            DisplayMap(GetMap(e.Node));
                         }; break;
 
                     case TypeNode.MapData:
@@ -861,10 +826,11 @@ namespace BLEditor
                         {
                             EditTileCollisionMapCode(e.Node);
                         }; break;
+
                 }
             }
 
-            enableCollapseExpand = true;
+         //   enableCollapseExpand = true;
         }
 
         private void EditMapCColpf3(TreeNode node)
@@ -1019,45 +985,53 @@ namespace BLEditor
             }
         }
 
-        private void OpenMap(TreeNode node)
+       /* private void OpenMap(TreeNode node)
         {
-            if (node is MapTreeNode mapNode)
+            Map map = ;
+            if (map!=null)
             {
-                DisplayMap(mapNode.Map);
+                ;
             }
-        }
+        }*/
 
         private void EditTileCollisionMapCode(TreeNode node)
         {
             Map map = GetMap(node);
             String code = (!String.IsNullOrEmpty(map.TileCollisionRoutine)) ? map.TileCollisionRoutine : $"\t\t; ** Map '{map.Name}' Tile Collision **\n\t\t; A = Title\n\t\t; X = Actor\n\n\t\trts";
-            FormASMEdit fedit = new FormASMEdit(map, TypeNode.MapTileCollision, code, $"Tile Collision Routine for map {map.Name}");
+            codePanel.PreLoad(map, TypeNode.MapTileCollision, code, $"Tile Collision Routine for map {map.Name}");
+            multiPagePanel.CurrentPage = codePanel;
+
+            /* FormASMEdit fedit = new FormASMEdit(map, TypeNode.MapTileCollision, code, $"Tile Collision Routine for map {map.Name}");
             if (fedit.ShowDialog() == DialogResult.OK)
             {
                 map.TileCollisionRoutine = fedit.scintilla1.Text;
-            }
+            }*/
         }
 
         private void EditExecMapCode(TreeNode node)
         {
             Map map = GetMap(node);
             String code = (!String.IsNullOrEmpty(map.ExecRoutine)) ? map.ExecRoutine : $"\t\t; ** Map '{map.Name}' Exec **\n\n\n\trts";
-            FormASMEdit fedit = new FormASMEdit(map, TypeNode.MapExec, code, $"Exec Routine for map {map.Name}");
-            if (fedit.ShowDialog() == DialogResult.OK)
-            {
-                map.ExecRoutine = fedit.scintilla1.Text;
-            }
+            codePanel.PreLoad(map, TypeNode.MapExec, code, $"Exec Routine for map {map.Name}");
+            multiPagePanel.CurrentPage = codePanel;
+            /* FormASMEdit fedit = new FormASMEdit(map, TypeNode.MapExec, code, $"Exec Routine for map {map.Name}");
+             if (fedit.ShowDialog() == DialogResult.OK)
+             {
+                 map.ExecRoutine = fedit.scintilla1.Text;
+             }*/
         }
 
         private void EditInitMapCode(TreeNode node)
         {
             Map map = GetMap(node);
             String code = (!String.IsNullOrEmpty(map.InitRoutine)) ? map.InitRoutine : $"\t\t; ** Map '{map.Name}' Init **\n\n\n\trts";
-            FormASMEdit fedit = new FormASMEdit(map, TypeNode.MapInit, code, $"Init Routine for map {map.Name}");
+            codePanel.PreLoad(map, TypeNode.MapInit, code, $"Init Routine for map {map.Name}");
+            multiPagePanel.CurrentPage = codePanel;
+            /*FormASMEdit fedit = new FormASMEdit(map, TypeNode.MapInit, code, $"Init Routine for map {map.Name}");
             if (fedit.ShowDialog() == DialogResult.OK)
             {
                 map.InitRoutine = fedit.scintilla1.Text;
-            }
+            }*/
         }
 
         private void EditGameData()
@@ -1073,37 +1047,37 @@ namespace BLEditor
 
         private void treeViewMaps_BeforeExpand(object sender, TreeViewCancelEventArgs e)
         {
-            Debug.WriteLine("treeViewMaps_BeforeExpand");
+          //  Debug.WriteLine("treeViewMaps_BeforeExpand");
 
-            e.Cancel = !enableCollapseExpand;
+          //  e.Cancel = !enableCollapseExpand;
 
-            enableCollapseExpand = true;
+          //  enableCollapseExpand = true;
         }   
   
         private void treeViewMaps_MouseClick(object sender, MouseEventArgs e)
         {
            
-            TreeViewHitTestInfo info = treeViewMaps.HitTest(e.Location);
+          //  TreeViewHitTestInfo info = treeViewMaps.HitTest(e.Location);
 
-            Debug.WriteLine("treeViewMaps_MouseClick");
+          //  Debug.WriteLine("treeViewMaps_MouseClick");
 
-            enableCollapseExpand = (info.Location == TreeViewHitTestLocations.PlusMinus);
+          //  enableCollapseExpand = (info.Location == TreeViewHitTestLocations.PlusMinus);
 
         }
 
         private void treeViewMaps_BeforeCollapse(object sender, TreeViewCancelEventArgs e)
         {
-            Debug.WriteLine("treeViewMaps_BeforeCollapse");
-            e.Cancel = !enableCollapseExpand;
-            enableCollapseExpand = true;
+//Debug.WriteLine("treeViewMaps_BeforeCollapse");
+          //  e.Cancel = !enableCollapseExpand;
+          //  enableCollapseExpand = true;
         }
 
         private void Run()
         {
-            if (MapSet.SSave(mapSet))
+          /*  if (MapSet.SSave(mapSet))
             {
                 FormRunMADS.Compile(mapSet, true, firstMapNumericUpDown.Value) ;
-            }
+            }*/
         }
         private void BuildRelease()
         {
@@ -1135,6 +1109,8 @@ namespace BLEditor
             {
                  mapSet.Export(saveFileDialog1.FileName);
             }
-        }  
+        }
+
+       
     }
 }

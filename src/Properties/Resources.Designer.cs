@@ -193,6 +193,16 @@ namespace BLEditor.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap layer_select {
+            get {
+                object obj = ResourceManager.GetObject("layer_select", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap magnifier_zoom_actual {
             get {
                 object obj = ResourceManager.GetObject("magnifier_zoom_actual", resourceCulture);
@@ -276,6 +286,16 @@ namespace BLEditor.Properties {
         internal static System.Drawing.Bitmap pipette {
             get {
                 object obj = ResourceManager.GetObject("pipette", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap stamp {
+            get {
+                object obj = ResourceManager.GetObject("stamp", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

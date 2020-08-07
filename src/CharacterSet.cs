@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Xml.Linq;
 
 namespace BLEditor
@@ -32,6 +33,8 @@ namespace BLEditor
             result.LoadData( fontFileName);
             return result;
         }
+       
+        public static readonly DataFormats.Format CharDataFormat = DataFormats.GetFormat("BLCK-CHAR");
 
         public byte[] Data { get; set; }
         public Guid UID { get; }

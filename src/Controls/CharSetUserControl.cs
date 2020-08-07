@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 
-namespace BLEditor
+namespace BLEditor.Controls
 {
     public partial class CharSetUserControl : UserControl
     {
@@ -25,6 +25,8 @@ namespace BLEditor
         public CharSetUserControl()
         {
             InitializeComponent();
+            
+            toolStrip1.Renderer = new MyToolStripSystemRenderer();
 
             colPerRow = 10;
             nbRow = (128 + colPerRow - 1) / colPerRow;
@@ -54,7 +56,7 @@ namespace BLEditor
 
         internal void UpdateCharTile(CharTile charTile)
         {
-            int index = charTile.Index * 8;
+            int index = (charTile.Index&0x7F) * 8;
             for (int i= 0; i<  8; i++)
             {
                 fnt[i + index] = charTile.Glyph[i];
@@ -189,12 +191,18 @@ namespace BLEditor
             if (col >= 0 && col < colPerRow)
             {
                 int row = pos.Y / CellSize().Height;
-                int result = row * colPerRow + col;
-                return (result > 127 || result < 0) ? -1 : result;
+                int cchar = row * colPerRow + col;
+                if (cchar > 127 || cchar < 0) {
+                    return -1;
+                } else
+                {
+                    return cchar + (CellType.High.Equals(cellType) ? 128 : 0);
+                }
             }
 
             return -1;
         }
+
 
         private void CreateBitmapFromFnt()
         {
@@ -227,7 +235,7 @@ namespace BLEditor
                     {
                         topLeft.X += glyph * (charW * zoom + colSpacing);
                         int byteIndex = count;
-                        NewMethod(tempBitmap, topLeft, glyph, cchar,zoom);
+                        DrawChar(tempBitmap, topLeft, glyph, cchar,zoom);
 
                     }
                     count += 8;
@@ -239,11 +247,11 @@ namespace BLEditor
             }
         }
 
-        private void NewMethod(Bitmap tempBitmap, Point topLeft, int glyph, int cchar, int zoom)
+        private void DrawChar(Bitmap tempBitmap, Point topLeft, int glyph, int cchar, int zoom)
         {
             for (int i = 0; i < 8; i++)//Eight rows
             {
-                byte b = FntByte[cchar * 8 + i];
+                byte b = FntByte[(cchar&0x7F) * 8 + i];
                 for (int j = 0; j < 4; j++)//Four colors per row
                 {
                     bool b7 = false;
@@ -439,7 +447,7 @@ namespace BLEditor
                     List<byte> glyph = new List<byte>();
                     for (int i = 0; i < 8; i++)
                     {
-                        glyph.Add(fnt[cchar * 8 + i]);
+                        glyph.Add(fnt[(cchar&0x7f) * 8 + i]);
                     }
 
                     this.TileSelected(this, new TileSelectedEventArgs((byte)cchar, glyph));                  
@@ -452,11 +460,20 @@ namespace BLEditor
                 int cchar = GetCharIndex(e.Location);
                 if (cchar >= 0)
                 {
-                    Bitmap tempBitmap = new Bitmap(4, 8);
-                    NewMethod(tempBitmap, new Point(0, 0), 0, cchar, 1);
-                    this.DoDragDrop(tempBitmap, DragDropEffects.Copy);
+                    DragDropChar(cchar);
                 }
             }
+        }
+
+        private void DragDropChar(int cchar)
+        {
+            Bitmap tempBitmap = new Bitmap(4, 8);
+            DrawChar(tempBitmap, new Point(0, 0), 0, cchar, 1);
+            DataObject d = new DataObject();
+            d.SetData(tempBitmap);
+            d.SetData(CharacterSet.CharDataFormat.Name, (byte)cchar);
+
+            this.DoDragDrop(d, DragDropEffects.Copy);
         }
 
         public event EventHandler OnDLISelected;

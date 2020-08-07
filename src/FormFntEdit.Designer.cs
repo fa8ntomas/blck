@@ -1,4 +1,6 @@
-﻿namespace BLEditor
+﻿using BLEditor.Controls;
+
+namespace BLEditor
 {
     partial class FormFntEdit
     {
@@ -29,11 +31,11 @@
         private void InitializeComponent()
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.charSetUserControl1 = new BLEditor.Controls.CharSetUserControl();
+            this.glyphEditUserControl1 = new BLEditor.GlyphEditUserControl();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
-            this.charSetUserControl1 = new BLEditor.CharSetUserControl();
-            this.glyphEditUserControl1 = new BLEditor.GlyphEditUserControl();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -54,6 +56,31 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(689, 489);
             this.tableLayoutPanel1.TabIndex = 0;
+            // 
+            // charSetUserControl1
+            // 
+            this.charSetUserControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.charSetUserControl1.DLIs = null;
+            this.charSetUserControl1.Drag = false;
+            this.charSetUserControl1.Location = new System.Drawing.Point(347, 3);
+            this.charSetUserControl1.Name = "charSetUserControl1";
+            this.charSetUserControl1.Size = new System.Drawing.Size(339, 448);
+            this.charSetUserControl1.TabIndex = 0;
+            // 
+            // glyphEditUserControl1
+            // 
+            this.glyphEditUserControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.glyphEditUserControl1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.glyphEditUserControl1.CharTile = null;
+            this.glyphEditUserControl1.DLIs = null;
+            this.glyphEditUserControl1.Location = new System.Drawing.Point(3, 3);
+            this.glyphEditUserControl1.Name = "glyphEditUserControl1";
+            this.glyphEditUserControl1.Size = new System.Drawing.Size(338, 448);
+            this.glyphEditUserControl1.TabIndex = 1;
             // 
             // flowLayoutPanel1
             // 
@@ -86,29 +113,6 @@
             this.button2.TabIndex = 1;
             this.button2.Text = "Cancel";
             this.button2.UseVisualStyleBackColor = true;
-            // 
-            // charSetUserControl1
-            // 
-            this.charSetUserControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.charSetUserControl1.Location = new System.Drawing.Point(347, 3);
-            this.charSetUserControl1.Name = "charSetUserControl1";
-            this.charSetUserControl1.Size = new System.Drawing.Size(339, 448);
-            this.charSetUserControl1.TabIndex = 0;
-            // 
-            // glyphEditUserControl1
-            // 
-            this.glyphEditUserControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.glyphEditUserControl1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.glyphEditUserControl1.CharTile = null;
-            this.glyphEditUserControl1.DLIs = null;
-            this.glyphEditUserControl1.Location = new System.Drawing.Point(3, 3);
-            this.glyphEditUserControl1.Name = "glyphEditUserControl1";
-            this.glyphEditUserControl1.Size = new System.Drawing.Size(338, 448);
-            this.glyphEditUserControl1.TabIndex = 1;
             // 
             // FormFntEdit
             // 

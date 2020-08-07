@@ -1,13 +1,6 @@
 ﻿using ScintillaNET;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BLEditor
@@ -44,11 +37,11 @@ namespace BLEditor
             scintilla1.Styles[MADSLexer.StyleNumber].ForeColor = Color.Purple;
             scintilla1.Styles[MADSLexer.StyleString].ForeColor = Color.Red;
             scintilla1.Styles[MADSLexer.StyleComment].ForeColor = Color.Gray;
-       
+
             scintilla1.Lexer = Lexer.Container;
         }
 
-    
+
         private void scintilla1_StyleNeeded(object sender, StyleNeededEventArgs e)
         {
             var startPos = scintilla1.GetEndStyled();
@@ -108,9 +101,20 @@ namespace BLEditor
             }
 
 
-            if (MapSet.SSave(Map.MapSet)) {
+            if (MapSet.SSave(Map.MapSet))
+            {
                 FormRunMADS.Compile(Map.MapSet);
             }
+        }
+
+        private void scintilla1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
         }
     }
 }
