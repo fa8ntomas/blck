@@ -22,7 +22,7 @@ namespace BLEditor
             this.toolStripButtonSelect.Click += (s, e) => { mapEditUserControl.Interation=MapEditUserControl.InterationType.PRESELECT; };
 
             mapEditUserControl.InteractionChanged += new EventHandler(mapEditUserControl_InteractionChanged);
-
+            charSetUserControl.CharClickedChanged += (s, e) => { mapEditUserControl.CurrentStamp=(((CharSetUserControl.CharClickedEventArgs)e).Char); };
             toolStrip1.Renderer   = new MyToolStripSystemRenderer();
         }
        
@@ -30,7 +30,7 @@ namespace BLEditor
         {
             dliList.Map = inMap;
             mapEditUserControl.LoadMap(inMap, charset);
-            charSetUserControl1.FntByte = charset.Data;
+            charSetUserControl.FntByte = charset.Data;
         }
         private void mapEditUserControl_InteractionChanged(object sender, EventArgs e)
         {

@@ -55,7 +55,7 @@ namespace BLEditor
             add
             {
                 listEventDelegates.AddHandler(mouseDownEventKey, value);
-                value.Invoke(this, new InterationChangedEventArgs(_interation, currentStamp));
+                value.Invoke(this, new InterationChangedEventArgs(_interation, CurrentStamp));
             }
             // Remove the input delegate from the collection.
             remove
@@ -77,6 +77,21 @@ namespace BLEditor
         public Map inMap { get; private set; }
         public CharacterSet charset { get; private set; }
 
+        private byte currentStamp;
+
+        public byte CurrentStamp { get => currentStamp; set => SetCurrentStamp (value); }
+
+        private void SetCurrentStamp(byte value)
+        {
+            if (value != currentStamp || Interation!= InterationType.STAMP)
+            {
+                currentStamp = value;
+                SetInteration(InterationType.STAMP);
+                UpdateStampRectangle(Rectangle.Empty);
+                UpdateStampLocation(TileUnderMouseLocation(PointToClient(Cursor.Position)));
+            }
+        }
+
         static readonly int charW = 4;
         static readonly int charH = 8;
         static readonly int colSpacing = 1;
@@ -86,20 +101,26 @@ namespace BLEditor
         static readonly int cellSizeY = charH * zoom + rowSpacing;
 
 
-        private static AtariPFColors CreateDLIMapIndex(DLI[] DLIS, int row)
+        private static RbgPFColors findRGBColorsForLine(DLI[] DLIS, int row)
         {
+            if (DLIS==null || DLIS.Length == 0)
+            {
+                throw new ArgumentException();
+            }
+
             AtariPFColors result = DLIS[0].AtariPFColors;
+            
             foreach (DLI dli in DLIS)
             {
                 if (dli.IntLine > row)
                 {
                     break;
-
                 }
+
                 result = dli.AtariPFColors;
             }
 
-            return result;
+            return result.ToBLColor();
         }
 
         private Bitmap tempBitmap;
@@ -167,7 +188,7 @@ namespace BLEditor
             {
                 int dline = location.Y+y;
                 
-                RbgPFColors rbgPFColors = CreateDLIMapIndex(DLIS, dline).ToBLColor();
+                RbgPFColors rbgPFColors = findRGBColorsForLine(DLIS, dline);
 
                 for (int x = 0; x < nbCol; x++)
                 {
@@ -249,8 +270,7 @@ namespace BLEditor
             tempBitmap = CreateBitmapFromFnt(inMap, new Point(0, 0), new Size(nbCol, nbRow), inMap?.MapData, inMap?.DLIS, charset);
             Invalidate();
         }
-        byte currentStamp = 45;
-
+       
         private void MapEditUserControl_Paint(object sender, PaintEventArgs e)
         {
             // Call the OnPaint method of the base class.  
@@ -448,7 +468,7 @@ namespace BLEditor
                 }
                 else if (_interation == InterationType.STAMP)
                 {
-                    inMap.SetMapDataByte(TileUnderMouseLocation(e.Location), currentStamp);
+                    inMap.SetMapDataByte(TileUnderMouseLocation(e.Location), CurrentStamp);
                     RefreshMap();
                 }
                 else if (_interation == InterationType.PASTE)
@@ -470,14 +490,8 @@ namespace BLEditor
                     Point tilePosition = TileUnderMouseLocation(e.Location);
                     if (inMap.Intersect(tilePosition))
                     {
-                        byte newStamp = inMap.GetMapDataByte(tilePosition);
-                        if (newStamp != currentStamp)
-                        {
-                            currentStamp = newStamp;
-                            SetInteration(InterationType.STAMP);
-                            UpdateStampRectangle(Rectangle.Empty);
-                            UpdateStampLocation(tilePosition);
-                        }
+                        CurrentStamp = inMap.GetMapDataByte(tilePosition);
+                     
                     }
       
                 }
@@ -541,7 +555,7 @@ namespace BLEditor
                 if (stampRectangle.IsEmpty || stampRectangle.Location.Y != newStampPosition.Y)
                 {
                     // Y change -> regenerate bitmap to take care of DLIs
-                    pasteBitmap = CreateBitmapStamp(inMap, TilePosition, currentStamp, inMap?.DLIS, charset);
+                    pasteBitmap = CreateBitmapStamp(inMap, TilePosition, CurrentStamp, inMap?.DLIS, charset);
                 }
 
                 UpdateStampRectangle(new Rectangle(newStampPosition, new Size(cellSizeX + colSpacing, cellSizeY + rowSpacing)));
@@ -610,7 +624,7 @@ namespace BLEditor
             }
 
             EventHandler mouseEventDelegate = (EventHandler)listEventDelegates[mouseDownEventKey];
-            if (mouseEventDelegate != null) mouseEventDelegate(this, new InterationChangedEventArgs(_interation, currentStamp));
+            if (mouseEventDelegate != null) mouseEventDelegate(this, new InterationChangedEventArgs(_interation, CurrentStamp));
 
             return precedenteInteration;
         }

@@ -14,7 +14,34 @@ namespace BLEditor.Controls
 {
     public partial class CharSetUserControl : UserControl
     {
-        private enum CellType {
+
+        static readonly object charClikedEvent = new object();
+
+        protected EventHandlerList listEventDelegates = new EventHandlerList();
+
+        public event EventHandler CharClickedChanged
+        {
+            add
+            {
+                listEventDelegates.AddHandler(charClikedEvent, value);
+            }
+            remove
+            {
+                listEventDelegates.RemoveHandler(charClikedEvent, value);
+            }
+        }
+
+        public class CharClickedEventArgs : EventArgs
+        {
+            public CharClickedEventArgs(byte charClicked)
+            {
+                 this.Char = charClicked;
+            }
+
+            public byte Char { get; private set; }
+        }
+        private enum CellType
+        {
             Low,
             High,
             HighLow
@@ -25,7 +52,7 @@ namespace BLEditor.Controls
         public CharSetUserControl()
         {
             InitializeComponent();
-            
+
             toolStrip1.Renderer = new MyToolStripSystemRenderer();
 
             colPerRow = 10;
@@ -35,29 +62,29 @@ namespace BLEditor.Controls
 
             Change(CellType.Low);
 
-            toolStripButtonHighLow.Click += (s,e)=> { Change(CellType.HighLow); };
-            toolStripButtonHigh.Click += (s, e) => { Change( CellType.High); };
-            toolStripButtonLow.Click += (s, e) => { Change( CellType.Low); };
+            toolStripButtonHighLow.Click += (s, e) => { Change(CellType.HighLow); };
+            toolStripButtonHigh.Click += (s, e) => { Change(CellType.High); };
+            toolStripButtonLow.Click += (s, e) => { Change(CellType.Low); };
         }
 
         private void Change(CellType cellType)
         {
-   
+
             this.cellType = cellType;
 
             toolStripButtonHighLow.Checked = CellType.HighLow.Equals(cellType);
             toolStripButtonLow.Checked = CellType.Low.Equals(cellType);
             toolStripButtonHigh.Checked = CellType.High.Equals(cellType);
 
-          //  doubleCell = !doubleCell;
+            //  doubleCell = !doubleCell;
             CreateBitmapFromFnt();
 
         }
 
         internal void UpdateCharTile(CharTile charTile)
         {
-            int index = (charTile.Index&0x7F) * 8;
-            for (int i= 0; i<  8; i++)
+            int index = (charTile.Index & 0x7F) * 8;
+            for (int i = 0; i < 8; i++)
             {
                 fnt[i + index] = charTile.Glyph[i];
             }
@@ -68,12 +95,12 @@ namespace BLEditor.Controls
 
         private byte[] fnt;
         private Rectangle tileUnderMouse;
-     
+
         public event EventHandler DirtyChanged;
         public event EventHandler TileSelected;
 
         bool _dirty = false;
-        public bool Dirty 
+        public bool Dirty
         {
             get { return _dirty; }
             private set { if (_dirty != value) { _dirty = value; DirtyChanged?.Invoke(this, new DirtyChangedEventArgs(_dirty)); } }
@@ -117,8 +144,8 @@ namespace BLEditor.Controls
         public class TileSelectedEventArgs : EventArgs
         {
             public CharTile CharTile { get; private set; }
-            
-            public TileSelectedEventArgs(byte cchar, List<byte>glyph)
+
+            public TileSelectedEventArgs(byte cchar, List<byte> glyph)
               : base()
             {
                 this.CharTile = new CharTile(cchar, new List<byte>(glyph).ToArray());
@@ -135,7 +162,7 @@ namespace BLEditor.Controls
         public AtariPFColors AtariPFColors
         {
             private get { return _AtariPFColors; }
-            set { _AtariPFColors = value; colors = _AtariPFColors.ToBLColor();  CreateBitmapFromFnt(); }
+            set { _AtariPFColors = value; colors = _AtariPFColors.ToBLColor(); CreateBitmapFromFnt(); }
         }
         private int GetValueFromByte(int b, byte byteToConvert)
         {
@@ -146,7 +173,7 @@ namespace BLEditor.Controls
 
         private Color GetColorFromValue(int byteValue, bool bit7)
         {
-            switch (byteValue&3)
+            switch (byteValue & 3)
             {
                 case 0:
                     return colors.Colbk;
@@ -169,9 +196,10 @@ namespace BLEditor.Controls
         int zoom = 4;
         int textSizeInPixel = 7;
 
-        int rowSpacing = 7 +2+2+2;
+        int rowSpacing = 7 + 2 + 2 + 2;
 
         int colSpacing = 4;
+        private Point dragDown;
 
         private Size CellSize()
         {
@@ -192,9 +220,11 @@ namespace BLEditor.Controls
             {
                 int row = pos.Y / CellSize().Height;
                 int cchar = row * colPerRow + col;
-                if (cchar > 127 || cchar < 0) {
+                if (cchar > 127 || cchar < 0)
+                {
                     return -1;
-                } else
+                }
+                else
                 {
                     return cchar + (CellType.High.Equals(cellType) ? 128 : 0);
                 }
@@ -217,12 +247,12 @@ namespace BLEditor.Controls
                 bmGraphics.SmoothingMode = SmoothingMode.AntiAlias;
 
                 Font drawFont = new Font("Console New", (textSizeInPixel - 2) * bmGraphics.DpiX / 72);
-           
+
                 SolidBrush drawBrush = new SolidBrush(Color.Black);
                 bmGraphics.TextRenderingHint = TextRenderingHint.AntiAlias;
 
                 StringFormat drawFormat = new StringFormat();
-              
+
 
                 int count = 0;
                 for (int cchar = 0; cchar < 128; cchar++)
@@ -231,11 +261,11 @@ namespace BLEditor.Controls
                     int cc = cchar + (CellType.High.Equals(cellType) ? 128 : 0);
                     bmGraphics.DrawString(cc.ToString("X2"), drawFont, drawBrush, topLeft.X, topLeft.Y, drawFormat);
                     topLeft.Y += textSizeInPixel + 2;
-                    for (int glyph = 0; glyph < (CellType.HighLow.Equals(cellType) ? 2:1); glyph++)
+                    for (int glyph = 0; glyph < (CellType.HighLow.Equals(cellType) ? 2 : 1); glyph++)
                     {
                         topLeft.X += glyph * (charW * zoom + colSpacing);
                         int byteIndex = count;
-                        DrawChar(tempBitmap, topLeft, glyph, cchar,zoom);
+                        DrawChar(tempBitmap, topLeft, glyph, cchar, zoom);
 
                     }
                     count += 8;
@@ -251,7 +281,7 @@ namespace BLEditor.Controls
         {
             for (int i = 0; i < 8; i++)//Eight rows
             {
-                byte b = FntByte[(cchar&0x7F) * 8 + i];
+                byte b = FntByte[(cchar & 0x7F) * 8 + i];
                 for (int j = 0; j < 4; j++)//Four colors per row
                 {
                     bool b7 = false;
@@ -291,6 +321,8 @@ namespace BLEditor.Controls
             }
         }
 
+        static double minimumHorizontalDragDistance = 5f; //  System.Windows.SystemParameters.MinimumHorizontalDragDistance;
+        static double minimumVerticalDragDistance = 5f; // System.Windows.SystemParameters.MinimumVerticalDragDistance;
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
             int cchar = GetCharIndex(e.Location);
@@ -299,10 +331,20 @@ namespace BLEditor.Controls
                 Point topLeft = GetPosition(cchar);
                 Size size = CellSize();
                 tileUnderMouse = new Rectangle(topLeft, size);
-            } else
+
+                if (Drag && e.Button == System.Windows.Forms.MouseButtons.Left && (
+               Math.Abs(e.Location.X - dragDown.X) >= minimumHorizontalDragDistance ||
+               Math.Abs(e.Location.Y - dragDown.Y) >= minimumVerticalDragDistance))
+
+                {
+                    DragDropChar(cchar);
+                }
+            }
+            else
             {
                 tileUnderMouse = Rectangle.Empty;
             }
+
 
             pictureBox1.Invalidate();//refreshes the picturebox
         }
@@ -327,7 +369,7 @@ namespace BLEditor.Controls
         {
             if (e.Data.GetDataPresent(DataFormats.Bitmap))
                 e.Effect = DragDropEffects.Copy;
-          
+
         }
 
         private void pictureBox1_DragDrop(object sender, DragEventArgs e)
@@ -337,7 +379,7 @@ namespace BLEditor.Controls
             if (cchar >= 0)
             {
                 Bitmap bmp = (Bitmap)e.Data.GetData(DataFormats.Bitmap);
-               
+
                 bool same = true;
                 if (bmp.Width == 4 && bmp.Height == 8)
                 {
@@ -360,7 +402,7 @@ namespace BLEditor.Controls
 
         private void pictureBox1_DragOver(object sender, DragEventArgs e)
         {
-            int cchar = GetCharIndex(pictureBox1.PointToClient(new Point(e.X,e.Y)));
+            int cchar = GetCharIndex(pictureBox1.PointToClient(new Point(e.X, e.Y)));
             if (cchar >= 0)
             {
                 Point topLeft = GetPosition(cchar);
@@ -382,17 +424,17 @@ namespace BLEditor.Controls
         }
 
 
-        private List<byte>  BitmapToByte(Bitmap bmp, RbgPFColors colors)
+        private List<byte> BitmapToByte(Bitmap bmp, RbgPFColors colors)
         {
             List<byte> bitc = new List<byte>();
-           for (int y = 0; y < 8; y++)
+            for (int y = 0; y < 8; y++)
             {
                 int b = 0;
                 for (int x = 0; x < 4; x++)
                 {
                     int colindex = 0;
-                    Color customColor = bmp.GetPixel(x,  y);
-                  
+                    Color customColor = bmp.GetPixel(x, y);
+
                     if (customColor.Equals(colors.Colbk))
                     {
                         colindex = 0;
@@ -408,10 +450,11 @@ namespace BLEditor.Controls
                     else if (customColor.Equals(colors.Colpf2) || customColor.Equals(colors.Colpf3))
                     {
                         colindex = 3;
-                   
-                    } else
+
+                    }
+                    else
                     {
-                        colindex =0;
+                        colindex = 0;
                     }
 
                     b = b * 4 + colindex;
@@ -436,33 +479,28 @@ namespace BLEditor.Controls
             CreateBitmapFromFnt();
         }
 
- 
+
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
-            if (TileSelected != null)
-            {
+          //  if (TileSelected != null)
+           // {
                 int cchar = GetCharIndex(e.Location);
                 if (cchar >= 0)
                 {
                     List<byte> glyph = new List<byte>();
                     for (int i = 0; i < 8; i++)
                     {
-                        glyph.Add(fnt[(cchar&0x7f) * 8 + i]);
+                        glyph.Add(fnt[(cchar & 0x7f) * 8 + i]);
                     }
 
-                    this.TileSelected(this, new TileSelectedEventArgs((byte)cchar, glyph));                  
-                }
-            }
+                    TileSelected?.Invoke(this, new TileSelectedEventArgs((byte)cchar, glyph));
 
-            if (Drag)
-
-            {
-                int cchar = GetCharIndex(e.Location);
-                if (cchar >= 0)
-                {
-                    DragDropChar(cchar);
+                    EventHandler mouseEventDelegate = (EventHandler)listEventDelegates[charClikedEvent];
+                    mouseEventDelegate?.Invoke(this, new CharClickedEventArgs((byte)cchar));
                 }
-            }
+       //     }
+
+            dragDown = e.Location;
         }
 
         private void DragDropChar(int cchar)
