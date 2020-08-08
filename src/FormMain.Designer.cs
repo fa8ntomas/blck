@@ -88,7 +88,7 @@
             this.settingsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1284, 33);
+            this.menuStrip1.Size = new System.Drawing.Size(1284, 36);
             this.menuStrip1.TabIndex = 10;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -282,9 +282,9 @@
             // treeViewMaps
             // 
             this.treeViewMaps.Dock = System.Windows.Forms.DockStyle.Left;
-            this.treeViewMaps.Location = new System.Drawing.Point(0, 33);
+            this.treeViewMaps.Location = new System.Drawing.Point(0, 36);
             this.treeViewMaps.Name = "treeViewMaps";
-            this.treeViewMaps.Size = new System.Drawing.Size(167, 668);
+            this.treeViewMaps.Size = new System.Drawing.Size(167, 665);
             this.treeViewMaps.TabIndex = 27;
             this.treeViewMaps.BeforeCollapse += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeViewMaps_BeforeCollapse);
             this.treeViewMaps.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeViewMaps_BeforeExpand);
@@ -328,10 +328,10 @@
             // 
             // splitter1
             // 
-            this.splitter1.Location = new System.Drawing.Point(167, 33);
+            this.splitter1.Location = new System.Drawing.Point(167, 36);
             this.splitter1.Margin = new System.Windows.Forms.Padding(2);
             this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(1, 668);
+            this.splitter1.Size = new System.Drawing.Size(1, 665);
             this.splitter1.TabIndex = 34;
             this.splitter1.TabStop = false;
             // 
@@ -342,9 +342,9 @@
             this.multiPagePanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.multiPagePanel.CurrentPage = null;
             this.multiPagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.multiPagePanel.Location = new System.Drawing.Point(168, 33);
+            this.multiPagePanel.Location = new System.Drawing.Point(168, 36);
             this.multiPagePanel.Name = "multiPagePanel";
-            this.multiPagePanel.Size = new System.Drawing.Size(1116, 668);
+            this.multiPagePanel.Size = new System.Drawing.Size(1116, 665);
             this.multiPagePanel.TabIndex = 36;
             // 
             // pbx1

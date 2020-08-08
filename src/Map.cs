@@ -100,9 +100,9 @@ namespace BLEditor
 
         private static Rectangle mapRectangle = new Rectangle(0, 0, 40, 11);
 
-        internal bool Intersect(Point tilePosition)
+        internal bool Intersect(Point point)
         {
-            return mapRectangle.Contains(tilePosition);
+            return mapRectangle.Contains(point);
         }
 
         public bool SetMapDataByte(Point point, byte b)

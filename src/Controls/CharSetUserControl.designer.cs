@@ -55,14 +55,16 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.AutoScroll = true;
             this.panel1.Controls.Add(this.pictureBox1);
-            this.panel1.Location = new System.Drawing.Point(3, 34);
+            this.panel1.Location = new System.Drawing.Point(4, 38);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(562, 407);
+            this.panel1.Size = new System.Drawing.Size(844, 640);
             this.panel1.TabIndex = 0;
             // 
             // pictureBox1
             // 
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(100, 50);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -84,11 +86,12 @@
             this.tableLayoutPanel1.Controls.Add(this.toolStrip1, 0, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(568, 444);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(852, 683);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // toolStrip1
@@ -107,9 +110,9 @@
             this.toolStripButton3});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolStrip1.Padding = new System.Windows.Forms.Padding(0, 0, 3, 0);
             this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.toolStrip1.Size = new System.Drawing.Size(568, 31);
+            this.toolStrip1.Size = new System.Drawing.Size(852, 33);
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -120,7 +123,7 @@
             this.toolStripButtonHighLow.Image = global::BLEditor.Properties.Resources.application_tile_horizontal;
             this.toolStripButtonHighLow.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonHighLow.Name = "toolStripButtonHighLow";
-            this.toolStripButtonHighLow.Size = new System.Drawing.Size(28, 28);
+            this.toolStripButtonHighLow.Size = new System.Drawing.Size(34, 28);
             this.toolStripButtonHighLow.Text = "toolStripButton1";
             this.toolStripButtonHighLow.ToolTipText = "High And Low Char Display [COLPF3 plus COLPF2]";
             // 
@@ -131,7 +134,7 @@
             this.toolStripButtonHigh.Image = global::BLEditor.Properties.Resources.application_tile_horizontal_left;
             this.toolStripButtonHigh.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonHigh.Name = "toolStripButtonHigh";
-            this.toolStripButtonHigh.Size = new System.Drawing.Size(28, 28);
+            this.toolStripButtonHigh.Size = new System.Drawing.Size(34, 28);
             this.toolStripButtonHigh.Text = "toolStripButton4";
             this.toolStripButtonHigh.ToolTipText = "High Char Display [COLPF3 instead of COLPF2]";
             // 
@@ -142,33 +145,33 @@
             this.toolStripButtonLow.Image = global::BLEditor.Properties.Resources.application_tile_horizontal_right;
             this.toolStripButtonLow.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonLow.Name = "toolStripButtonLow";
-            this.toolStripButtonLow.Size = new System.Drawing.Size(28, 28);
+            this.toolStripButtonLow.Size = new System.Drawing.Size(34, 28);
             this.toolStripButtonLow.Text = "toolStripButton5";
             this.toolStripButtonLow.ToolTipText = "Low Char Display [COLPF2 instead of COLPF3]";
             // 
             // toolStripLabelColors
             // 
             this.toolStripLabelColors.Name = "toolStripLabelColors";
-            this.toolStripLabelColors.Size = new System.Drawing.Size(41, 28);
+            this.toolStripLabelColors.Size = new System.Drawing.Size(63, 28);
             this.toolStripLabelColors.Text = "Colors";
             this.toolStripLabelColors.Visible = false;
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 31);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 33);
             // 
             // toolStripComboBoxColors
             // 
             this.toolStripComboBoxColors.Name = "toolStripComboBoxColors";
-            this.toolStripComboBoxColors.Size = new System.Drawing.Size(121, 31);
+            this.toolStripComboBoxColors.Size = new System.Drawing.Size(180, 33);
             this.toolStripComboBoxColors.Visible = false;
             this.toolStripComboBoxColors.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxColors_SelectedIndexChanged);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 31);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 33);
             // 
             // toolStripButton2
             // 
@@ -176,7 +179,7 @@
             this.toolStripButton2.Image = global::BLEditor.Properties.Resources.magnifier_zoom_in;
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(28, 28);
+            this.toolStripButton2.Size = new System.Drawing.Size(34, 28);
             this.toolStripButton2.Text = "toolStripButton2";
             this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
             // 
@@ -186,17 +189,18 @@
             this.toolStripButton3.Image = global::BLEditor.Properties.Resources.magnifier_zoom_out;
             this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new System.Drawing.Size(28, 28);
+            this.toolStripButton3.Size = new System.Drawing.Size(34, 28);
             this.toolStripButton3.Text = "toolStripButton3";
             this.toolStripButton3.Click += new System.EventHandler(this.toolStripButton3_Click);
             // 
             // CharSetUserControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tableLayoutPanel1);
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "CharSetUserControl";
-            this.Size = new System.Drawing.Size(568, 444);
+            this.Size = new System.Drawing.Size(852, 683);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

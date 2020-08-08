@@ -75,6 +75,7 @@ namespace BLEditor
             // 
             // toolStrip1
             // 
+            this.toolStrip1.AutoSize = false;
             this.toolStrip1.CanOverflow = false;
             this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
@@ -84,14 +85,16 @@ namespace BLEditor
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.toolStrip1.Size = new System.Drawing.Size(682, 33);
+            this.toolStrip1.Size = new System.Drawing.Size(682, 25);
             this.toolStrip1.TabIndex = 43;
             this.toolStrip1.Text = "toolStrip1";
             // 
             // toolStripButtonStamp
             // 
+            this.toolStripButtonStamp.AutoSize = false;
             this.toolStripButtonStamp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.toolStripButtonStamp.Image = global::BLEditor.Properties.Resources.stamp;
+            this.toolStripButtonStamp.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.toolStripButtonStamp.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonStamp.Name = "toolStripButtonStamp";
             this.toolStripButtonStamp.Size = new System.Drawing.Size(34, 28);
@@ -99,11 +102,13 @@ namespace BLEditor
             // 
             // toolStripButtonSelect
             // 
+            this.toolStripButtonSelect.AutoSize = false;
             this.toolStripButtonSelect.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.toolStripButtonSelect.Image = global::BLEditor.Properties.Resources.layer_select;
+            this.toolStripButtonSelect.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.toolStripButtonSelect.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonSelect.Name = "toolStripButtonSelect";
-            this.toolStripButtonSelect.Size = new System.Drawing.Size(34, 28);
+            this.toolStripButtonSelect.Size = new System.Drawing.Size(34, 33);
             this.toolStripButtonSelect.Text = "toolStripButton2";
             // 
             // runButton
@@ -131,10 +136,10 @@ namespace BLEditor
             this.mapEditUserControl.AllowDrop = true;
             this.mapEditUserControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mapEditUserControl.Interation = BLEditor.MapEditUserControl.InterationType.PRESELECT;
-            this.mapEditUserControl.Location = new System.Drawing.Point(0, 33);
+            this.mapEditUserControl.Location = new System.Drawing.Point(0, 25);
             this.mapEditUserControl.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.mapEditUserControl.Name = "mapEditUserControl";
-            this.mapEditUserControl.Size = new System.Drawing.Size(682, 409);
+            this.mapEditUserControl.Size = new System.Drawing.Size(682, 417);
             this.mapEditUserControl.TabIndex = 42;
             // 
             // charSetUserControl1
@@ -173,7 +178,6 @@ namespace BLEditor
             this.Size = new System.Drawing.Size(1165, 474);
             ((System.ComponentModel.ISupportInitialize)(this.firstMapNumericUpDown)).EndInit();
             this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.ResumeLayout(false);
