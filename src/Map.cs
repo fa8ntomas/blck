@@ -89,35 +89,6 @@ namespace BLEditor
             }
         }
 
-        public bool ClearMapData(Rectangle toClear)
-        {
-            toClear.Intersect(mapRectangle);
-            
-            bool updated = false;
-
-            if (!toClear.IsEmpty)
-            {
-                for (int row = toClear.Y; row < toClear.Bottom; row++)
-                {
-                    for (int col = toClear.X; col < toClear.Right; col++)
-                    {
-                        if (mapData[col + 40 * row] != 0)
-                        {
-                            mapData[col + 40 * row] = 0;
-                            updated = true;
-                        }
-                    }
-                }
-            }
-
-            if (updated)
-            {
-                isDirty = true;
-            }
-
-            return updated;
-        }
-
         private static readonly Rectangle mapRectangle = new Rectangle(0, 0, 40, 11);
 
         internal bool Intersect(Point point)
@@ -142,13 +113,15 @@ namespace BLEditor
             protected override void ExecuteCore()
             {
                 oldBytes = CopyData(map, point, datab.Size, datab.Bytes);
-                if (hadAction())
+                if (HadAction())
                 {
                     map.SetChanged();
                 }
             }
             private static List<byte> CopyData(Map map, Point point, Size size, byte[] data)
             {
+                Debug.Assert(data != null && size != null && data.Length == size.Width * size.Height);
+
                 List<byte> result = new List<byte>();
                 Rectangle dataRec = new Rectangle(point, size);
                 Rectangle updateRectangle = Rectangle.Intersect(mapRectangle, dataRec);
@@ -186,14 +159,14 @@ namespace BLEditor
 
             protected override void UnExecuteCore()
             {
-                if (hadAction())
+                if (HadAction())
                 {
                     CopyData(map, point, datab.Size, oldBytes.ToArray());
                     map.SetChanged();
                 }
             }
 
-            private bool hadAction()
+            private bool HadAction()
             {
                 return oldBytes!=null;
             }
@@ -215,6 +188,11 @@ namespace BLEditor
             UndoManager.RecordAction(new SetMapDataBytesAction(this, point, data));
         }
 
+        public void ClearMapDataBytes(Rectangle toClear)
+        {
+            MapClipboardData datab = new MapClipboardData(toClear.Size, Enumerable.Repeat((byte)0, toClear.Size.Width * toClear.Size.Height).ToArray());
+            UndoManager.RecordAction(new SetMapDataBytesAction(this, toClear.Location, datab));
+        }
         // Creates a new type.
         [Serializable]
         public class MapClipboardData

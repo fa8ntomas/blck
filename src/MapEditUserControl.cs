@@ -469,7 +469,6 @@ namespace BLEditor
                     Point tilePosition = TileUnderMouseLocation(e.Location);
                     tilePosition.Offset(-clipboardData.Size.Width / 2, -clipboardData.Size.Height / 2);
                     InMap.SetMapDataBytes(tilePosition, clipboardData);
-                    RefreshMap();
                 }
             }
             else if (e.Button == System.Windows.Forms.MouseButtons.Right)
@@ -484,9 +483,7 @@ namespace BLEditor
                     if (InMap.Intersect(tilePosition))
                     {
                         CurrentStamp = InMap.GetMapDataByte(tilePosition);
-
                     }
-
                 }
             }
         }
@@ -515,8 +512,7 @@ namespace BLEditor
                 }
                 else if (e.KeyCode == Keys.X && !dataSelected.IsEmpty)
                 {
-                    InMap.ClearMapData(dataSelected);
-                    RefreshMap();
+                    InMap.ClearMapDataBytes(dataSelected);
                 }
 
                 else if (e.KeyCode == Keys.C && !dataSelected.IsEmpty)
