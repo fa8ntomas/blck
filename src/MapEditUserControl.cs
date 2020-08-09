@@ -68,23 +68,55 @@ namespace BLEditor
         public event EventHandler DirtyChanged;
 
         private bool _dirty = false;
+
+        [Browsable(false)]
         public bool Dirty
         {
             get { return _dirty; }
             private set { if (_dirty != value) { _dirty = value; /*DirtyChanged?.Invoke(this, new DirtyChangedEventArgs(_dirty));*/ } }
         }
 
-        public Map inMap { get; private set; }
+        private Map _inMap;
+
+        [Browsable(false)]
+        public Map InMap
+        {
+            get => _inMap; 
+            
+            private set
+            {
+                if (value != _inMap)
+                {
+                    if (_inMap != null)
+                    {
+                        _inMap.MapChanged -= mapChanged;
+                    }
+
+                    _inMap = value;
+                    if (_inMap != null)
+                    {
+                        _inMap.MapChanged += mapChanged;
+                    }
+                }
+
+            }
+        }
+
+        private void mapChanged(object sender, EventArgs e)
+        {
+            this.RefreshMap();
+        }
+
         public CharacterSet charset { get; private set; }
 
         private byte currentStamp;
 
         [Browsable(false)]
-        public byte CurrentStamp { get => currentStamp; set => SetCurrentStamp (value); }
+        public byte CurrentStamp { get => currentStamp; set => SetCurrentStamp(value); }
 
         private void SetCurrentStamp(byte value)
         {
-            if (value != currentStamp || Interation!= InterationType.STAMP)
+            if (value != currentStamp || Interation != InterationType.STAMP)
             {
                 currentStamp = value;
                 SetInteration(InterationType.STAMP);
@@ -104,13 +136,13 @@ namespace BLEditor
 
         private static RbgPFColors findRGBColorsForLine(DLI[] DLIS, int row)
         {
-            if (DLIS==null || DLIS.Length == 0)
+            if (DLIS == null || DLIS.Length == 0)
             {
                 throw new ArgumentException();
             }
 
             AtariPFColors result = DLIS[0].AtariPFColors;
-            
+
             foreach (DLI dli in DLIS)
             {
                 if (dli.IntLine > row)
@@ -128,10 +160,10 @@ namespace BLEditor
         private Point pasteLocation = Point.Empty;
         private Bitmap pasteBitmap;
 
-       
+
         private static Bitmap CreateBitmapStamp(Map inMap, Point location, byte b, DLI[] DLIS, CharacterSet charset, float opacity = Opacity)
         {
-            return  CreateBitmapFromFnt(inMap, location,new Size(1, 1), new byte[] { b }, DLIS, charset,null, opacity);
+            return CreateBitmapFromFnt(inMap, location, new Size(1, 1), new byte[] { b }, DLIS, charset, null, opacity);
         }
         private static Bitmap CreateBitmapFromFnt(Map inMap, Point location, Size size, byte[] MapData, DLI[] DLIS, CharacterSet charset, Pen borderPen = null, float opacity = 1f)
         {
@@ -148,8 +180,8 @@ namespace BLEditor
 
             for (int y = 0; y < nbRow; y++)
             {
-                int dline = location.Y+y;
-                
+                int dline = location.Y + y;
+
                 RbgPFColors rbgPFColors = findRGBColorsForLine(DLIS, dline);
 
                 for (int x = 0; x < nbCol; x++)
@@ -221,18 +253,18 @@ namespace BLEditor
 
         internal void LoadMap(Map inMap, CharacterSet charset)
         {
-            this.inMap = inMap;
+            this.InMap = inMap;
             this.charset = charset;
-           // pasteBitmap = CreateBitmapStamp(currentStamp, inMap?.DLIS, charset);
+            // pasteBitmap = CreateBitmapStamp(currentStamp, inMap?.DLIS, charset);
             RefreshMap();
         }
 
         void RefreshMap()
         {
-            tempBitmap = CreateBitmapFromFnt(inMap, new Point(0, 0), new Size(nbCol, nbRow), inMap?.MapData, inMap?.DLIS, charset);
+            tempBitmap = CreateBitmapFromFnt(InMap, new Point(0, 0), new Size(nbCol, nbRow), InMap?.MapData, InMap?.DLIS, charset);
             Invalidate();
         }
-       
+
         private void MapEditUserControl_Paint(object sender, PaintEventArgs e)
         {
             // Call the OnPaint method of the base class.  
@@ -344,7 +376,7 @@ namespace BLEditor
                 case InterationType.PASTE:
                     {
                         UpdatePasteLocation(mouselocation);
-                       
+
                     }; break;
 
 
@@ -430,14 +462,13 @@ namespace BLEditor
                 }
                 else if (_interation == InterationType.STAMP)
                 {
-                    inMap.SetMapDataByte(TileUnderMouseLocation(e.Location), CurrentStamp);
-                    RefreshMap();
+                    InMap.SetMapDataByte(TileUnderMouseLocation(e.Location), CurrentStamp);
                 }
                 else if (_interation == InterationType.PASTE)
                 {
                     Point tilePosition = TileUnderMouseLocation(e.Location);
                     tilePosition.Offset(-clipboardData.Size.Width / 2, -clipboardData.Size.Height / 2);
-                    inMap.SetMapDataBytes(tilePosition, clipboardData);
+                    InMap.SetMapDataBytes(tilePosition, clipboardData);
                     RefreshMap();
                 }
             }
@@ -450,12 +481,12 @@ namespace BLEditor
                 else
                 {
                     Point tilePosition = TileUnderMouseLocation(e.Location);
-                    if (inMap.Intersect(tilePosition))
+                    if (InMap.Intersect(tilePosition))
                     {
-                        CurrentStamp = inMap.GetMapDataByte(tilePosition);
-                     
+                        CurrentStamp = InMap.GetMapDataByte(tilePosition);
+
                     }
-      
+
                 }
             }
         }
@@ -484,17 +515,17 @@ namespace BLEditor
                 }
                 else if (e.KeyCode == Keys.X && !dataSelected.IsEmpty)
                 {
-                    inMap.ClearMapData(dataSelected);
+                    InMap.ClearMapData(dataSelected);
                     RefreshMap();
                 }
 
                 else if (e.KeyCode == Keys.C && !dataSelected.IsEmpty)
                 {
-                    inMap.CopyDataToClipboard(dataSelected);
+                    InMap.CopyDataToClipboard(dataSelected);
                 }
                 else if (e.KeyCode == Keys.V)
                 {
-                    clipboardData = inMap.GetMapClipboardData();
+                    clipboardData = InMap.GetMapClipboardData();
                     if (clipboardData != null && clipboardData.Size != Size.Empty)
                     {
                         using (Pen pasteImageBorder = new Pen(Color.Red, rowSpacing))
@@ -504,6 +535,10 @@ namespace BLEditor
 
                         }
                     }
+                }
+                else if (e.KeyCode == Keys.Z)
+                {
+                    UndoManager.Undo();
                 }
 
             }
@@ -517,7 +552,7 @@ namespace BLEditor
                 if (stampRectangle.IsEmpty || stampRectangle.Location.Y != newStampPosition.Y)
                 {
                     // Y change -> regenerate bitmap to take care of DLIs
-                    pasteBitmap = CreateBitmapStamp(inMap, TilePosition, CurrentStamp, inMap?.DLIS, charset);
+                    pasteBitmap = CreateBitmapStamp(InMap, TilePosition, CurrentStamp, InMap?.DLIS, charset);
                 }
 
                 UpdateStampRectangle(new Rectangle(newStampPosition, new Size(cellSizeX + colSpacing, cellSizeY + rowSpacing)));
@@ -529,12 +564,13 @@ namespace BLEditor
             Point newPasteLocation = TileUnderMouseLocation(point) + new Size(-clipboardData.Size.Width / 2, -clipboardData.Size.Height / 2);
             if (!newPasteLocation.Equals(pasteLocation))
             {
-                if (pasteLocation.IsEmpty || pasteLocation.Y != newPasteLocation.Y) {
+                if (pasteLocation.IsEmpty || pasteLocation.Y != newPasteLocation.Y)
+                {
                     // Y change -> regenerate bitmap to take care of DLIs
-                    pasteBitmap = CreateBitmapFromFnt(inMap, newPasteLocation, clipboardData.Size, clipboardData.Bytes, inMap?.DLIS, charset, null, Opacity);
+                    pasteBitmap = CreateBitmapFromFnt(InMap, newPasteLocation, clipboardData.Size, clipboardData.Bytes, InMap?.DLIS, charset, null, Opacity);
                 }
                 pasteLocation = newPasteLocation;
-    
+
                 Point location = new Point(pasteLocation.X * cellSizeX, pasteLocation.Y * cellSizeY);
                 UpdatePasteRectangle(new Rectangle(location, new Size(clipboardData.Size.Width * cellSizeX + colSpacing, clipboardData.Size.Height * cellSizeY + rowSpacing)));
             }
@@ -579,7 +615,7 @@ namespace BLEditor
                         {
                             UpdateHightlightRectangle(Rectangle.Empty);
                             UpdateSelectedRectangle(Rectangle.Empty);
-                            UpdatePasteRectangle(Rectangle.Empty); 
+                            UpdatePasteRectangle(Rectangle.Empty);
                             pasteLocation = Point.Empty;
                         }; break;
                 }
@@ -629,7 +665,7 @@ namespace BLEditor
         private void MapEditUserControl_DragDrop(object sender, DragEventArgs e)
         {
             byte currentByte = (byte)e.Data.GetData(CharacterSet.CharDataFormat.Name);
-            inMap.SetMapDataByte(TileUnderMouseLocation(PointToClient(new Point(e.X, e.Y))), currentByte);
+            InMap.SetMapDataByte(TileUnderMouseLocation(PointToClient(new Point(e.X, e.Y))), currentByte);
 
             RefreshMap();
 

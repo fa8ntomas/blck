@@ -1,6 +1,8 @@
 ﻿using BLEditor.Helpers;
+using GuiLabs.Undo;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -29,6 +31,24 @@ namespace BLEditor
         }
 
         public event EventHandler OnDLISChanged;
+
+        protected EventHandlerList listEventDelegates = new EventHandlerList();
+        static readonly object mapChangedEventKey = new object();
+
+        public event EventHandler MapChanged
+        {
+            // Add the input delegate to the collection.
+            add
+            {
+                listEventDelegates.AddHandler(mapChangedEventKey, value);
+            //    value.Invoke(this, new InterationChangedEventArgs(_interation, CurrentStamp));
+            }
+            // Remove the input delegate from the collection.
+            remove
+            {
+                listEventDelegates.RemoveHandler(mapChangedEventKey, value);
+            }
+        }
 
         public static Map EMPTY = CreateEmptyMap();
 
@@ -98,64 +118,103 @@ namespace BLEditor
             return updated;
         }
 
-        private static Rectangle mapRectangle = new Rectangle(0, 0, 40, 11);
+        private static readonly Rectangle mapRectangle = new Rectangle(0, 0, 40, 11);
 
         internal bool Intersect(Point point)
         {
             return mapRectangle.Contains(point);
         }
 
-        public bool SetMapDataByte(Point point, byte b)
+        class SetMapDataBytesAction : AbstractAction
         {
-            bool updated = false;
+            private readonly Map map;
+            private readonly Point point;
+            private readonly MapClipboardData datab;
+            private List<byte> oldBytes;
 
-            if (mapRectangle.Contains(point) && mapData[point.X + 40 * point.Y] != b) {
-                mapData[point.X + 40 * point.Y] = b;
-                updated = true;
-            }
-
-            if (updated)
+            public SetMapDataBytesAction(Map map, Point point, MapClipboardData datab)
             {
-                isDirty = true;
+                this.map = map;
+                this.point = point;
+                this.datab = datab;
+
             }
-
-            return updated;
-        }
-
-        public bool SetMapDataBytes(Point point, MapClipboardData data)
-        {
-            Rectangle dataRec = new Rectangle(point, data.Size);
-            Rectangle updateRectangle = Rectangle.Intersect(mapRectangle, dataRec);
-
-            bool updated = false;
-
-            if (!updateRectangle.IsEmpty)
+            protected override void ExecuteCore()
             {
-                int yoffset = dataRec.Y<0? -dataRec.Y:0;
-                for (int y = 0; y < updateRectangle.Height; y++)
+                oldBytes = CopyData(map, point, datab.Size, datab.Bytes);
+                if (hadAction())
                 {
-                    int xoffset = dataRec.X <0?- dataRec.X:0;
-                    for (int x = 0; x < updateRectangle.Width; x++)
-                    {
-                        byte toPut = data.Bytes[(y + yoffset)* data.Size.Width+ xoffset +x ];
+                    map.SetChanged();
+                }
+            }
+            private static List<byte> CopyData(Map map, Point point, Size size, byte[] data)
+            {
+                List<byte> result = new List<byte>();
+                Rectangle dataRec = new Rectangle(point, size);
+                Rectangle updateRectangle = Rectangle.Intersect(mapRectangle, dataRec);
+              
+                bool updated = false;
 
-                        int byteIndex = x + updateRectangle.X + 40 * (y + updateRectangle.Y);
-                        if (mapData[byteIndex] != toPut)
+                if (!updateRectangle.IsEmpty)
+                {
+                    int yoffset = dataRec.Y < 0 ? -dataRec.Y : 0;
+     
+                    for (int y = 0; y < updateRectangle.Height; y++)
+                    {
+                        int xoffset = dataRec.X < 0 ? -dataRec.X : 0;
+                        for (int x = 0; x < updateRectangle.Width; x++)
                         {
-                            mapData[byteIndex] = toPut;
-                            updated = true;
+                            byte newByte = data[(y + yoffset) * size.Width + xoffset + x];
+                            
+                            int byteIndex = x + updateRectangle.X + mapRectangle.Width * (y + updateRectangle.Y);
+                            
+                            byte oldByte = map.mapData[byteIndex];
+                            
+                            result.Add(oldByte);
+
+                            if (oldByte!=newByte)
+                            {
+                                map.mapData[byteIndex] = newByte;
+                                updated = true;
+                            }
                         }
                     }
                 }
+
+                return updated ? result : null;
             }
 
-            if (updated)
+            protected override void UnExecuteCore()
             {
-                isDirty = true;
+                if (hadAction())
+                {
+                    CopyData(map, point, datab.Size, oldBytes.ToArray());
+                    map.SetChanged();
+                }
             }
 
-            return updated;
+            private bool hadAction()
+            {
+                return oldBytes!=null;
+            }
         }
+
+        private void SetChanged()
+        {
+            IsDirty = true;
+            ((EventHandler)listEventDelegates[mapChangedEventKey])?.Invoke(this, null);
+        }
+
+        public void SetMapDataByte(Point point, byte b)
+        {
+            UndoManager.RecordAction(new SetMapDataBytesAction(this, point, new MapClipboardData(new Size(1, 1), new byte[] { b })));
+        }
+
+        public void SetMapDataBytes(Point point, MapClipboardData data)
+        {
+            UndoManager.RecordAction(new SetMapDataBytesAction(this, point, data));
+        }
+
         // Creates a new type.
         [Serializable]
         public class MapClipboardData
@@ -164,8 +223,8 @@ namespace BLEditor
             // Creates a default constructor for the class.
             public MapClipboardData(Size _size, byte[] _bytes) { Size = _size; Bytes = _bytes; }
 
-            public Size Size { get ; set; }
-            public byte[] Bytes { get; set; }
+            public Size Size { get ; }
+            public byte[] Bytes { get; }
         }
 
         // Creates a new data format.
@@ -233,7 +292,9 @@ namespace BLEditor
                 }
                 return false;
             }
-            private set { isDirty = value; }
+            private set { 
+                isDirty = value; 
+            }
         }
 
         public bool IsNew { get; private set; }
@@ -915,7 +976,6 @@ namespace BLEditor
         public byte YamoEnterCount1 { get; set; } = 0;
         public byte YamoEnterCount2 { get; set; } = 0;
 
-         
         public List<String> Includes { get; set; }
     }
 

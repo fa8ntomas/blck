@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using BLEditor.Controls;
+using GuiLabs.Undo;
 
 namespace BLEditor
 {
@@ -15,6 +16,7 @@ namespace BLEditor
     {
         private Map inMap;
 
+     
         public MapEditPanel()
         {
           
@@ -31,6 +33,7 @@ namespace BLEditor
         internal void LoadMap(Map inMap, CharacterSet charset)
         {
             dliList.Map = inMap;
+            
             this.inMap = inMap;
             mapEditUserControl.LoadMap(inMap, charset);
             charSetUserControl.FntByte = charset.Data;
