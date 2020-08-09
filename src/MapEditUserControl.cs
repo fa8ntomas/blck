@@ -79,6 +79,7 @@ namespace BLEditor
 
         private byte currentStamp;
 
+        [Browsable(false)]
         public byte CurrentStamp { get => currentStamp; set => SetCurrentStamp (value); }
 
         private void SetCurrentStamp(byte value)
@@ -127,46 +128,7 @@ namespace BLEditor
         private Point pasteLocation = Point.Empty;
         private Bitmap pasteBitmap;
 
-        // https://stackoverflow.com/questions/4779027/changing-the-opacity-of-a-bitmap-image
-        private static Bitmap SetImageOpacity(Bitmap image, float opacity)
-        {
-            if (opacity >= 1f)
-            {
-                return image;
-            }
-            try
-            {
-
-                //create a Bitmap the size of the image provided  
-                Bitmap bmp = new Bitmap(image.Width, image.Height);
-
-                //create a graphics object from the image  
-                using (Graphics gfx = Graphics.FromImage(bmp))
-                {
-
-                    //create a color matrix object  
-                    ColorMatrix matrix = new ColorMatrix();
-
-                    //set the opacity  
-                    matrix.Matrix33 = opacity;
-
-                    //create image attributes  
-                    ImageAttributes attributes = new ImageAttributes();
-
-                    //set the color(opacity) of the image  
-                    attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-
-                    //now draw the image  
-                    gfx.DrawImage(image, new Rectangle(0, 0, bmp.Width, bmp.Height), 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, attributes);
-                }
-                return bmp;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return null;
-            }
-        }
+       
         private static Bitmap CreateBitmapStamp(Map inMap, Point location, byte b, DLI[] DLIS, CharacterSet charset, float opacity = Opacity)
         {
             return  CreateBitmapFromFnt(inMap, location,new Size(1, 1), new byte[] { b }, DLIS, charset,null, opacity);
@@ -253,7 +215,7 @@ namespace BLEditor
 
             bmGraphics.Dispose();
 
-            return SetImageOpacity(result, opacity);
+            return ImageUtils.SetImageOpacity(result, opacity);
         }
 
 

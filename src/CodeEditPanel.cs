@@ -36,6 +36,10 @@ namespace BLEditor
         }
         bool MultiPagePanel.ISavePanel.Save()
         {
+            if (pbx1.TypeNode.MapInit.Equals(preloadedTypeNode)){
+                preloadedMap.InitRoutine = scintilla1.Text;
+            }
+
             return true;
         }
 
@@ -68,6 +72,11 @@ namespace BLEditor
             var endPos = e.Position;
 
             madsLexer.Style(scintilla1, startPos, endPos);
+        }
+
+        private void toolStripButton2_Click(object sender, EventArgs e)
+        {
+            ((MultiPagePanel.ISavePanel)this).Save();
         }
     }
 }

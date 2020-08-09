@@ -13,6 +13,8 @@ namespace BLEditor
 {
     public partial class MapEditPanel : UserControl
     {
+        private Map inMap;
+
         public MapEditPanel()
         {
           
@@ -29,6 +31,7 @@ namespace BLEditor
         internal void LoadMap(Map inMap, CharacterSet charset)
         {
             dliList.Map = inMap;
+            this.inMap = inMap;
             mapEditUserControl.LoadMap(inMap, charset);
             charSetUserControl.FntByte = charset.Data;
         }
@@ -61,6 +64,14 @@ namespace BLEditor
         private void SetCurrentStamp(byte stamp)
         {
             this.labelStamp.Text = stamp.ToString("X4"); 
+        }
+
+        private void runButton_Click(object sender, EventArgs e)
+        {
+           if (MapSet.SSave(inMap.MapSet))
+           {
+               FormRunMADS.Compile(inMap.MapSet, true, firstMapNumericUpDown.Value) ;
+           }
         }
     }
 }

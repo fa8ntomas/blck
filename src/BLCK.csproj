@@ -67,12 +67,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Component1.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Component1.Designer.cs">
-      <DependentUpon>Component1.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\MyToolStripSystemRenderer.cs" />
     <Compile Include="FormGameData.cs">
       <SubType>Form</SubType>

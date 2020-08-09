@@ -88,7 +88,7 @@
             this.settingsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1284, 36);
+            this.menuStrip1.Size = new System.Drawing.Size(1924, 36);
             this.menuStrip1.TabIndex = 10;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -283,8 +283,9 @@
             // 
             this.treeViewMaps.Dock = System.Windows.Forms.DockStyle.Left;
             this.treeViewMaps.Location = new System.Drawing.Point(0, 36);
+            this.treeViewMaps.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.treeViewMaps.Name = "treeViewMaps";
-            this.treeViewMaps.Size = new System.Drawing.Size(167, 665);
+            this.treeViewMaps.Size = new System.Drawing.Size(248, 1014);
             this.treeViewMaps.TabIndex = 27;
             this.treeViewMaps.BeforeCollapse += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeViewMaps_BeforeCollapse);
             this.treeViewMaps.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeViewMaps_BeforeExpand);
@@ -328,10 +329,9 @@
             // 
             // splitter1
             // 
-            this.splitter1.Location = new System.Drawing.Point(167, 36);
-            this.splitter1.Margin = new System.Windows.Forms.Padding(2);
+            this.splitter1.Location = new System.Drawing.Point(248, 36);
             this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(1, 665);
+            this.splitter1.Size = new System.Drawing.Size(2, 1014);
             this.splitter1.TabIndex = 34;
             this.splitter1.TabStop = false;
             // 
@@ -342,21 +342,23 @@
             this.multiPagePanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.multiPagePanel.CurrentPage = null;
             this.multiPagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.multiPagePanel.Location = new System.Drawing.Point(168, 36);
+            this.multiPagePanel.Location = new System.Drawing.Point(250, 36);
+            this.multiPagePanel.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
             this.multiPagePanel.Name = "multiPagePanel";
-            this.multiPagePanel.Size = new System.Drawing.Size(1116, 665);
+            this.multiPagePanel.Size = new System.Drawing.Size(1674, 1014);
             this.multiPagePanel.TabIndex = 36;
             // 
             // pbx1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1284, 701);
+            this.ClientSize = new System.Drawing.Size(1924, 1050);
             this.Controls.Add(this.multiPagePanel);
             this.Controls.Add(this.splitter1);
             this.Controls.Add(this.treeViewMaps);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "pbx1";
             this.Text = "Bruce Lee Construction Kit (BLCK)";
             this.menuStrip1.ResumeLayout(false);

@@ -48,7 +48,7 @@ namespace BLEditor
             // 
             // firstMapNumericUpDown
             // 
-            this.firstMapNumericUpDown.Location = new System.Drawing.Point(226, 578);
+            this.firstMapNumericUpDown.Location = new System.Drawing.Point(154, 726);
             this.firstMapNumericUpDown.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.firstMapNumericUpDown.Name = "firstMapNumericUpDown";
             this.firstMapNumericUpDown.Size = new System.Drawing.Size(180, 26);
@@ -129,14 +129,15 @@ namespace BLEditor
             // runButton
             // 
             this.runButton.Image = global::BLEditor.Properties.Resources.application_run;
-            this.runButton.Location = new System.Drawing.Point(16, 597);
+            this.runButton.Location = new System.Drawing.Point(7, 726);
             this.runButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.runButton.Name = "runButton";
-            this.runButton.Size = new System.Drawing.Size(112, 15);
+            this.runButton.Size = new System.Drawing.Size(139, 26);
             this.runButton.TabIndex = 40;
             this.runButton.Text = "Run";
             this.runButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.runButton.UseVisualStyleBackColor = true;
+            this.runButton.Click += new System.EventHandler(this.runButton_Click);
             // 
             // labelStamp
             // 
@@ -165,7 +166,7 @@ namespace BLEditor
             this.dliList.Location = new System.Drawing.Point(1042, 22);
             this.dliList.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
             this.dliList.Name = "dliList";
-            this.dliList.Padding = new System.Windows.Forms.Padding(8, 8, 8, 8);
+            this.dliList.Padding = new System.Windows.Forms.Padding(8);
             this.dliList.Size = new System.Drawing.Size(258, 270);
             this.dliList.TabIndex = 39;
             // 
@@ -183,7 +184,7 @@ namespace BLEditor
             this.Controls.Add(this.lblSelected);
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "MapEditPanel";
-            this.Size = new System.Drawing.Size(1748, 729);
+            this.Size = new System.Drawing.Size(1748, 895);
             ((System.ComponentModel.ISupportInitialize)(this.firstMapNumericUpDown)).EndInit();
             this.panel1.ResumeLayout(false);
             this.toolStrip1.ResumeLayout(false);
