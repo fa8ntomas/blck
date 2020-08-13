@@ -37,6 +37,7 @@ namespace BLEditor
             this.inMap = inMap;
             mapEditUserControl.LoadMap(inMap, charset);
             charSetUserControl.FntByte = charset.Data;
+            mapEditUserControl.Focus();
         }
         private void mapEditUserControl_InteractionChanged(object sender, EventArgs e)
         {
@@ -73,7 +74,7 @@ namespace BLEditor
         {
            if (MapSet.SSave(inMap.MapSet))
            {
-               FormRunMADS.Compile(inMap.MapSet, true, firstMapNumericUpDown.Value) ;
+               FormRunMADS.Compile(inMap.MapSet, true, Decimal.ToInt32(firstMapNumericUpDown.Value)) ;
            }
         }
     }

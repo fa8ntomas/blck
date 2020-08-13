@@ -17,7 +17,7 @@ namespace BLEditor
 {
     public partial class FormRunMADS : Form
     {
-        public FormRunMADS(MapSet mapset,String MADSFullPath, String AsmBaseLineFullPath, bool runEmulator, decimal firstmap=0)
+        public FormRunMADS(MapSet mapset,String MADSFullPath, String AsmBaseLineFullPath, bool runEmulator, int firstmap=0)
         {
             InitializeComponent();
             this.MADSFullPath = MADSFullPath;
@@ -42,7 +42,7 @@ namespace BLEditor
         private string AsmBaseLineFullPath;
         private MapSet Mapset;
         private bool runEmulator;
-        private decimal firstmap;
+        private int firstmap;
         private string ExomizerFullPath;
 
         public String GetXEXFullPath()
@@ -65,10 +65,11 @@ namespace BLEditor
             
             if (firstmap > 0)
             {
-                arguments += $" -d:MAPSTART='{firstmap}'";
+                arguments += $" -d:BLCK_MAPSTART={firstmap}";
             }
 
             AddLine(arguments, Color.Red);
+            
             var processResult = await ProcessAsyncHelper.RunProcessAsync(MADSFullPath, arguments, -1, P_OutputDataReceived, p_ErrorDataReceived);
 
             // Mads Exit codes
@@ -176,7 +177,7 @@ namespace BLEditor
             textBoxConsole.ResumeLayout();
         }
 
-        public static void Compile(MapSet mapSet, bool runEmulator=true, decimal firstmap = 0)
+        public static void Compile(MapSet mapSet, bool runEmulator=true, int firstmap = 0)
         {
             String MADSFullPath = "";
             String AssemblyFullPath= "";

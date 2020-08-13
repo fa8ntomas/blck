@@ -27,6 +27,7 @@ namespace BLEditor
         public enum InterationType
         {
             PRESELECT,
+            FRESHPRESELECT,
             SELECT,
             PASTE,
             STAMP,
@@ -36,7 +37,9 @@ namespace BLEditor
         private const int nbCol = 40;
         private const int nbRow = 11;
         private const float Opacity = 0.75f;
-        private InterationType _interation = InterationType.PRESELECT;
+        private const InterationType defaultInteration = InterationType.FRESHPRESELECT;
+        private InterationType _interation = defaultInteration;
+
         public InterationType Interation
         {
             get { return _interation; }
@@ -107,7 +110,7 @@ namespace BLEditor
             this.RefreshMap();
         }
 
-        public CharacterSet charset { get; private set; }
+        public CharacterSet Charset { get; private set; }
 
         private byte currentStamp;
 
@@ -253,15 +256,18 @@ namespace BLEditor
 
         internal void LoadMap(Map inMap, CharacterSet charset)
         {
-            this.InMap = inMap;
-            this.charset = charset;
-            // pasteBitmap = CreateBitmapStamp(currentStamp, inMap?.DLIS, charset);
-            RefreshMap();
+            if (!Object.Equals(InMap, inMap) || !Object.Equals(Charset, charset))
+            {
+                InMap = inMap;
+                Charset = charset;
+                RefreshMap();
+                SetInteration(defaultInteration,true);
+            }
         }
 
         void RefreshMap()
         {
-            tempBitmap = CreateBitmapFromFnt(InMap, new Point(0, 0), new Size(nbCol, nbRow), InMap?.MapData, InMap?.DLIS, charset);
+            tempBitmap = CreateBitmapFromFnt(InMap, new Point(0, 0), new Size(nbCol, nbRow), InMap?.MapData, InMap?.DLIS, Charset);
             Invalidate();
         }
 
@@ -345,7 +351,7 @@ namespace BLEditor
         Point topleft = Point.Empty;
         Point bottomright = Point.Empty;
         private InterationType dragInteraction;
-        private Map.MapClipboardData clipboardData;
+        private Map.MapDataBlock clipboardData;
 
         private void MapEditUserControl_MouseMove(object sender, MouseEventArgs e)
         {
@@ -395,6 +401,7 @@ namespace BLEditor
                     }; break;
 
                 case InterationType.DROP:
+                case InterationType.FRESHPRESELECT:
                 case InterationType.PRESELECT:
                     {
                         if (TilePosition.Y >= 0 && TilePosition.Y < nbRow && TilePosition.X >= 0 && TilePosition.X < nbCol)
@@ -456,7 +463,7 @@ namespace BLEditor
         {
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
-                if (_interation == InterationType.PRESELECT)
+                if (_interation == InterationType.PRESELECT || _interation == InterationType.FRESHPRESELECT)
                 {
                     SetInteration(InterationType.SELECT);
                 }
@@ -475,7 +482,7 @@ namespace BLEditor
             {
                 if (_interation == InterationType.PASTE)
                 {
-                    SetInteration(InterationType.PRESELECT);
+                    SetInteration(InterationType.FRESHPRESELECT);
                 }
                 else
                 {
@@ -501,20 +508,21 @@ namespace BLEditor
         {
             if (e.KeyCode == Keys.Escape && _interation == InterationType.PASTE)
             {
-                SetInteration(InterationType.PRESELECT);
+                SetInteration(InterationType.FRESHPRESELECT);
             }
             else if (e.Modifiers == Keys.Control)
             {
-                if (e.KeyCode == Keys.A && _interation == InterationType.PRESELECT)
+                if (e.KeyCode == Keys.A && (_interation == InterationType.PRESELECT || _interation == InterationType.FRESHPRESELECT))
                 {
                     dataSelected = new Rectangle(0, 0, nbCol, nbRow);
                     UpdateSelectedRectangle(new Rectangle(0, 0, nbCol * cellSizeX + colSpacing, nbRow * cellSizeY + rowSpacing));
                 }
                 else if (e.KeyCode == Keys.X && !dataSelected.IsEmpty)
                 {
+                    InMap.CopyDataToClipboard(dataSelected);
                     InMap.ClearMapDataBytes(dataSelected);
-                }
-
+                    SetInteration(InterationType.FRESHPRESELECT);
+                 }
                 else if (e.KeyCode == Keys.C && !dataSelected.IsEmpty)
                 {
                     InMap.CopyDataToClipboard(dataSelected);
@@ -536,7 +544,6 @@ namespace BLEditor
                 {
                     UndoManager.Undo();
                 }
-
             }
         }
 
@@ -548,7 +555,7 @@ namespace BLEditor
                 if (stampRectangle.IsEmpty || stampRectangle.Location.Y != newStampPosition.Y)
                 {
                     // Y change -> regenerate bitmap to take care of DLIs
-                    pasteBitmap = CreateBitmapStamp(InMap, TilePosition, CurrentStamp, InMap?.DLIS, charset);
+                    pasteBitmap = CreateBitmapStamp(InMap, TilePosition, CurrentStamp, InMap?.DLIS, Charset);
                 }
 
                 UpdateStampRectangle(new Rectangle(newStampPosition, new Size(cellSizeX + colSpacing, cellSizeY + rowSpacing)));
@@ -563,7 +570,7 @@ namespace BLEditor
                 if (pasteLocation.IsEmpty || pasteLocation.Y != newPasteLocation.Y)
                 {
                     // Y change -> regenerate bitmap to take care of DLIs
-                    pasteBitmap = CreateBitmapFromFnt(InMap, newPasteLocation, clipboardData.Size, clipboardData.Bytes, InMap?.DLIS, charset, null, Opacity);
+                    pasteBitmap = CreateBitmapFromFnt(InMap, newPasteLocation, clipboardData.Size, clipboardData.Bytes, InMap?.DLIS, Charset, null, Opacity);
                 }
                 pasteLocation = newPasteLocation;
 
@@ -572,11 +579,11 @@ namespace BLEditor
             }
         }
 
-        private InterationType SetInteration(InterationType interation)
+        private InterationType SetInteration(InterationType interation, bool forceUpdate=false)
         {
             InterationType precedenteInteration = _interation;
 
-            if (_interation != interation)
+            if (forceUpdate || precedenteInteration != interation)
             {
                 _interation = interation;
 
@@ -601,11 +608,15 @@ namespace BLEditor
                             UpdateHightlightRectangle(Rectangle.Empty);
                         }; break;
 
+                    case InterationType.FRESHPRESELECT:
                     case InterationType.PRESELECT:
                         {
-
                             UpdatePasteRectangle(Rectangle.Empty);
-                            //  UpdateSelectedRectangle(Rectangle.Empty);
+                            if (_interation == InterationType.FRESHPRESELECT)
+                            {
+                                UpdateSelectedRectangle(Rectangle.Empty);
+                                dataSelected = Rectangle.Empty;
+                            }
                         }; break;
                     case InterationType.PASTE:
                         {

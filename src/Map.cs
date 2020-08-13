@@ -100,10 +100,10 @@ namespace BLEditor
         {
             private readonly Map map;
             private readonly Point point;
-            private readonly MapClipboardData datab;
+            private readonly MapDataBlock datab;
             private List<byte> oldBytes;
 
-            public SetMapDataBytesAction(Map map, Point point, MapClipboardData datab)
+            public SetMapDataBytesAction(Map map, Point point, MapDataBlock datab)
             {
                 this.map = map;
                 this.point = point;
@@ -180,26 +180,24 @@ namespace BLEditor
 
         public void SetMapDataByte(Point point, byte b)
         {
-            UndoManager.RecordAction(new SetMapDataBytesAction(this, point, new MapClipboardData(new Size(1, 1), new byte[] { b })));
+            UndoManager.RecordAction(new SetMapDataBytesAction(this, point, new MapDataBlock(new Size(1, 1), new byte[] { b })));
         }
 
-        public void SetMapDataBytes(Point point, MapClipboardData data)
+        public void SetMapDataBytes(Point point, MapDataBlock data)
         {
             UndoManager.RecordAction(new SetMapDataBytesAction(this, point, data));
         }
 
         public void ClearMapDataBytes(Rectangle toClear)
         {
-            MapClipboardData datab = new MapClipboardData(toClear.Size, Enumerable.Repeat((byte)0, toClear.Size.Width * toClear.Size.Height).ToArray());
+            MapDataBlock datab = new MapDataBlock(toClear.Size, Enumerable.Repeat((byte)0, toClear.Size.Width * toClear.Size.Height).ToArray());
             UndoManager.RecordAction(new SetMapDataBytesAction(this, toClear.Location, datab));
         }
-        // Creates a new type.
-        [Serializable]
-        public class MapClipboardData
-        {
 
-            // Creates a default constructor for the class.
-            public MapClipboardData(Size _size, byte[] _bytes) { Size = _size; Bytes = _bytes; }
+        [Serializable]
+        public class MapDataBlock
+        {
+            public MapDataBlock(Size _size, byte[] _bytes) { Size = _size; Bytes = _bytes; }
 
             public Size Size { get ; }
             public byte[] Bytes { get; }
@@ -224,7 +222,7 @@ namespace BLEditor
                     }
                 }
 
-                MapClipboardData myObject = new MapClipboardData(toCopy.Size, bytesToCopy.ToArray());
+                MapDataBlock myObject = new MapDataBlock(toCopy.Size, bytesToCopy.ToArray());
                 DataObject myDataObject = new DataObject(myFormat.Name, myObject);
                 Clipboard.SetDataObject(myDataObject);
                 
@@ -234,9 +232,9 @@ namespace BLEditor
             return copied;
         }
 
-        public MapClipboardData GetMapClipboardData()
+        public MapDataBlock GetMapClipboardData()
         {
-           return (MapClipboardData)Clipboard.GetDataObject().GetData(myFormat.Name);
+           return (MapDataBlock)Clipboard.GetDataObject().GetData(myFormat.Name);
         }
 
         string name;
