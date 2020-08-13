@@ -568,7 +568,7 @@ namespace BLEditor
                 }
                 stampDataPosition = newStampDataPosition;
 
-                UpdateStampRectangle(new Rectangle(GetPixelLocationFromDataLocation(newStampDataPosition), GetPixelSizeFromDataSize(stampDataSize)));
+                UpdateStampRectangle(new Rectangle(GetPixelLocationFromDataLocation(stampDataPosition.Value), GetPixelSizeFromDataSize(stampDataSize)));
             }
         }
 
