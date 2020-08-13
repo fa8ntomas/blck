@@ -91,9 +91,9 @@ namespace BLEditor
 
         private static readonly Rectangle mapRectangle = new Rectangle(0, 0, 40, 11);
 
-        internal bool Contains(Point point)
+        internal bool Contains(Point? point)
         {
-            return mapRectangle.Contains(point);
+            return point.HasValue && mapRectangle.Contains(point.Value);
         }
         internal bool Contains(Rectangle rect)
         {
