@@ -84,8 +84,8 @@ namespace BLEditor
         [Browsable(false)]
         public Map InMap
         {
-            get => _inMap; 
-            
+            get => _inMap;
+
             private set
             {
                 if (value != _inMap)
@@ -160,13 +160,18 @@ namespace BLEditor
         }
 
         private Bitmap tempBitmap;
-        private Point pasteLocation = Point.Empty;
+        private Point pasteDataLocation = Point.Empty;
         private Bitmap pasteBitmap;
 
 
         private static Bitmap CreateBitmapStamp(Map inMap, Point location, byte b, DLI[] DLIS, CharacterSet charset, float opacity = Opacity)
         {
-            return CreateBitmapFromFnt(inMap, location, new Size(1, 1), new byte[] { b }, DLIS, charset, null, opacity);
+            using (Pen pen2 = new Pen(Color.Red, rowSpacing))
+            {
+                pen2.DashPattern = new float[] { 2, 2 };
+
+                return CreateBitmapFromFnt(inMap, location, stampDataSize, new byte[] { b }, DLIS, charset, pen2, opacity);
+            }
         }
         private static Bitmap CreateBitmapFromFnt(Map inMap, Point location, Size size, byte[] MapData, DLI[] DLIS, CharacterSet charset, Pen borderPen = null, float opacity = 1f)
         {
@@ -195,7 +200,7 @@ namespace BLEditor
                     int offx = x * (charW * zoom + colSpacing) + colSpacing;
                     int offy = y * (charH * zoom + rowSpacing) + rowSpacing;
 
-                    RbgPFColors colors = inMap.Intersect(Point.Add(location, new Size(x, y))) ? rbgPFColors : new RbgPFColors();
+                    RbgPFColors colors = inMap.Contains(Point.Add(location, new Size(x, y))) ? rbgPFColors : new RbgPFColors();
 
 
                     for (int yy = 0; yy < 8; yy++)//Eight rows
@@ -261,7 +266,7 @@ namespace BLEditor
                 InMap = inMap;
                 Charset = charset;
                 RefreshMap();
-                SetInteration(defaultInteration,true);
+                SetInteration(defaultInteration, true);
             }
         }
 
@@ -347,12 +352,13 @@ namespace BLEditor
         private Rectangle dataSelected = Rectangle.Empty;
         private Rectangle pasteRectangle = Rectangle.Empty;
         private Rectangle stampRectangle = Rectangle.Empty;
+        private Point stampDataPosition = Point.Empty;
 
         Point topleft = Point.Empty;
         Point bottomright = Point.Empty;
         private InterationType dragInteraction;
         private Map.MapDataBlock clipboardData;
-
+       
         private void MapEditUserControl_MouseMove(object sender, MouseEventArgs e)
         {
             UpdateScreen(e.Location);
@@ -487,7 +493,7 @@ namespace BLEditor
                 else
                 {
                     Point tilePosition = TileUnderMouseLocation(e.Location);
-                    if (InMap.Intersect(tilePosition))
+                    if (InMap.Contains(tilePosition))
                     {
                         CurrentStamp = InMap.GetMapDataByte(tilePosition);
                     }
@@ -522,7 +528,7 @@ namespace BLEditor
                     InMap.CopyDataToClipboard(dataSelected);
                     InMap.ClearMapDataBytes(dataSelected);
                     SetInteration(InterationType.FRESHPRESELECT);
-                 }
+                }
                 else if (e.KeyCode == Keys.C && !dataSelected.IsEmpty)
                 {
                     InMap.CopyDataToClipboard(dataSelected);
@@ -547,39 +553,59 @@ namespace BLEditor
             }
         }
 
+        private static readonly Size stampDataSize = new Size(1, 1);
+
         private void UpdateStampLocation(Point TilePosition)
         {
-            Point newStampPosition = new Point(TilePosition.X * cellSizeX, TilePosition.Y * cellSizeY);
-            if (stampRectangle.IsEmpty || !newStampPosition.Equals(stampRectangle.Location))
+            Point newStampDataPosition = TilePosition;
+            if (stampDataPosition.IsEmpty || !newStampDataPosition.Equals(stampRectangle))
             {
-                if (stampRectangle.IsEmpty || stampRectangle.Location.Y != newStampPosition.Y)
+                if (stampRectangle.IsEmpty || stampDataPosition.Y != newStampDataPosition.Y || InMap.Contains(stampDataPosition) != InMap.Contains(newStampDataPosition))
                 {
                     // Y change -> regenerate bitmap to take care of DLIs
-                    pasteBitmap = CreateBitmapStamp(InMap, TilePosition, CurrentStamp, InMap?.DLIS, Charset);
+                    pasteBitmap = CreateBitmapStamp(InMap, newStampDataPosition, CurrentStamp, InMap?.DLIS, Charset);
                 }
+                stampDataPosition = newStampDataPosition;
 
-                UpdateStampRectangle(new Rectangle(newStampPosition, new Size(cellSizeX + colSpacing, cellSizeY + rowSpacing)));
+                UpdateStampRectangle(new Rectangle(GetPixelLocationFromDataLocation(newStampDataPosition), GetPixelSizeFromDataSize(stampDataSize)));
             }
         }
 
         private void UpdatePasteLocation(Point point)
         {
-            Point newPasteLocation = TileUnderMouseLocation(point) + new Size(-clipboardData.Size.Width / 2, -clipboardData.Size.Height / 2);
-            if (!newPasteLocation.Equals(pasteLocation))
+            Point newPasteDataLocation = TileUnderMouseLocation(point) + new Size(-clipboardData.Size.Width / 2, -clipboardData.Size.Height / 2);
+            if (!newPasteDataLocation.Equals(pasteDataLocation))
             {
-                if (pasteLocation.IsEmpty || pasteLocation.Y != newPasteLocation.Y)
+                Rectangle pasteDataRectangle = new Rectangle(newPasteDataLocation, clipboardData.Size);
+
+                if (pasteDataLocation.IsEmpty || pasteDataLocation.Y != newPasteDataLocation.Y || !InMap.Contains(new Rectangle(pasteDataLocation, clipboardData.Size)) || !InMap.Contains(pasteDataRectangle))
                 {
                     // Y change -> regenerate bitmap to take care of DLIs
-                    pasteBitmap = CreateBitmapFromFnt(InMap, newPasteLocation, clipboardData.Size, clipboardData.Bytes, InMap?.DLIS, Charset, null, Opacity);
-                }
-                pasteLocation = newPasteLocation;
+                    using (Pen pen2 = new Pen(Color.Red, rowSpacing))
+                    {
+                        pen2.DashPattern = new float[] { 3, 3 };
 
-                Point location = new Point(pasteLocation.X * cellSizeX, pasteLocation.Y * cellSizeY);
-                UpdatePasteRectangle(new Rectangle(location, new Size(clipboardData.Size.Width * cellSizeX + colSpacing, clipboardData.Size.Height * cellSizeY + rowSpacing)));
+                        pasteBitmap = CreateBitmapFromFnt(InMap, pasteDataRectangle.Location, pasteDataRectangle.Size, clipboardData.Bytes, InMap?.DLIS, Charset, pen2, Opacity);
+                    }
+                }
+
+                pasteDataLocation = newPasteDataLocation;
+
+                UpdatePasteRectangle(new Rectangle(GetPixelLocationFromDataLocation(pasteDataLocation), GetPixelSizeFromDataSize(pasteDataRectangle.Size)));
             }
         }
 
-        private InterationType SetInteration(InterationType interation, bool forceUpdate=false)
+        private static Size GetPixelSizeFromDataSize(Size dataSize)
+        {
+            return new Size(dataSize.Width * cellSizeX + colSpacing, dataSize.Height * cellSizeY + rowSpacing);
+        }
+
+        private static Point GetPixelLocationFromDataLocation(Point dataPoint)
+        {
+            return new Point(dataPoint.X * cellSizeX, dataPoint.Y * cellSizeY);
+        }
+
+        private InterationType SetInteration(InterationType interation, bool forceUpdate = false)
         {
             InterationType precedenteInteration = _interation;
 
@@ -595,6 +621,7 @@ namespace BLEditor
                             UpdatePasteRectangle(Rectangle.Empty);
                             UpdateHightlightRectangle(Rectangle.Empty);
                             UpdateStampRectangle(Rectangle.Empty);
+                            stampDataPosition = Point.Empty;
                         }; break;
 
                     case InterationType.SELECT:
@@ -623,7 +650,7 @@ namespace BLEditor
                             UpdateHightlightRectangle(Rectangle.Empty);
                             UpdateSelectedRectangle(Rectangle.Empty);
                             UpdatePasteRectangle(Rectangle.Empty);
-                            pasteLocation = Point.Empty;
+                            pasteDataLocation = Point.Empty;
                         }; break;
                 }
             }

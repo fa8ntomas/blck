@@ -17,10 +17,10 @@ namespace BLEditor
     {
         public enum TypeColorDetection
         {
-            None=0,
-            Always=1,
-            Inside=2,
-            Outside=3
+            None = 0,
+            Always = 1,
+            Inside = 2,
+            Outside = 3
         };
 
         public enum ZoneColorDetection
@@ -41,7 +41,7 @@ namespace BLEditor
             add
             {
                 listEventDelegates.AddHandler(mapChangedEventKey, value);
-            //    value.Invoke(this, new InterationChangedEventArgs(_interation, CurrentStamp));
+                //    value.Invoke(this, new InterationChangedEventArgs(_interation, CurrentStamp));
             }
             // Remove the input delegate from the collection.
             remove
@@ -62,7 +62,7 @@ namespace BLEditor
         public DLI[] DLIS
         {
             get { return dlis; }
-            set { DLI[] sortedValue=value?.OrderBy(o => o.IntLine).ToArray(); SetField(ref dlis, sortedValue); CreateDLIMapIndex(); }
+            set { DLI[] sortedValue = value?.OrderBy(o => o.IntLine).ToArray(); SetField(ref dlis, sortedValue); CreateDLIMapIndex(); }
         }
 
         Guid fontID;
@@ -91,10 +91,15 @@ namespace BLEditor
 
         private static readonly Rectangle mapRectangle = new Rectangle(0, 0, 40, 11);
 
-        internal bool Intersect(Point point)
+        internal bool Contains(Point point)
         {
             return mapRectangle.Contains(point);
         }
+        internal bool Contains(Rectangle rect)
+        {
+            return mapRectangle.Contains(rect);
+        }
+
 
         class SetMapDataBytesAction : AbstractAction
         {
