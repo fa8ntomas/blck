@@ -1,11 +1,14 @@
 ﻿using BLEditor.Helpers;
 using GuiLabs.Undo;
+using K4os.Compression.LZ4;
+using K4os.Compression.LZ4.Streams;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
@@ -30,23 +33,32 @@ namespace BLEditor
             Flag1 = 2
         }
 
-        public event EventHandler OnDLISChanged;
 
         protected EventHandlerList listEventDelegates = new EventHandlerList();
-        static readonly object mapChangedEventKey = new object();
+        protected static readonly object mapChangedEventKey = new object();
+        protected static readonly object dliChangedEventKey = new object();
 
         public event EventHandler MapChanged
         {
-            // Add the input delegate to the collection.
             add
             {
                 listEventDelegates.AddHandler(mapChangedEventKey, value);
-                //    value.Invoke(this, new InterationChangedEventArgs(_interation, CurrentStamp));
             }
-            // Remove the input delegate from the collection.
             remove
             {
                 listEventDelegates.RemoveHandler(mapChangedEventKey, value);
+            }
+        }
+
+        public event EventHandler DLISChanged
+        {
+            add
+            {
+                listEventDelegates.AddHandler(dliChangedEventKey, value);
+            }
+            remove
+            {
+                listEventDelegates.RemoveHandler(dliChangedEventKey, value);
             }
         }
 
@@ -66,13 +78,15 @@ namespace BLEditor
         }
 
         Guid fontID;
-        public Guid FontID {
+        public Guid FontID
+        {
             get { return fontID; }
             set { SetField(ref fontID, value); }
         }
 
         byte[] mapData;
-        public byte[] MapData {
+        public byte[] MapData
+        {
             get { return mapData; }
             set { SetField(ref mapData, value); }
         }
@@ -130,27 +144,27 @@ namespace BLEditor
                 List<byte> result = new List<byte>();
                 Rectangle dataRec = new Rectangle(point, size);
                 Rectangle updateRectangle = Rectangle.Intersect(mapRectangle, dataRec);
-              
+
                 bool updated = false;
 
                 if (!updateRectangle.IsEmpty)
                 {
                     int yoffset = dataRec.Y < 0 ? -dataRec.Y : 0;
-     
+
                     for (int y = 0; y < updateRectangle.Height; y++)
                     {
                         int xoffset = dataRec.X < 0 ? -dataRec.X : 0;
                         for (int x = 0; x < updateRectangle.Width; x++)
                         {
                             byte newByte = data[(y + yoffset) * size.Width + xoffset + x];
-                            
+
                             int byteIndex = x + updateRectangle.X + mapRectangle.Width * (y + updateRectangle.Y);
-                            
+
                             byte oldByte = map.mapData[byteIndex];
-                            
+
                             result.Add(oldByte);
 
-                            if (oldByte!=newByte)
+                            if (oldByte != newByte)
                             {
                                 map.mapData[byteIndex] = newByte;
                                 updated = true;
@@ -173,7 +187,7 @@ namespace BLEditor
 
             private bool HadAction()
             {
-                return oldBytes!=null;
+                return oldBytes != null;
             }
         }
 
@@ -204,7 +218,7 @@ namespace BLEditor
         {
             public MapDataBlock(Size _size, byte[] _bytes) { Size = _size; Bytes = _bytes; }
 
-            public Size Size { get ; }
+            public Size Size { get; }
             public byte[] Bytes { get; }
         }
 
@@ -217,7 +231,7 @@ namespace BLEditor
             bool copied = false;
 
             if (!toCopy.IsEmpty)
-            {         
+            {
                 List<byte> bytesToCopy = new List<byte>();
                 for (int row = toCopy.Y; row < toCopy.Bottom; row++)
                 {
@@ -230,7 +244,7 @@ namespace BLEditor
                 MapDataBlock myObject = new MapDataBlock(toCopy.Size, bytesToCopy.ToArray());
                 DataObject myDataObject = new DataObject(myFormat.Name, myObject);
                 Clipboard.SetDataObject(myDataObject);
-                
+
                 copied = true;
             }
 
@@ -239,7 +253,7 @@ namespace BLEditor
 
         public MapDataBlock GetMapClipboardData()
         {
-           return (MapDataBlock)Clipboard.GetDataObject().GetData(myFormat.Name);
+            return (MapDataBlock)Clipboard.GetDataObject().GetData(myFormat.Name);
         }
 
         string name;
@@ -257,10 +271,11 @@ namespace BLEditor
 
         public string ExecRoutinePath { get; set; }
         public string ExecRoutine { get; set; }
-        
+
         //https://stackoverflow.com/questions/805505/c-sharp-marking-class-property-as-dirty
         bool isDirty;
-        public bool IsDirty {
+        public bool IsDirty
+        {
             get
             {
                 if (isDirty) return true;
@@ -273,8 +288,9 @@ namespace BLEditor
                 }
                 return false;
             }
-            private set { 
-                isDirty = value; 
+            private set
+            {
+                isDirty = value;
             }
         }
 
@@ -296,7 +312,7 @@ namespace BLEditor
                 return String.Empty;
             }
 
-            String result= System.IO.Path.Combine(PathHelper.RelativePath(System.IO.Path.GetDirectoryName(Filename), System.IO.Path.GetDirectoryName(XMLFilename)), System.IO.Path.GetFileName(Filename));
+            String result = System.IO.Path.Combine(PathHelper.RelativePath(System.IO.Path.GetDirectoryName(Filename), System.IO.Path.GetDirectoryName(XMLFilename)), System.IO.Path.GetFileName(Filename));
 
             Console.WriteLine(System.IO.Path.GetDirectoryName(Filename) + " -- " + XMLFilename + "--" + PathHelper.RelativePath(System.IO.Path.GetDirectoryName(Filename), System.IO.Path.GetDirectoryName(XMLFilename)));
             return result;
@@ -323,7 +339,7 @@ namespace BLEditor
                 }
             }
 
-            File.WriteAllBytes(Path, EncodeRLE(mapData.ToList()).ToArray());
+            EncodeAndSaveMap();
 
 
             XElement result = new XElement("map");
@@ -405,7 +421,7 @@ namespace BLEditor
             }
 
             result.Add(new XElement("ExecRoutinePath", Delta(MapSetSaveFileName, ExecRoutinePath)));
-            
+
             // TileCollision Routine
 
             if (!String.IsNullOrWhiteSpace(TileCollisionRoutine))
@@ -458,7 +474,29 @@ namespace BLEditor
             return result;
         }
 
-        static private XElement ExportColorDetection( string tagName, TypeColorDetection ColpfDectection,List<Rectangle> ColpfDectectionRect, List<ZoneColorDetection> ColpfDetectionFlags)
+        private void EncodeAndSaveMap()
+        {
+            if (IsRLE())
+            {
+                File.WriteAllBytes(Path, EncodeRLE(mapData.ToList()).ToArray());
+            }
+            else
+            {
+
+                using (var source = new MemoryStream(MapData))
+                using (var target = LZ4Stream.Encode(File.Create(Path), new LZ4EncoderSettings
+                {
+                    CompressionLevel = LZ4Level.L12_MAX,
+                    ChainBlocks = false
+                    // ContentChecksum = true;
+                }))
+                {
+                    source.CopyTo(target);
+                }
+            }
+        }
+
+        static private XElement ExportColorDetection(string tagName, TypeColorDetection ColpfDectection, List<Rectangle> ColpfDectectionRect, List<ZoneColorDetection> ColpfDetectionFlags)
         {
             XElement XElementColpfDectection = new XElement(tagName, new XElement("Type", ColpfDectection));
             if (ColpfDectection == TypeColorDetection.Inside || ColpfDectection == TypeColorDetection.Outside)
@@ -482,7 +520,7 @@ namespace BLEditor
             return XElementColpfDectection;
         }
 
-    
+
         public void SetSaved()
         {
             IsDirty = false;
@@ -494,7 +532,7 @@ namespace BLEditor
                     dli.SetSaved();
                 }
             }
-         }
+        }
 
         public static Map Load(MapSet mapSet, XElement mapElemept)
         {
@@ -506,7 +544,8 @@ namespace BLEditor
                 map.Path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(mapSet.Path), map.Path);
             }
 
-            map.MapData = DecodeRLE(File.ReadAllBytes(map.Path));
+
+            map.DecodeMap();
 
             // DLI
             XElement dlis = mapElemept.Element("dlis");
@@ -519,10 +558,10 @@ namespace BLEditor
             map.DLIS = DLIList.ToArray();
 
             ImportTextFile(mapElemept, "InitRoutinePath", mapSet.Path, (Path, Content) => { map.InitRoutinePath = Path; map.InitRoutine = Content; });
-            ImportTextFile(mapElemept, "ExecRoutinePath", mapSet.Path,(Path, Content) => { map.ExecRoutinePath = Path; map.ExecRoutine = Content; });
+            ImportTextFile(mapElemept, "ExecRoutinePath", mapSet.Path, (Path, Content) => { map.ExecRoutinePath = Path; map.ExecRoutine = Content; });
             ImportTextFile(mapElemept, "TileCollisionRoutinePath", mapSet.Path, (Path, Content) => { map.TileCollisionRoutinePath = Path; map.TileCollisionRoutine = Content; });
             ImportBoolean(mapElemept, "foe", value => map.Foe = value);
-            ImportByte(mapElemept, "YamoSpawnPosition", value => map.YamoSpawnPosition= value);
+            ImportByte(mapElemept, "YamoSpawnPosition", value => map.YamoSpawnPosition = value);
             ImportByte(mapElemept, "NinjaSpawnPosition", value => map.NinjaSpawnPosition = value);
             ImportByte(mapElemept, "NinjaEnterCount1", value => map.NinjaEnterCount1 = value);
             ImportByte(mapElemept, "NinjaEnterCount2", value => map.NinjaEnterCount2 = value);
@@ -530,7 +569,7 @@ namespace BLEditor
             ImportByte(mapElemept, "YamoEnterCount2", value => map.YamoEnterCount2 = value);
             ImportColorDetection(mapElemept, "Colpf0Dectection", ref map.Colpf0Detection, ref map.Colpf0DetectionRects, ref map.Colpf0DetectionFlags);
             ImportColorDetection(mapElemept, "Colpf2Dectection", ref map.Colpf2Detection, ref map.Colpf2DetectionRects, ref map.Colpf2DetectionFlags);
-            ImportColorDetection(mapElemept, "Colpf3Dectection", ref  map.Colpf3Detection, ref map.Colpf3DetectionRects, ref map.Colpf3DetectionFlags);
+            ImportColorDetection(mapElemept, "Colpf3Dectection", ref map.Colpf3Detection, ref map.Colpf3DetectionRects, ref map.Colpf3DetectionFlags);
 
             Console.WriteLine(map.Colpf0Detection.ToString());
             if (mapElemept.Elements("brucestart").Any())
@@ -580,8 +619,8 @@ namespace BLEditor
             return map;
         }
 
-      
-        private static void ImportTextFile(XElement mapElemept, string tagName, string mapSetPath, Action<string,string> setValue)
+
+        private static void ImportTextFile(XElement mapElemept, string tagName, string mapSetPath, Action<string, string> setValue)
         {
             if (mapElemept.Elements(tagName).Any())
             {
@@ -604,12 +643,13 @@ namespace BLEditor
             }
         }
 
-        private static void ImportByte(XElement mapElemept, string tagName, Action<byte> setValue, uint defaultValue =256)
+        private static void ImportByte(XElement mapElemept, string tagName, Action<byte> setValue, uint defaultValue = 256)
         {
             if (mapElemept.Elements(tagName).Any())
             {
                 setValue(Convert.ToByte(mapElemept.Element(tagName).Value.Trim()));
-            } else if (defaultValue<256)
+            }
+            else if (defaultValue < 256)
             {
                 setValue(Convert.ToByte(defaultValue));
             }
@@ -649,14 +689,14 @@ namespace BLEditor
                             foreach (XElement item in Colpf2Dectection.Element("Flags").Descendants("Flag"))
                             {
                                 var zoneColorDetection = (ZoneColorDetection)Enum.Parse(typeof(ZoneColorDetection), item.Value.Trim());
-                                 ColpfDetectionFlags.Add(zoneColorDetection);
+                                ColpfDetectionFlags.Add(zoneColorDetection);
                             }
                         }
 
                         if (ColpfDetectionFlags.Count != ColpfDectectionRect.Count)
                         {
                             ColpfDetectionFlags.Clear();
-                            for (int i=0; i < ColpfDectectionRect.Count; i++)
+                            for (int i = 0; i < ColpfDectectionRect.Count; i++)
                             {
                                 ColpfDetectionFlags.Add(ZoneColorDetection.Always);
                             }
@@ -666,36 +706,62 @@ namespace BLEditor
             }
         }
 
-        public void Load(String path, String rleFileName)
+        public void Load(String path, String mapFileName)
         {
-            Path = rleFileName;
-          
-    
+            Path = mapFileName;
+
             if (!File.Exists(Path))
             {
                 Path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(path), Path);
             }
 
-            MapData = DecodeRLE(File.ReadAllBytes(Path));
+            DecodeMap();
 
             IsDirty = false;
             IsNew = false;
-           
+        }
+
+        private void DecodeMap()
+        {
+            if (IsRLE())
+            {
+                MapData = DecodeRLE(File.ReadAllBytes(Path));
+            }
+            else
+            {
+                MapData = DecodeLZ4(Path);
+            }
+        }
+
+        private bool IsRLE()
+        {
+            return System.IO.Path.GetExtension(Path).Equals(".rle", StringComparison.OrdinalIgnoreCase);
         }
 
 
-        internal static Map CreateNewMap(MapSet mapset, CharacterSet characterSet, String uid=null )
+        private byte[] DecodeLZ4(string path)
         {
-            if (characterSet == null || mapset==null)
+            using (LZ4DecoderStream source = LZ4Stream.Decode(File.OpenRead(path)))
+            using (MemoryStream target = new MemoryStream(440))
+            {
+                source.CopyTo(target);
+
+                return target.ToArray();
+            }
+        }
+
+        internal static Map CreateNewMap(MapSet mapset, CharacterSet characterSet, String uid = null)
+        {
+            if (characterSet == null || mapset == null)
             {
                 throw new ArgumentOutOfRangeException();
             }
-         
+
             Map result = new Map
             {
-                FontID  = characterSet.UID,
-                UID      = GuidHelper.parse(uid) ?? Guid.NewGuid(),
-                MapSet  = mapset
+                FontID = characterSet.UID,
+                UID = GuidHelper.parse(uid) ?? Guid.NewGuid(),
+                MapSet = mapset
             };
 
             return result;
@@ -707,7 +773,7 @@ namespace BLEditor
 
             MapData = new byte[11 * 40];
             Name = "New Map " + counter;
-            DLIS = new DLI[] { new DLI( this, new AtariPFColors(), 0) };
+            DLIS = new DLI[] { new DLI(this, new AtariPFColors(), 0) };
 
             IsDirty = true;
             IsNew = true;
@@ -727,13 +793,14 @@ namespace BLEditor
             List<DLI> dlis = new List<DLI>(DLIS);
             dlis.Remove(dli);
             DLIS = dlis.ToArray();
-            OnDLISChanged?.Invoke(this, null);
+            ((EventHandler)listEventDelegates[dliChangedEventKey])?.Invoke(this, null);
         }
 
         public bool AddDLI(int intLine, AtariPFColors returnAtariPFColors, Object returnOrderValue)
         {
             List<DLI> dlis = new List<DLI>(DLIS);
-            foreach (DLI dli in dlis) {
+            foreach (DLI dli in dlis)
+            {
                 if (dli.IntLine == intLine)
                 {
                     MessageBox.Show("There already is a DLI at line " + intLine);
@@ -744,7 +811,7 @@ namespace BLEditor
 
             DLIS = dlis.ToArray();
 
-            OnDLISChanged?.Invoke(this, null);
+            ((EventHandler)listEventDelegates[dliChangedEventKey])?.Invoke(this, null);
             return true;
         }
 
@@ -765,9 +832,8 @@ namespace BLEditor
 
             CreateDLIMapIndex();
 
-            OnDLISChanged?.Invoke(this, null);
+            ((EventHandler)listEventDelegates[dliChangedEventKey])?.Invoke(this, null);
             return true;
-    
         }
 
 
@@ -890,7 +956,7 @@ namespace BLEditor
             {
                 if (dli.IntLine > 0)
                 {
-                    int changeLine = dli.IntLine * 40 -1;
+                    int changeLine = dli.IntLine * 40 - 1;
                     colorRange.Add(count, changeLine);
                     count = changeLine + 1;
                 }
@@ -938,18 +1004,18 @@ namespace BLEditor
         public Guid? Exit4MapID { get; set; } = null;
         public byte Exit4X { get; set; } = 0;
         public byte Exit4Y { get; set; } = 0;
-        public TypeColorDetection Colpf0Detection  = TypeColorDetection.Always;
+        public TypeColorDetection Colpf0Detection = TypeColorDetection.Always;
         public List<Rectangle> Colpf0DetectionRects = new List<Rectangle>();
         public List<ZoneColorDetection> Colpf0DetectionFlags = new List<ZoneColorDetection>();
         public TypeColorDetection Colpf2Detection = TypeColorDetection.Always;
         public List<Rectangle> Colpf2DetectionRects = new List<Rectangle>();
         public List<ZoneColorDetection> Colpf2DetectionFlags = new List<ZoneColorDetection>();
-        public TypeColorDetection Colpf3Detection  = TypeColorDetection.Always;
+        public TypeColorDetection Colpf3Detection = TypeColorDetection.Always;
         public List<Rectangle> Colpf3DetectionRects = new List<Rectangle>();
         public List<ZoneColorDetection> Colpf3DetectionFlags = new List<ZoneColorDetection>();
 
-        public byte YamoSpawnPosition { get;  set; } = 0;
-        public byte NinjaSpawnPosition { get;  set; } = 0;
+        public byte YamoSpawnPosition { get; set; } = 0;
+        public byte NinjaSpawnPosition { get; set; } = 0;
 
         public byte NinjaEnterCount1 { get; set; } = 0;
         public byte NinjaEnterCount2 { get; set; } = 0;
@@ -972,7 +1038,7 @@ namespace BLEditor
 
     public class MapTreeNode : TreeNode
     {
-   
+
         public Map Map { get; set; }
 
 
@@ -989,7 +1055,7 @@ namespace BLEditor
         public CharacterSet CharacterSet { get; set; }
 
 
-        public FontTreeNode(MapSet mapSet, CharacterSet CharacterSet ) : base(PathHelper.RelativizePath(mapSet.Path, CharacterSet.Path))
+        public FontTreeNode(MapSet mapSet, CharacterSet CharacterSet) : base(PathHelper.RelativizePath(mapSet.Path, CharacterSet.Path))
         {
             this.CharacterSet = CharacterSet;
             Tag = pbx1.TypeNode.FontFile;
@@ -997,8 +1063,8 @@ namespace BLEditor
     }
 
     public class IncludeTreeNode : TreeNode
-    { 
-       public String Path { get; set; }
+    {
+        public String Path { get; set; }
 
 
         public IncludeTreeNode(MapSet mapSet, String path) : base(PathHelper.RelativizePath(mapSet.Path, path))

@@ -145,7 +145,7 @@ namespace BLEditor
         public void AddMap(Map newMap, bool sendChangedEvent=true)
         {
             maps.Add(newMap);
-            newMap.OnDLISChanged += (s, e) => { OnDLISChanged?.Invoke(s, e); };
+           // newMap.OnDLISChanged += (s, e) => { OnDLISChanged?.Invoke(s, e); };
             if (sendChangedEvent)
             {
                 StrutureTreeChanged?.Invoke(this, null);
@@ -165,7 +165,7 @@ namespace BLEditor
             AddMap(result);
 
         }
-        internal void AddMap(string rleFileName, string fontFileName)
+        internal void AddMap(string mapFileName, string fontFileName)
         {
             CharacterSet characterSet = CharSets.FirstOrDefault(set => set.Path == fontFileName);
             if (characterSet == null)
@@ -177,7 +177,7 @@ namespace BLEditor
 
             Map map = Map.CreateNewMap(this, characterSet);
 
-            map.Load(Path, rleFileName);
+            map.Load(Path, mapFileName);
            
             AddMap(map);
         }

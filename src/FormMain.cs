@@ -688,7 +688,7 @@ namespace BLEditor
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = "Map|*.rle",
+                Filter = "Map|*.rle;*.lz4",
                 Title = "Load map"
             };
             openFileDialog.ShowDialog();

@@ -68,7 +68,7 @@ namespace BLEditor
         }
         // public event EventHandler InteractionChanged;
 
-        public event EventHandler DirtyChanged;
+        //public event EventHandler DirtyChanged;
 
         private bool _dirty = false;
 
@@ -92,20 +92,21 @@ namespace BLEditor
                 {
                     if (_inMap != null)
                     {
-                        _inMap.MapChanged -= mapChanged;
+                        _inMap.MapChanged   -= somethingChanged;
+                        _inMap.DLISChanged  -= somethingChanged;
                     }
 
                     _inMap = value;
                     if (_inMap != null)
                     {
-                        _inMap.MapChanged += mapChanged;
+                        _inMap.MapChanged   += somethingChanged;
+                        _inMap.DLISChanged  += somethingChanged;
                     }
                 }
-
             }
         }
 
-        private void mapChanged(object sender, EventArgs e)
+        private void somethingChanged(object sender, EventArgs e)
         {
             this.RefreshMap();
         }

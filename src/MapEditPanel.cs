@@ -14,9 +14,23 @@ namespace BLEditor
 {
     public partial class MapEditPanel : UserControl
     {
-        private Map inMap;
+        private Map _inMap;
 
-     
+        [Browsable(false)]
+        public Map InMap
+        {
+            get => _inMap;
+
+            private set
+            {
+                if (value != _inMap)
+                {
+                    _inMap = value;
+                    dliList.Map = value;
+                }
+            }
+        }
+
         public MapEditPanel()
         {
           
@@ -32,9 +46,7 @@ namespace BLEditor
        
         internal void LoadMap(Map inMap, CharacterSet charset)
         {
-            dliList.Map = inMap;
-            
-            this.inMap = inMap;
+            InMap = inMap;
             mapEditUserControl.LoadMap(inMap, charset);
             charSetUserControl.FntByte = charset.Data;
             mapEditUserControl.Focus();
@@ -72,9 +84,9 @@ namespace BLEditor
 
         private void runButton_Click(object sender, EventArgs e)
         {
-           if (MapSet.SSave(inMap.MapSet))
+           if (MapSet.SSave(InMap.MapSet))
            {
-               FormRunMADS.Compile(inMap.MapSet, true, Decimal.ToInt32(firstMapNumericUpDown.Value)) ;
+               FormRunMADS.Compile(InMap.MapSet, true, Decimal.ToInt32(firstMapNumericUpDown.Value)) ;
            }
         }
     }
