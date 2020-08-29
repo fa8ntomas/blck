@@ -92,6 +92,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MapDeserializer.cs" />
+    <Compile Include="MapSerializer.cs" />
     <Compile Include="UndoManager.cs" />
     <Compile Include="Controls\MyToolStripSystemRenderer.cs" />
     <Compile Include="FormGameData.cs">

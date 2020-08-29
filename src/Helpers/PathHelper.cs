@@ -2,91 +2,24 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLEditor
 {
-    static class PathHelper
+    internal static class PathHelper
     {
-        public static string RelativizePath(string parent, string filename)
+
+        public static String Delta(String XMLFilename, String Filename)
         {
-            return System.IO.Path.Combine(PathHelper.RelativePath(System.IO.Path.GetDirectoryName(filename), System.IO.Path.GetDirectoryName(parent)), System.IO.Path.GetFileName(filename));
-        }
-
-        public static string RelativePath( string candidate, string other)
-        {
-            if (String.IsNullOrWhiteSpace(candidate))
+            if (String.IsNullOrWhiteSpace(Filename))
             {
-                return "";
+                return String.Empty;
             }
 
-            var isRelative = false;
-            List<String> list = new List<String>();
-            try
-            {
-                var candidateInfo = new DirectoryInfo(candidate);
-                var otherInfo = new DirectoryInfo(other);
+            String result = System.IO.Path.Combine(PathHelper.RelativePath(System.IO.Path.GetDirectoryName(Filename), System.IO.Path.GetDirectoryName(XMLFilename)), System.IO.Path.GetFileName(Filename));
 
-                if (String.Compare(candidateInfo.FullName,otherInfo.FullName, StringComparison.OrdinalIgnoreCase) == 0)
-                {
-                    isRelative = true;
-                }
-                else
-                {
-                    list.Add(candidateInfo.Name);
-                    while (candidateInfo.Parent != null)
-                    {
-                        if (String.Compare(candidateInfo.Parent.FullName, otherInfo.FullName, StringComparison.OrdinalIgnoreCase) == 0)
-                        {
-                            isRelative = true;
-                            break;
-                        }
-                        else
-                        {
-
-                            candidateInfo = candidateInfo.Parent;
-                            list.Add(candidateInfo.Name);
-                        }
-                    }
-                }
-            }
-            catch (Exception error)
-            {
-                var message = String.Format("Unable to check directories {0} and {1}: {2}", candidate, other, error);
-                Trace.WriteLine(message);
-            }
-
-            String result;
-            if (isRelative)
-            {
-                list.Reverse();
-                result= System.IO.Path.Combine(list.ToArray());
-            }
-            else
-            {
-                result= candidate;
-            }
-         
+            Console.WriteLine(System.IO.Path.GetDirectoryName(Filename) + " -- " + XMLFilename + "--" + PathHelper.RelativePath(System.IO.Path.GetDirectoryName(Filename), System.IO.Path.GetDirectoryName(XMLFilename)));
             return result;
-        }
-
-
-        // Define GetShortPathName API function.
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        static extern uint GetShortPathName(string lpszLongPath, char[] lpszShortPath, int cchBuffer);
-
-        public static string ShortFileName(string long_name)
-        {
-            char[] name_chars = new char[1024];
-            long length = GetShortPathName(
-                long_name, name_chars,
-                name_chars.Length);
-
-            string short_name = new string(name_chars);
-            return short_name.Substring(0, (int)length);
         }
 
         public static string CreateFileWithUniqueName(string folder, string fileName, int maxAttempts = 1024)
@@ -118,7 +51,7 @@ namespace BLEditor
                 catch (DriveNotFoundException) { throw; }
                 catch (IOException)
                 {
-                    // Will occur if another thread created a file with this 
+                    // Will occur if another thread created a file with this
                     // name since we created the HashSet. Ignore this and just
                     // try with the next filename.
                 }
@@ -126,7 +59,98 @@ namespace BLEditor
 
             throw new Exception("Could not create unique filename in " + maxAttempts + " attempts");
         }
+
+        public static string RelativePath(string pathToRelativize, string pathTarget)
+        {
+            if (String.IsNullOrWhiteSpace(pathToRelativize))
+            {
+                return "";
+            }
+
+            bool isRelative = false;
+            List<String> list = new List<String>();
+            try
+            {
+                DirectoryInfo pathToRelativizeInfo = new DirectoryInfo(pathToRelativize);
+                DirectoryInfo pathTargetInfo = new DirectoryInfo(pathTarget);
+
+                if (pathToRelativizeInfo.FullName.Equals(pathTargetInfo.FullName, StringComparison.OrdinalIgnoreCase))
+                {
+                    isRelative = true;
+                }
+                else if (pathTargetInfo.FullName.StartsWith(pathToRelativizeInfo.FullName))
+                {
+                    while (pathTargetInfo.Parent != null)
+                    {
+                        list.Add("..");
+
+                        if (pathTargetInfo.Parent.FullName.Equals(pathToRelativizeInfo.FullName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            isRelative = true;
+                            break;
+                        }
+                        else
+                        {
+                            pathTargetInfo = pathTargetInfo.Parent;
+                        }
+                    }
+                }
+                else if (pathToRelativizeInfo.FullName.StartsWith(pathTargetInfo.FullName))
+                {
+                    while (pathToRelativizeInfo.Parent != null)
+                    {
+                        list.Add(pathToRelativizeInfo.Name);
+                
+                        if (pathToRelativizeInfo.Parent.FullName.Equals(pathTargetInfo.FullName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            isRelative = true;
+                            break;
+                        }
+                        else
+                        {
+                            pathToRelativizeInfo = pathToRelativizeInfo.Parent;
+                        }
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                var message = String.Format("Unable to check directories {0} and {1}: {2}", pathToRelativize, pathTarget, error);
+                Trace.WriteLine(message);
+            }
+
+            String result;
+            if (isRelative)
+            {
+                list.Reverse();
+                result = System.IO.Path.Combine(list.ToArray());
+            }
+            else
+            {
+                result = pathToRelativize;
+            }
+
+            return result;
+        }
+
+        public static string RelativizePath(string parent, string filename)
+        {
+            return System.IO.Path.Combine(PathHelper.RelativePath(System.IO.Path.GetDirectoryName(filename), System.IO.Path.GetDirectoryName(parent)), System.IO.Path.GetFileName(filename));
+        }
+
+        public static string ShortFileName(string long_name)
+        {
+            char[] name_chars = new char[1024];
+            long length = GetShortPathName(
+                long_name, name_chars,
+                name_chars.Length);
+
+            string short_name = new string(name_chars);
+            return short_name.Substring(0, (int)length);
+        }
+
+        // Define GetShortPathName API function.
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern uint GetShortPathName(string lpszLongPath, char[] lpszShortPath, int cchBuffer);
     }
-
-
 }

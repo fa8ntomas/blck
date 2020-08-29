@@ -55,16 +55,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.AutoScroll = true;
             this.panel1.Controls.Add(this.pictureBox1);
-            this.panel1.Location = new System.Drawing.Point(4, 36);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.panel1.Location = new System.Drawing.Point(3, 34);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(844, 642);
+            this.panel1.Size = new System.Drawing.Size(562, 407);
             this.panel1.TabIndex = 0;
             // 
             // pictureBox1
             // 
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(100, 50);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -86,12 +84,11 @@
             this.tableLayoutPanel1.Controls.Add(this.toolStrip1, 0, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(852, 683);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(568, 444);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // toolStrip1
@@ -110,9 +107,9 @@
             this.toolStripButton3});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Padding = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            this.toolStrip1.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
             this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.toolStrip1.Size = new System.Drawing.Size(852, 31);
+            this.toolStrip1.Size = new System.Drawing.Size(568, 31);
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -164,7 +161,7 @@
             // toolStripComboBoxColors
             // 
             this.toolStripComboBoxColors.Name = "toolStripComboBoxColors";
-            this.toolStripComboBoxColors.Size = new System.Drawing.Size(180, 31);
+            this.toolStripComboBoxColors.Size = new System.Drawing.Size(121, 31);
             this.toolStripComboBoxColors.Visible = false;
             this.toolStripComboBoxColors.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxColors_SelectedIndexChanged);
             // 
@@ -195,12 +192,11 @@
             // 
             // CharSetUserControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tableLayoutPanel1);
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "CharSetUserControl";
-            this.Size = new System.Drawing.Size(852, 683);
+            this.Size = new System.Drawing.Size(568, 444);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

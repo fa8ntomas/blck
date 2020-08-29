@@ -175,9 +175,7 @@ namespace BLEditor
 
             }
 
-            Map map = Map.CreateNewMap(this, characterSet);
-
-            map.Load(Path, mapFileName);
+            Map map = MapDeserializer.Load(this, Path, mapFileName, characterSet);
            
             AddMap(map);
         }
@@ -204,7 +202,7 @@ namespace BLEditor
             
                 foreach (Map map in maps)
                 {
-                    xmlTree1.Add(map.Save(Path));
+                    xmlTree1.Add(MapSerializer.Save(map, Path));
                 }
 
                 xmlTree1.Save(Path);
@@ -235,7 +233,7 @@ namespace BLEditor
 
                 foreach (Map map in maps)
                 {
-                    xmlTree1.Add(map.Save(Path,true));
+                    xmlTree1.Add(MapSerializer.Save(map,Path,true));
                 }
 
                 xmlTree1.Save(Path);
@@ -312,7 +310,7 @@ namespace BLEditor
 
             foreach (XElement node in xml.Elements("map"))
             {
-                Map loadedMap = Map.Load(this, node);
+                Map loadedMap = MapDeserializer.Load(this, node);
 
                 AddMap(loadedMap, false);
 
