@@ -216,7 +216,6 @@ namespace BLEditor
 
         public byte YamoEnterCount2 { get; set; } = 0;
 
-        ///////////////////////////////////////////
         public byte YamoSpawnPosition { get; set; } = 0;
 
         public bool AddDLI(int intLine, AtariPFColors returnAtariPFColors, Object returnOrderValue)

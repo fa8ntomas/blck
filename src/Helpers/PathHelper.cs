@@ -9,17 +9,33 @@ namespace BLEditor
     internal static class PathHelper
     {
 
-        public static String Delta(String XMLFilename, String Filename)
+        public static String Delta(String XMLFilename, String path)
         {
-            if (String.IsNullOrWhiteSpace(Filename))
+            if (String.IsNullOrWhiteSpace(path))
             {
                 return String.Empty;
             }
+            else
+            {
+                return Path.Combine(PathHelper.RelativePath(System.IO.Path.GetDirectoryName(path), System.IO.Path.GetDirectoryName(XMLFilename)), System.IO.Path.GetFileName(path));
+            }
+        }
 
-            String result = System.IO.Path.Combine(PathHelper.RelativePath(System.IO.Path.GetDirectoryName(Filename), System.IO.Path.GetDirectoryName(XMLFilename)), System.IO.Path.GetFileName(Filename));
+        public static string GetExactPath(string mapSetPath, string path)
+        {
+            if (!File.Exists(path))
+            {
+                return Path.GetFullPath(Path.Combine(Path.GetDirectoryName(mapSetPath), path));
+            }
+            else
+            {
+                return Path.GetFullPath(path);
+            }
+        }
 
-            Console.WriteLine(System.IO.Path.GetDirectoryName(Filename) + " -- " + XMLFilename + "--" + PathHelper.RelativePath(System.IO.Path.GetDirectoryName(Filename), System.IO.Path.GetDirectoryName(XMLFilename)));
-            return result;
+        internal static string GetExactPath(string path)
+        {
+            return Path.GetFullPath(path);
         }
 
         public static string CreateFileWithUniqueName(string folder, string fileName, int maxAttempts = 1024)

@@ -42,22 +42,13 @@ namespace BLEditor
         public static CharacterSet CreateFromFileName(String fontFileName)
         {
             CharacterSet result = new CharacterSet();
-            result.LoadData(fontFileName);
+            result.LoadData(PathHelper.GetExactPath(fontFileName));
             return result;
         }
         public static CharacterSet Load(MapSet mapSet, XElement mapElemept)
         {
             CharacterSet result = new CharacterSet(mapElemept.Attribute("uid")?.Value, mapElemept.Attribute("keep") != null);
-
-
-            String Path = mapElemept.Attribute("path")?.Value;
-            if (!File.Exists(Path))
-            {
-                Path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(mapSet.Path), Path);
-            }
-
-            result.LoadData(Path);
-
+            result.LoadData(PathHelper.GetExactPath(mapSet.Path, mapElemept.Attribute("path")?.Value));
             return result;
         }
 
@@ -83,7 +74,7 @@ namespace BLEditor
 
             XElement result = new XElement("font");
             result.Add(new XAttribute("uid", UID.ToString()));
-            result.Add(new XAttribute("path", System.IO.Path.Combine(PathHelper.RelativePath(System.IO.Path.GetDirectoryName(Path), System.IO.Path.GetDirectoryName(MapSetSaveFileName)), System.IO.Path.GetFileName(Path))));
+            result.Add(new XAttribute("path", PathHelper.Delta(MapSetSaveFileName,Path)));
 
             if (KeepEvenUseless)
             {

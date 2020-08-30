@@ -152,32 +152,36 @@ namespace BLEditor
             }
         }
 
+        private CharacterSet findExistingCharsetByFileName(string fontFileName)
+        {
+            string exactFontPath = PathHelper.GetExactPath(Path, fontFileName);
+
+            return CharSets.FirstOrDefault(set => set.Path.Equals(exactFontPath, StringComparison.OrdinalIgnoreCase));
+        }
+
         public void AddMap(String fontFileName)
         {
-            CharacterSet characterSet = CharSets.FirstOrDefault(set => set.Path == fontFileName);
+            CharacterSet characterSet = findExistingCharsetByFileName(fontFileName);
             if (characterSet == null)
             {
                 characterSet = CharacterSet.CreateFromFileName(fontFileName);
                 AddCharSet(characterSet,false);         
             }
 
-            Map result = Map.CreateNewMap(this,characterSet);
-            AddMap(result);
-
+            AddMap(Map.CreateNewMap(this,characterSet));
         }
+
         internal void AddMap(string mapFileName, string fontFileName)
         {
-            CharacterSet characterSet = CharSets.FirstOrDefault(set => set.Path == fontFileName);
+            CharacterSet characterSet = findExistingCharsetByFileName(fontFileName);
+            
             if (characterSet == null)
             {
                 characterSet = CharacterSet.CreateFromFileName(fontFileName);
                 AddCharSet(characterSet, false);
-
             }
 
-            Map map = MapDeserializer.Load(this, Path, mapFileName, characterSet);
-           
-            AddMap(map);
+            AddMap(MapDeserializer.Load(this, Path, mapFileName, characterSet));
         }
 
         public bool Save(String fileName = null)
@@ -196,7 +200,7 @@ namespace BLEditor
                 foreach (String include in Includes)
                 { 
                     XElement includeElement = new XElement("include");
-                    includeElement.SetValue(System.IO.Path.Combine(PathHelper.RelativePath(System.IO.Path.GetDirectoryName(include), System.IO.Path.GetDirectoryName(Path)), System.IO.Path.GetFileName(include)));
+                    includeElement.SetValue(PathHelper.Delta(Path, include));
                     xmlTree1.Add(includeElement);
                 }
             

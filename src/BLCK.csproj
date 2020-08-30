@@ -139,6 +139,7 @@
       <DependentUpon>FntEditPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="size.cs" />
+    <Compile Include="XEX.cs" />
     <Compile Include="ZoneCollisionUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -182,7 +183,6 @@
       <DependentUpon>FormMapData.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
-    <Compile Include="XEX.cs" />
     <Compile Include="ImageUtils.cs" />
     <Compile Include="MenuButton.cs">
       <SubType>Component</SubType>

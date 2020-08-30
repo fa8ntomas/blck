@@ -5,47 +5,29 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 using static BLEditor.Map;
 
 namespace BLEditor
 {
-    static class MapDeserializer
+    internal static class MapDeserializer
     {
         public static Map Load(MapSet mapSet, String path, String mapFileName, CharacterSet characterSet)
         {
             Map map = Map.CreateNewMap(mapSet, characterSet);
-            map.Path = mapFileName;
-
-            if (!File.Exists(map.Path))
-            {
-                map.Path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(path), map.Path);
-            }
-
-            map.MapData = (map.UseRleCompression()) ? DecodeRLE(File.ReadAllBytes(map.Path)) : DecodeLZ4(map.Path);
-
+            map.Path = PathHelper.GetExactPath(path, mapFileName);
+            map.MapData = map.UseRleCompression() ? DecodeRLE(File.ReadAllBytes(map.Path)) : DecodeLZ4(map.Path);
             map.SetLoaded();
             return map;
         }
-
 
         public static Map Load(MapSet mapSet, XElement mapElemept)
         {
             Map map = CreateNewMap(mapSet, mapSet.GetFont(GuidHelper.parse(mapElemept.Attribute("font")?.Value)), mapElemept.Attribute("uid")?.Value);
             map.Name = mapElemept.Attribute("name").Value;
-            map.Path = mapElemept.Attribute("path").Value;
-            if (!File.Exists(map.Path))
-            {
-                map.Path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(mapSet.Path), map.Path);
-            }
+            map.Path = PathHelper.GetExactPath(mapSet.Path, mapElemept.Attribute("path").Value);
+            map.MapData = map.UseRleCompression() ? DecodeRLE(File.ReadAllBytes(map.Path)) : DecodeLZ4(map.Path);
 
-
-            map.MapData = (map.UseRleCompression()) ? DecodeRLE(File.ReadAllBytes(map.Path)) : DecodeLZ4(map.Path);
-
-
-            // DLI
             XElement dlis = mapElemept.Element("dlis");
             List<DLI> DLIList = new List<DLI>();
             foreach (XElement xdli in dlis.Elements("dli"))
@@ -69,7 +51,6 @@ namespace BLEditor
             ImportColorDetection(mapElemept, "Colpf2Dectection", ref map.Colpf2Detection, ref map.Colpf2DetectionRects, ref map.Colpf2DetectionFlags);
             ImportColorDetection(mapElemept, "Colpf3Dectection", ref map.Colpf3Detection, ref map.Colpf3DetectionRects, ref map.Colpf3DetectionFlags);
 
-            Console.WriteLine(map.Colpf0Detection.ToString());
             if (mapElemept.Elements("brucestart").Any())
             {
                 XElement brucestart = mapElemept.Element("brucestart");
@@ -111,12 +92,10 @@ namespace BLEditor
                 map.Exit4Y = Convert.ToByte(exit.Element("y").Value);
             }
 
-
             map.SetLoaded();
 
             return map;
         }
-
 
         private static void ImportTextFile(XElement mapElemept, string tagName, string mapSetPath, Action<string, string> setValue)
         {
@@ -164,6 +143,7 @@ namespace BLEditor
                 setValue(defaultValue.Value);
             }
         }
+
         private static void ImportColorDetection(XElement mapElemept, string tagName, ref TypeColorDetection ColpfDectection, ref List<Rectangle> ColpfDectectionRect, ref List<ZoneColorDetection> ColpfDetectionFlags)
         {
             if (mapElemept.Elements(tagName).Any())
@@ -205,7 +185,6 @@ namespace BLEditor
             }
         }
 
-
         private static byte[] DecodeRLE(byte[] inData)
         {
             List<byte> output = new List<byte>();
@@ -239,7 +218,6 @@ namespace BLEditor
             return output.ToArray();
         }
 
-
         private static byte[] DecodeLZ4(string path)
         {
             using (LZ4DecoderStream source = LZ4Stream.Decode(File.OpenRead(path)))
@@ -250,7 +228,5 @@ namespace BLEditor
                 return target.ToArray();
             }
         }
-
-
     }
 }
