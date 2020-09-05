@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using static BLEditor.MultiPagePanel;
 
 namespace BLEditor
 {
@@ -66,7 +67,9 @@ namespace BLEditor
                 listEventDelegates.RemoveHandler(mouseDownEventKey, value);
             }
         }
-        // public event EventHandler InteractionChanged;
+
+
+        public event EventHandler UpdateStatusToolTipsHandler;
 
         //public event EventHandler DirtyChanged;
 
@@ -92,15 +95,15 @@ namespace BLEditor
                 {
                     if (_inMap != null)
                     {
-                        _inMap.MapChanged   -= somethingChanged;
-                        _inMap.DLISChanged  -= somethingChanged;
+                        _inMap.MapChanged -= somethingChanged;
+                        _inMap.DLISChanged -= somethingChanged;
                     }
 
                     _inMap = value;
                     if (_inMap != null)
                     {
-                        _inMap.MapChanged   += somethingChanged;
-                        _inMap.DLISChanged  += somethingChanged;
+                        _inMap.MapChanged += somethingChanged;
+                        _inMap.DLISChanged += somethingChanged;
                     }
                 }
             }
@@ -359,7 +362,7 @@ namespace BLEditor
         Point bottomright;
         private InterationType dragInteraction;
         private Map.MapDataBlock clipboardData;
-       
+
         private void MapEditUserControl_MouseMove(object sender, MouseEventArgs e)
         {
             UpdateScreen(e.Location);
@@ -376,9 +379,29 @@ namespace BLEditor
             UpdatePasteRectangle(Rectangle.Empty);
         }
 
+
+        private void InvokeUpdateStatusToolTipsHandler(Point tilePosition)
+        {
+            if (UpdateStatusToolTipsHandler != null)
+            {
+                if (InMap.Contains(tilePosition))
+                {
+                    UpdateStatusToolTipsHandler.Invoke(this, new StatusTipsUpdateEventArgs($"{tilePosition.X}, {tilePosition.Y} [{InMap.GetMapDataByte(tilePosition):X}]"));
+                }
+                else
+                {
+                    UpdateStatusToolTipsHandler.Invoke(this, new StatusTipsUpdateEventArgs("--, --  [--]"));
+                }
+            }
+        }
+
         private void UpdateScreen(Point mouselocation)
         {
+
             Point TilePosition = TileUnderMouseLocation(mouselocation);
+
+            InvokeUpdateStatusToolTipsHandler(TilePosition);
+
             switch (_interation)
             {
                 case InterationType.STAMP:
@@ -576,7 +599,7 @@ namespace BLEditor
         private void UpdatePasteLocation(Point point)
         {
             Point newPasteDataLocation = TileUnderMouseLocation(point) + new Size(-clipboardData.Size.Width / 2, -clipboardData.Size.Height / 2);
-            
+
             if (!pasteDataLocation.HasValue || !newPasteDataLocation.Equals(pasteDataLocation.Value))
             {
                 Rectangle pasteDataRectangle = new Rectangle(newPasteDataLocation, clipboardData.Size);
@@ -653,7 +676,7 @@ namespace BLEditor
                             UpdateHightlightRectangle(Rectangle.Empty);
                             UpdateSelectedRectangle(Rectangle.Empty);
                             UpdatePasteRectangle(Rectangle.Empty);
-                            pasteDataLocation= null;
+                            pasteDataLocation = null;
                         }; break;
                 }
             }

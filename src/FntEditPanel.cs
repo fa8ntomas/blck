@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Windows.Forms;
 using static BLEditor.Controls.CharSetUserControl;
 using static BLEditor.GlyphEditUserControl;
@@ -24,11 +25,14 @@ namespace BLEditor
         private CharacterSet preloadCharacterSet;
 
         private DLI[] dLIS;
+        private MapSet mapSet;
 
-        internal void PreLoad(CharacterSet characterSet, DLI[] dLIS = null)
+        internal void PreLoad(MapSet mapSet, CharacterSet characterSet, DLI[] dLIS = null)
         {
+
             preloadCharacterSet = characterSet;
             this.dLIS = dLIS;
+            this.mapSet = mapSet;
         }
 
         bool MultiPagePanel.ISavePanel.Save()
@@ -42,6 +46,7 @@ namespace BLEditor
             CharacterSet = preloadCharacterSet;
             glyphEditUserControl1.DLIs = dLIS;
             glyphEditUserControl1.CharTile = null;
+            Text = mapSet.Delta(CharacterSet.Path);
         }
 
 

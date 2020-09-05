@@ -18,12 +18,32 @@ namespace BLEditor
             bool Save();
             void Load();
         }
+        public interface IStatusTipsProvider
+        {
+            void AddHandler(EventHandler StatusTipsProvided);
+            void RemoveHandler(EventHandler StatusTipsProvided);
+        }
+        public class StatusTipsUpdateEventArgs : EventArgs
+        {
+            public String Tips { get; private set; }
 
+            public StatusTipsUpdateEventArgs(String Tips)
+              : base()
+            {
+                this.Tips = Tips;
+            }
+        }
         public MultiPagePanel()
         {
             InitializeComponent();
         }
 
+        private void updateSatusTips(object sender, EventArgs e)
+        {
+            UpdateStatusToolTips?.Invoke(sender, e);
+        }
+
+        public event EventHandler UpdateStatusToolTips;
 
         private Control _CurrentPage;
         public Control CurrentPage
@@ -41,12 +61,18 @@ namespace BLEditor
                     }
                 }
 
+                if (_CurrentPage is IStatusTipsProvider)
+                {
+                    ((IStatusTipsProvider)_CurrentPage).RemoveHandler(updateSatusTips);
+                }
+
                 if (!Controls.Contains(value))
                 {
                     Controls.Add(value);
                 }
 
                 _CurrentPage = value;
+               
                 if (_CurrentPage != null)
                 {
                     _CurrentPage.Dock = DockStyle.Fill;
@@ -54,7 +80,11 @@ namespace BLEditor
                     if (_CurrentPage is ISavePanel)
                     {
                         ((ISavePanel)_CurrentPage).Load();
+                    }
 
+                    if (_CurrentPage is IStatusTipsProvider)
+                    {
+                        ((IStatusTipsProvider)_CurrentPage).AddHandler(updateSatusTips);
                     }
 
                     _CurrentPage.BringToFront();

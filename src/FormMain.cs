@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+
 using System.Windows.Forms;
+using static BLEditor.MultiPagePanel;
 
 namespace BLEditor
 {
@@ -70,6 +72,12 @@ namespace BLEditor
             CopyCharMenu.Click += (s, e) => CopyChar(s);
 
             openToolStripMenuItem.Click += (s, e) => { openMenuAction?.Invoke(); };
+
+            multiPagePanel.UpdateStatusToolTips += (s, e) => {
+                {
+                    toolStripStatusLabel1.Text = ((StatusTipsUpdateEventArgs)e).Tips;
+                };
+            };
         }
 
         private void RemoveInclude(object sender)
@@ -499,8 +507,9 @@ namespace BLEditor
                 }
 
                 //mapEditUserControl.LoadMap(inMap, charset);
-                mapPanel.LoadMap(inMap, charset);
+                mapPanel.PreLoad(inMap, charset);
                 this.multiPagePanel.CurrentPage = mapPanel;
+                UpdateTitle(mapPanel);
             }
         }
 
@@ -529,20 +538,16 @@ namespace BLEditor
 
             if (characterSet != null)
             {
-                fntPanel.PreLoad(characterSet, DisplayedMap?.DLIS);
+                fntPanel.PreLoad(mapSet,characterSet, DisplayedMap?.DLIS);
                 multiPagePanel.CurrentPage = fntPanel;
-
-             /*   using (FormFntEdit fontEditForm = new FormFntEdit(characterSet, DisplayedMap?.DLIS))
-                {
-                    if (fontEditForm.ShowDialog() == DialogResult.OK)
-                    {
-                        characterSet.Data = fontEditForm.ReturnFontData;
-                        DisplayMap(DisplayedMap);
-                    }
-                }*/
+                UpdateTitle(fntPanel);
             }
         }
 
+        private void UpdateTitle(System.Windows.Forms.Control panel)
+        {
+            this.Text = $"Bruce Lee Construction Kit(BLCK) - {panel.Text}";
+        }
 
         Map DisplayedMap { get; set; }
 

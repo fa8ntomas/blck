@@ -55,6 +55,12 @@ namespace BLEditor
         public ReadOnlyCollection<CharacterSet> CharSets { get { return charSets.AsReadOnly(); }  }
 
         private List<Map> maps = new List<Map>();
+
+        internal string Delta(string pathToRelatize)
+        {
+            return PathHelper.Delta(this.Path, pathToRelatize);
+        }
+
         public ReadOnlyCollection<Map> Maps { get { return maps.AsReadOnly(); } }
 
         public String Path { get; set; }
